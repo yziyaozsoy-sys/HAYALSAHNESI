@@ -461,14 +461,23 @@
       </div>
     </div>
 
-    <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
-      <button onclick="closeInspector()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold transition">Kapat</button>
-      <button id="inspect-publish-btn" onclick="publishFromInspector()" class="px-5 py-2 rounded-xl stage-gradient text-white text-xs font-bold shadow-lg shadow-rose-900/40 hover:opacity-95 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-check"></i> Doğrudan Yayına Al
+       <!-- Alt Butonlar: Kapat, Düzenle ve Yayına Al -->
+    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+      <button onclick="closeInspector()" type="button" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold transition">
+        Kapat
       </button>
+            <div class="flex items-center gap-2">
+        
+        <!-- Yeni Eklenen Düzenleme Butonu -->
+        <button onclick="editFromInspector()" type="button" class="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-500/30 text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-pen-to-square"></i> Düzenle
+        </button>
+        <!-- Yayına Alma Butonu -->
+        <button id="inspect-publish-btn" onclick="publishFromInspector()" type="button" class="px-5 py-2 rounded-xl stage-gradient text-white text-xs font-bold shadow-lg shadow-rose-900/40 hover:opacity-95 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-check"></i> Doğrudan Yayına Al
+        </button>
+      </div>
     </div>
-  </div>
-</div>
 
 <script>
   const API_BASE = 'https://hayalsahnesi.onrender.com/api';
@@ -749,6 +758,27 @@
     }
 
     document.getElementById('modal-inspector').classList.remove('hidden');
+  }
+  // --- İNCELEME MODALI BUTON İŞLEMLERİ (KAPAT, DÜZENLE, YAYINLA) ---
+  function closeInspector() {
+    const modal = document.getElementById('modal-inspector');
+    if (modal) {
+      modal.classList.add('hidden');
+    }
+    inspectingItem = null;
+  }
+
+  function editFromInspector() {
+    if (!inspectingItem) return;
+    const targetId = inspectingItem._id;
+    closeInspector();
+    editContent(targetId);
+  }
+
+  async function publishFromInspector() {
+    if (!inspectingItem) return;
+    await toggleContentStatus(inspectingItem._id, inspectingItem.status);
+    closeInspector();
   }
 
   // --- ESER CRUD İŞLEMLERİ ---
