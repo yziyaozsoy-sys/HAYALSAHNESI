@@ -437,6 +437,21 @@
           Medyayı Aç <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
         </a>
       </div>
+      <!-- Yazar İletişim & Hukuki Sorumluluk / Telif Onay Kartı -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-slate-900/90 rounded-2xl border border-slate-800 text-xs">
+        <div>
+          <span class="text-slate-400 block text-[11px] mb-0.5">İletişim E-Posta:</span>
+          <span id="inspect-email" class="font-mono text-cyan-400 font-semibold select-all">-</span>
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[11px] mb-0.5">İletişim Telefon:</span>
+          <span id="inspect-phone" class="font-mono text-emerald-400 font-semibold select-all">-</span>
+        </div>
+        <div class="sm:col-span-2 pt-2 mt-1 border-t border-slate-800/80 flex items-center justify-between">
+          <span class="text-slate-400 text-[11px]">Telif & Hukuki Sorumluluk:</span>
+          <span id="inspect-legal" class="px-2 py-0.5 rounded text-[10px] font-bold"></span>
+        </div>
+      </div>
 
       <div>
         <h5 class="text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wide">Eser Metni / Şiir Mısraları:</h5>
@@ -686,7 +701,7 @@
     }
   }
 
-  // --- İNCELEME MODALI FONKSİYONLARI ---
+    // --- İNCELEME MODALI FONKSİYONLARI ---
   function inspectContent(id) {
     const item = currentContents.find(x => x._id === id);
     if (!item) return;
@@ -696,6 +711,22 @@
     document.getElementById('inspect-author').innerText = 'Gönderen / Yazar: ' + (item.author || 'Bilinmiyor');
     document.getElementById('inspect-type').innerText = item.type || 'ESER';
     
+    // İletişim Bilgileri (E-posta ve Telefon)
+    document.getElementById('inspect-email').innerText = item.email || 'Belirtilmedi';
+    document.getElementById('inspect-phone').innerText = item.phone || 'Belirtilmedi';
+
+    // FSEK / Telif ve Hukuki Sorumluluk Rozeti Kontrolü
+    const legalBadge = document.getElementById('inspect-legal');
+    const isLegal = item.legalConsent?.accepted || item.legalAccepted;
+
+    if (isLegal) {
+      legalBadge.className = 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1';
+      legalBadge.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i> FSEK Onaylı & Taahhüt Alındı';
+    } else {
+      legalBadge.className = 'bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1';
+      legalBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-400"></i> Onay Alınmadı';
+    }
+
     const bodyText = item.textBody || item.description || 'Bu eser için herhangi bir metin girilmemiş.';
     document.getElementById('inspect-body').innerText = bodyText;
 
@@ -718,18 +749,6 @@
     }
 
     document.getElementById('modal-inspector').classList.remove('hidden');
-  }
-
-  function closeInspector() {
-    document.getElementById('modal-inspector').classList.add('hidden');
-    inspectingItem = null;
-  }
-
-  async function publishFromInspector() {
-    if (!inspectingItem) return;
-    const newStatus = inspectingItem.status === 'published' ? 'draft' : 'published';
-    await toggleContentStatus(inspectingItem._id, inspectingItem.status);
-    closeInspector();
   }
 
   // --- ESER CRUD İŞLEMLERİ ---
