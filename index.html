@@ -73,12 +73,14 @@
       <i class="fa-solid fa-compact-disc mr-1.5 text-purple-400"></i>Müzikler
     </button>
   </nav>
- <!-- KARIŞIK ÇAL BUTONU (Sadece Müzikler sekmesinde açılacak) -->
-<div id="shuffle-music-box" class="hidden flex justify-end items-center my-3 px-2">
-  <button onclick="playRandomMusicList()" type="button" class="px-4 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/30 text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-purple-900/30">
-    <i class="fa-solid fa-shuffle"></i> Müzikleri Karışık Çal
-  </button>
-</div>
+
+  <!-- KARIŞIK ÇAL BUTONU -->
+  <div id="shuffle-music-box" class="hidden flex justify-end items-center my-3 px-2">
+    <button onclick="playRandomMusicList()" type="button" class="px-4 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/30 text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-purple-900/30">
+      <i class="fa-solid fa-shuffle"></i> Müzikleri Karışık Çal
+    </button>
+  </div>
+
   <!-- Giriş / Eser Gönder -->
   <div class="flex items-center space-x-3">
     <a href="admin.html" class="hidden sm:flex text-slate-300 hover:text-white text-xs px-3.5 py-2 rounded-lg font-bold transition items-center gap-1.5 bg-slate-900 border border-slate-700 hover:border-rose-500">
@@ -107,7 +109,7 @@
         Şiirlerin nefesi, fotoroman karelerinin büyüsü, mini dizilerin sürükleyiciliği ve orijinal sahne tınıları tek bir platformda yayında.
       </p>
       <div class="flex flex-wrap gap-3 pt-2">
-        <button onclick="openReader('Gece Provası', 'Tiyatro kulisinde başlayan bir gizem...', '34 Kare')" class="stage-gradient text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:opacity-95 transition shadow-lg shadow-rose-600/30">
+        <button onclick="openReader('Gece Provası', 'Tiyatro kulisinde başlayan bir gizem...', '3 Kare')" class="stage-gradient text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:opacity-95 transition shadow-lg shadow-rose-600/30">
           <i class="fa-solid fa-book-open-reader"></i> Öne Çıkan Fotoromanı Oku
         </button>
         <button onclick="openVideoPlayer('Hayal Sahnesi Tanıtım', 'Özel Gösterim', 'https://www.youtube.com/watch?v=xc7z_9mOf-o')" class="card-stage px-5 py-2.5 rounded-xl text-sm font-semibold text-white hover:bg-slate-800/80 transition flex items-center gap-2">
@@ -191,7 +193,7 @@
         <i class="fa-solid fa-backward-step text-xs"></i>
       </button>
 
-      <!-- Play / Pause Butonu (Senin Orijinal Butonun) -->
+      <!-- Play / Pause Butonu -->
       <button onclick="togglePlayState()" id="play-pause-btn" type="button" class="w-9 h-9 rounded-full bg-rose-600 text-white flex items-center justify-center hover:scale-105 transition shadow-md shadow-rose-600/30 font-bold">
         <i class="fa-solid fa-play text-xs"></i>
       </button>
@@ -209,26 +211,71 @@
 </aside>
 
 <audio id="global-audio" class="hidden"></audio>
+<audio id="reader-bg-audio" loop class="hidden"></audio>
 <div id="hidden-yt-container" class="hidden pointer-events-none opacity-0 fixed -bottom-96 -right-96">
   <div id="yt-player"></div>
 </div>
 
-<!-- MODAL: FOTOROMAN OKUYUCU -->
-<div id="modal-reader" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex flex-col p-4 md:p-8">
-  <div class="flex justify-between items-center text-white pb-4 border-b border-slate-800">
-    <div>
-      <h3 id="reader-title" class="font-bold text-lg">Fotoroman</h3>
-      <p id="reader-info" class="text-xs text-slate-400">Canlı Sahne</p>
-    </div>
-    <button onclick="closeModal('modal-reader')" class="text-slate-400 hover:text-white text-xl p-2"><i class="fa-solid fa-xmark"></i></button>
-  </div>
-  <div class="flex-1 flex flex-col items-center justify-center py-6 text-center max-w-2xl mx-auto space-y-4">
-    <div class="w-full h-80 bg-slate-900 border border-slate-800 rounded-2xl flex items-center justify-center relative overflow-hidden">
-      <i class="fa-solid fa-camera text-5xl text-slate-700"></i>
-      <div class="absolute bottom-4 left-4 right-4 bg-black/80 backdrop-blur-md p-3 rounded-xl border border-slate-700/60 text-xs text-slate-200">
-        <p id="reader-dialog">"Gece henüz yeni başlamıştı, koridorun sonundaki kapı aralık duruyordu..."</p>
+<!-- ========================================== -->
+<!-- YENİ MODAL: FOTOROMAN OKUYUCU (SAYFALI & LOOP SESLİ) -->
+<!-- ========================================== -->
+<div id="modal-reader" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex flex-col p-4 md:p-6 select-none">
+  <!-- Üst Bar -->
+  <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800/80">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+        <i class="fa-solid fa-camera-retro"></i>
+      </div>
+      <div>
+        <h3 id="reader-title" class="font-bold text-base md:text-lg text-white">Fotoroman</h3>
+        <p id="reader-info" class="text-xs text-amber-400 font-medium">Sahne Perdesi</p>
       </div>
     </div>
+    
+    <div class="flex items-center gap-3">
+      <div class="hidden sm:flex items-center gap-1.5 text-xs text-purple-400 bg-purple-950/40 px-2.5 py-1 rounded-full border border-purple-800/40">
+        <i class="fa-solid fa-volume-high animate-pulse"></i>
+        <span>Atmosfer Müziği (Loop)</span>
+      </div>
+      <button onclick="closeModal('modal-reader')" class="text-slate-400 hover:text-white text-xl p-1.5 transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Ana Sahne Alanı -->
+  <div class="flex-1 flex flex-col items-center justify-center relative w-full max-w-4xl mx-auto py-2 overflow-hidden">
+    <div class="relative w-full h-[60vh] md:h-[68vh] bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden shadow-2xl">
+      <img id="reader-img" src="" alt="Fotoroman Karesi" class="w-full h-full object-contain transition-opacity duration-300">
+      
+      <!-- Sol / Geri Butonu -->
+      <button onclick="prevPhotoPage()" type="button" class="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-amber-500 hover:text-slate-950 text-white flex items-center justify-center transition border border-white/10 shadow-lg backdrop-blur-sm z-20">
+        <i class="fa-solid fa-chevron-left text-lg"></i>
+      </button>
+
+      <!-- Sağ / İleri Butonu -->
+      <button onclick="nextPhotoPage()" type="button" class="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 hover:bg-amber-500 hover:text-slate-950 text-white flex items-center justify-center transition border border-white/10 shadow-lg backdrop-blur-sm z-20">
+        <i class="fa-solid fa-chevron-right text-lg"></i>
+      </button>
+
+      <!-- Alt Altyazı & Replik Kutusu -->
+      <div class="absolute bottom-3 left-3 right-3 bg-black/85 backdrop-blur-md p-3.5 rounded-xl border border-slate-800 text-center z-10">
+        <p id="reader-dialog" class="text-xs md:text-sm text-slate-200 font-serif-italic leading-relaxed"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alt Kontrol & Sayfa Sayacı -->
+  <div class="flex items-center justify-between max-w-4xl mx-auto w-full pt-2 text-xs text-slate-400 border-t border-slate-900">
+    <button onclick="prevPhotoPage()" class="hover:text-amber-400 transition flex items-center gap-1 font-bold">
+      <i class="fa-solid fa-arrow-left"></i> Önceki Kare
+    </button>
+    <div class="bg-slate-900 px-4 py-1.5 rounded-full border border-slate-800 font-mono text-amber-400 font-bold" id="reader-page-counter">
+      Kare 1 / 1
+    </div>
+    <button onclick="nextPhotoPage()" class="hover:text-amber-400 transition flex items-center gap-1 font-bold">
+      Sonraki Kare <i class="fa-solid fa-arrow-right"></i>
+    </button>
   </div>
 </div>
 
@@ -299,7 +346,6 @@
         <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Şiir Mısraları / Açıklama *</label>
         <textarea id="contact-text-body" required rows="5" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserinizin tüm sözlerini, mısralarını veya hikaye içeriğini buraya yazınız..."></textarea>
       </div>
-            <!-- İletişim Bilgileri: E-Posta ve Telefon -->
       <div class="grid grid-cols-2 gap-2">
         <div>
           <label class="block text-[11px] font-semibold text-slate-300 mb-1">E-Posta Adresiniz *</label>
@@ -311,7 +357,6 @@
         </div>
       </div>
 
-      <!-- Yasal Sorumluluk & Telif Onay Kutusu -->
       <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800">
         <label class="flex items-start gap-2.5 cursor-pointer select-none">
           <input id="contact-legal" required type="checkbox" class="mt-0.5 w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-slate-700 bg-slate-900 cursor-pointer">
@@ -330,6 +375,7 @@
 <script>
   const API_BASE = 'https://hayalsahnesi.onrender.com/api';
   const globalAudio = document.getElementById('global-audio');
+  const readerBgAudio = document.getElementById('reader-bg-audio');
   let ytPlayer = null;
   let activeSourceType = 'none';
   let isPlaying = false;
@@ -468,7 +514,7 @@
     }
   }
 
-   async function handleContact(e) {
+  async function handleContact(e) {
     e.preventDefault();
     const submitBtn = document.getElementById('btn-contact-submit');
     submitBtn.disabled = true;
@@ -477,7 +523,6 @@
     const textVal = document.getElementById('contact-text-body').value.trim();
     const legalAccepted = document.getElementById('contact-legal').checked;
 
-    // Yasal onay kontrolü
     if (!legalAccepted) {
       alert('Lütfen eserin telif ve yasal yayın taahhüdünü onaylayınız.');
       submitBtn.disabled = false;
@@ -544,7 +589,8 @@
       globalAudio.play().catch(()=>{});
     }
   }
-   // ==========================================
+
+  // ==========================================
   // KARIŞIK MÜZİK ÇALMA SİSTEMİ (SHUFFLE PLAY)
   // ==========================================
   let musicPlaylist = [];
@@ -560,15 +606,12 @@
 
   function playRandomMusicList() {
     let musics = [];
-
-    // 1. Önce global değişkenlerden müzikleri al
     const pool = (typeof allContents !== 'undefined' ? allContents : 
                  (typeof currentContents !== 'undefined' ? currentContents : 
                  (typeof contents !== 'undefined' ? contents : [])));
 
     musics = pool.filter(item => (item.type === 'music' || item.type === 'Müzik' || item.category === 'music') && item.mediaUrl);
 
-    // 2. Eğer global dizide bulunamazsa, ekrandaki Sahne Müzikleri butonlarından topla
     if (!musics || musics.length === 0) {
       const playButtons = document.querySelectorAll('button[onclick*="openVideoPlayer"]');
       playButtons.forEach(btn => {
@@ -589,20 +632,17 @@
       return;
     }
 
-    // Karıştır ve ilk parçayı başlat
     musicPlaylist = shuffleArray([...musics]);
     currentShuffleIndex = 0;
     playCurrentShuffleTrack();
   }
 
-  // 1. Şarkıyı Sitenin Kendi İçinde (Gizli YouTube veya Audio) Başlat
   function playCurrentShuffleTrack() {
     if (!musicPlaylist || musicPlaylist.length === 0) return;
     const track = musicPlaylist[currentShuffleIndex];
 
-    // Başlık ve Sanatçı Bilgilerini Alt Bar'a Yazdır
     const playerTitle = document.getElementById('player-title') || document.querySelector('.player-title');
-    const playerArtist = document.getElementById('player-artist') || document.querySelector('.player-artist');
+    const playerArtist = document.getElementById('player-subtitle') || document.getElementById('player-artist');
     if (playerTitle) playerTitle.innerText = track.title || 'Müzik';
     if (playerArtist) playerArtist.innerText = (track.author || 'Müzisyen') + ' • (' + (currentShuffleIndex + 1) + '/' + musicPlaylist.length + ')';
 
@@ -644,11 +684,9 @@
       }
     }
 
-    // Play İkonunu Pause (Durdur) İkonuna Çevir
     updateShuffleBtnIcon(true);
   }
 
-  // 2. Sıradaki Parçaya Geç
   function playNextShuffleTrack() {
     if (!musicPlaylist || musicPlaylist.length === 0) {
       if (typeof playRandomMusicList === 'function') playRandomMusicList();
@@ -658,14 +696,12 @@
     playCurrentShuffleTrack();
   }
 
-  // 3. Önceki Parçaya Geç
   function playPrevShuffleTrack() {
     if (!musicPlaylist || musicPlaylist.length === 0) return;
     currentShuffleIndex = (currentShuffleIndex - 1 + musicPlaylist.length) % musicPlaylist.length;
     playCurrentShuffleTrack();
   }
 
-  // Play/Pause İkon Güncelleyici
   function updateShuffleBtnIcon(isPlaying) {
     const playPauseBtn = document.getElementById('play-pause-btn');
     if (!playPauseBtn) return;
@@ -693,12 +729,89 @@
     openModal('modal-video');
   }
 
-  function openReader(title, desc, frameCount) {
-    document.getElementById('reader-title').innerText = title;
-    document.getElementById('reader-info').innerText = frameCount;
-    document.getElementById('reader-dialog').innerText = desc || 'Kelimeler sahnenin karanlığına karışıyor...';
+  // ==========================================
+  // FOTOROMAN SİSTEMİ (SAYFA ÇEVİRME & LOOP MÜZİK)
+  // ==========================================
+  let currentPhotoPages = [];
+  let currentPhotoIndex = 0;
+
+  function openReader(title, desc, frameCount, imagesList, musicUrl) {
+    document.getElementById('reader-title').innerText = title || 'Fotoroman';
+    document.getElementById('reader-info').innerText = frameCount || 'Özel Sahne';
+
+    // 1. Resimleri Hazırla
+    if (Array.isArray(imagesList) && imagesList.length > 0) {
+      currentPhotoPages = imagesList;
+    } else if (typeof imagesList === 'string' && imagesList.trim() !== '') {
+      currentPhotoPages = imagesList.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+    } else {
+      // Örnek sahneler
+      currentPhotoPages = [
+        { img: 'https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&w=1200&q=80', text: desc || 'Gece henüz yeni başlamıştı, koridorun sonundaki kapı aralık duruyordu...' },
+        { img: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=1200&q=80', text: 'Adımların yankısı boş salonda dağılırken perdeler hafifçe aralandı.' },
+        { img: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80', text: 'Ve sahne, geride bırakılan hatıraların ağırlığıyla sessizliğe büründü.' }
+      ];
+    }
+
+    currentPhotoIndex = 0;
+    renderPhotoPage();
+
+    // 2. Loop Atmosfer Müziğini Başlat
+    if (readerBgAudio) {
+      readerBgAudio.src = musicUrl || 'https://assets.mixkit.co/music/preview/mixkit-cinematic-mystery-suspense-hum-2852.mp3';
+      readerBgAudio.currentTime = 0;
+      readerBgAudio.play().catch(e => console.log('Müzik başlatılamadı:', e));
+    }
+
     openModal('modal-reader');
   }
+
+  function renderPhotoPage() {
+    if (!currentPhotoPages || currentPhotoPages.length === 0) return;
+    const page = currentPhotoPages[currentPhotoIndex];
+
+    const imgEl = document.getElementById('reader-img');
+    const dialogEl = document.getElementById('reader-dialog');
+    const counterEl = document.getElementById('reader-page-counter');
+
+    const imgSrc = typeof page === 'string' ? page : (page.img || page.url || '');
+    const dialogText = typeof page === 'string' ? `Kare ${currentPhotoIndex + 1}` : (page.text || page.caption || '');
+
+    if (imgEl) {
+      imgEl.style.opacity = '0.2';
+      setTimeout(() => {
+        imgEl.src = imgSrc;
+        imgEl.style.opacity = '1';
+      }, 150);
+    }
+
+    if (dialogEl) dialogEl.innerText = dialogText || `Sahne ${currentPhotoIndex + 1}`;
+    if (counterEl) counterEl.innerText = `Kare ${currentPhotoIndex + 1} / ${currentPhotoPages.length}`;
+  }
+
+  function nextPhotoPage() {
+    if (currentPhotoIndex < currentPhotoPages.length - 1) {
+      currentPhotoIndex++;
+      renderPhotoPage();
+    }
+  }
+
+  function prevPhotoPage() {
+    if (currentPhotoIndex > 0) {
+      currentPhotoIndex--;
+      renderPhotoPage();
+    }
+  }
+
+  // Klavye Yön Tuşları ile Geçiş
+  window.addEventListener('keydown', (e) => {
+    const readerModal = document.getElementById('modal-reader');
+    if (readerModal && !readerModal.classList.contains('hidden')) {
+      if (e.key === 'ArrowRight') nextPhotoPage();
+      if (e.key === 'ArrowLeft') prevPhotoPage();
+      if (e.key === 'Escape') closeModal('modal-reader');
+    }
+  });
 
   function openStory(title, author, content) {
     document.getElementById('story-title').innerText = title;
@@ -720,7 +833,6 @@
         if (typeof activeSourceType !== 'undefined' && activeSourceType === 'audio' && typeof globalAudio !== 'undefined') globalAudio.pause();
         if (typeof activeSourceType !== 'undefined' && activeSourceType === 'youtube' && typeof ytPlayer !== 'undefined' && ytPlayer) ytPlayer.pauseVideo();
         
-        // Iframe oynatıcı varsa durdurmak için
         const activeYt = document.getElementById('active-bg-yt');
         if (activeYt) activeYt.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
 
@@ -730,7 +842,6 @@
         if (typeof activeSourceType !== 'undefined' && activeSourceType === 'audio' && typeof globalAudio !== 'undefined' && globalAudio.src) globalAudio.play();
         if (typeof activeSourceType !== 'undefined' && activeSourceType === 'youtube' && typeof ytPlayer !== 'undefined' && ytPlayer) ytPlayer.playVideo();
         
-        // Iframe oynatıcı varsa devam ettirmek için
         const activeYt = document.getElementById('active-bg-yt');
         if (activeYt) activeYt.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
 
@@ -743,7 +854,16 @@
   function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
   function closeModal(id) { 
     document.getElementById(id).classList.add('hidden'); 
-    if (id === 'modal-video') document.getElementById('video-container').innerHTML = '';
+    if (id === 'modal-video') {
+      document.getElementById('video-container').innerHTML = '';
+    }
+    // Fotoroman kapatılınca Loop Müziği Durdur
+    if (id === 'modal-reader') {
+      if (readerBgAudio) {
+        readerBgAudio.pause();
+        readerBgAudio.src = '';
+      }
+    }
   }
 
   function switchTab(category) {
@@ -752,7 +872,7 @@
         ? 'tab-btn active px-3.5 py-1.5 rounded-full text-xs font-semibold transition'
         : 'tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold transition text-slate-400 hover:text-white';
     });
-        // --- KARIŞIK ÇAL BUTONU KONTROLÜ (İŞTE BURAYA EKLENDİ) ---
+
     const shuffleBox = document.getElementById('shuffle-music-box');
     if (shuffleBox) {
       if (category === 'music') {
@@ -761,7 +881,7 @@
         shuffleBox.classList.add('hidden');
       }
     }
-    // --------------------------------------------------------
+
     const sections = {
       poems: document.getElementById('sec-poems'),
       series: document.getElementById('sec-series'),
