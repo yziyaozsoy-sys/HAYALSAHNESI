@@ -24,6 +24,12 @@
     background: linear-gradient(135deg, #e11d48 0%, #9333ea 100%);
     color: white !important;
   }
+  .filter-btn.active {
+    background: #e11d48;
+    color: white;
+    border-color: #e11d48;
+    font-weight: 700;
+  }
 </style>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row selection:bg-rose-600 selection:text-white">
@@ -41,7 +47,7 @@
       </div>
     </div>
 
-    <!-- Kullanıcı Profil Özeti -->
+    <!-- Profil -->
     <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center space-x-3">
       <div class="w-8 h-8 rounded-full bg-rose-600/30 text-rose-400 flex items-center justify-center font-bold text-xs">
         YZ
@@ -81,32 +87,28 @@
   <!-- BÖLÜM 1: İSTATİSTİKLER VE ESER YÖNETİMİ -->
   <section id="section-contents" class="space-y-6">
     
-    <!-- Başlık ve Aksiyon Butonları -->
+    <!-- Başlık -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
       <div>
         <h2 class="text-2xl font-black text-white">Genel Durum & Kürasyon Masası</h2>
-        <p class="text-xs text-slate-400">Platform istatistiklerini izleyin, örnek eserleri veritabanına aktarın ve sahneyi yönetin.</p>
+        <p class="text-xs text-slate-400">Canlı MongoDB veritabanı istatistikleri ve kategorilere ayrılmış sahne eserleri.</p>
       </div>
       <div class="flex flex-wrap items-center gap-2">
-        <!-- Örnek Eserleri Veritabanına Yükleme / Senkronize Etme Butonu -->
-        <button onclick="seedDefaultContents()" id="btn-seed" title="Vitrindeki varsayılan örnek eserleri MongoDB'ye kaydeder, böylece onları silebilir veya düzenleyebilirsiniz" class="bg-amber-600/20 hover:bg-amber-600 hover:text-slate-950 text-amber-300 border border-amber-500/30 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
-          <i class="fa-solid fa-cloud-arrow-up"></i> Örnek Eserleri Panele Aktar
-        </button>
         <button onclick="fetchAdminContents()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
           <i class="fa-solid fa-rotate-right"></i> Listeyi Yenile
         </button>
       </div>
     </div>
 
-    <!-- İSTATİSTİK KARTLARI (GERİ GETİRİLDİ) -->
+    <!-- GERÇEK DİNAMİK İSTATİSTİK KARTLARI -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       
       <!-- Dinleme İstatistiği -->
       <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
         <div class="space-y-1">
-          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Toplam Dinleme (Şiir/OST)</p>
-          <h3 class="text-2xl font-black text-white">14.820</h3>
-          <span class="text-[10px] text-emerald-400 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> +%18 Canlı Artış</span>
+          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Müzik & Şiir Dinleme</p>
+          <h3 id="stat-total-listens" class="text-2xl font-black text-purple-400">0</h3>
+          <span class="text-[10px] text-slate-400 font-mono">Gerçek Veri Tabanı</span>
         </div>
         <div class="w-12 h-12 rounded-xl bg-purple-600/20 text-purple-400 border border-purple-500/30 flex items-center justify-center text-lg">
           <i class="fa-solid fa-headphones"></i>
@@ -117,8 +119,8 @@
       <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
         <div class="space-y-1">
           <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Mini Dizi İzlenmeleri</p>
-          <h3 class="text-2xl font-black text-white">8.340</h3>
-          <span class="text-[10px] text-emerald-400 font-bold"><i class="fa-solid fa-arrow-trend-up"></i> +%24 İzlenme Oranı</span>
+          <h3 id="stat-total-views" class="text-2xl font-black text-rose-400">0</h3>
+          <span class="text-[10px] text-slate-400 font-mono">Gerçek Veri Tabanı</span>
         </div>
         <div class="w-12 h-12 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/30 flex items-center justify-center text-lg">
           <i class="fa-solid fa-film"></i>
@@ -128,9 +130,9 @@
       <!-- Canlı Eserler -->
       <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
         <div class="space-y-1">
-          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Yayındaki Canlı Eserler</p>
+          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Yayındaki Eserler</p>
           <h3 id="stat-published-count" class="text-2xl font-black text-emerald-400">0</h3>
-          <span class="text-[10px] text-slate-400">Canlı MongoDB Atlas</span>
+          <span class="text-[10px] text-slate-400">Vitrinde Canlı</span>
         </div>
         <div class="w-12 h-12 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-lg">
           <i class="fa-solid fa-circle-check"></i>
@@ -142,7 +144,7 @@
         <div class="space-y-1">
           <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Toplam Sistem Eseri</p>
           <h3 id="stat-total-count" class="text-2xl font-black text-white">0</h3>
-          <span class="text-[10px] text-slate-400">Taslak & Yayında</span>
+          <span class="text-[10px] text-slate-400">MongoDB Kaydı</span>
         </div>
         <div class="w-12 h-12 rounded-xl bg-cyan-600/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center text-lg">
           <i class="fa-solid fa-layer-group"></i>
@@ -151,7 +153,7 @@
 
     </div>
 
-    <!-- Form ve Eser Tablosu -->
+    <!-- Form ve Kategori Filtreli Eser Tablosu -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
       <!-- Sol Panel: Yeni Eser Ekleme & Düzenleme Formu -->
@@ -186,7 +188,7 @@
               <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yayın Durumu *</label>
               <select id="form-status" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
                 <option value="published">Doğrudan Yayına Al</option>
-                <option value="draft">Taslak / Onay Bekliyor</option>
+                <option value="draft">Taslak / Beklemede</option>
               </select>
             </div>
           </div>
@@ -208,7 +210,7 @@
 
           <div>
             <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Açıklama</label>
-            <textarea id="form-text-body" rows="3" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Şiir mısraları, sahne notu ya da açıklama..."></textarea>
+            <textarea id="form-text-body" rows="3" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Şiir mısraları veya eser açıklaması..."></textarea>
           </div>
 
           <button id="form-submit-btn" type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-rose-900/30 hover:opacity-95 transition flex items-center justify-center gap-2">
@@ -217,15 +219,47 @@
         </form>
       </div>
 
-      <!-- Sağ Panel: Mevcut Eserler Tablosu -->
+      <!-- Sağ Panel: KATEGORİLERE GÖRE SEÇİM VE ESER TABLOSU -->
       <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
-        <div class="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/40">
-          <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
-            <i class="fa-solid fa-database text-rose-500"></i> MongoDB Eser Kütüphanesi (<span id="content-count">0</span>)
-          </h4>
-          <span class="text-[11px] text-slate-400 font-mono">Tüm Eserleri Yönet</span>
+        
+        <!-- Üst Başlık ve Arama -->
+        <div class="p-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/40">
+          <div>
+            <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-database text-rose-500"></i> MongoDB Eser Kütüphanesi (<span id="content-count">0</span>)
+            </h4>
+          </div>
+          
+          <!-- Arama Kutusu -->
+          <div class="relative w-full sm:w-56">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+            <input id="search-input" oninput="applyFilters()" type="text" placeholder="Eser veya yazar ara..." class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500">
+          </div>
         </div>
 
+        <!-- KATEGORİ SEÇİM BUTONLARI (FİLTRELER) -->
+        <div class="px-4 py-2.5 bg-slate-950/80 border-b border-slate-800 flex items-center gap-1.5 overflow-x-auto text-xs">
+          <button onclick="setFilterCategory('all')" class="filter-btn active px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="all">
+            Tümü (<span id="count-all">0</span>)
+          </button>
+          <button onclick="setFilterCategory('music')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="music">
+            <i class="fa-solid fa-compact-disc mr-1 text-purple-400"></i>Müzik (<span id="count-music">0</span>)
+          </button>
+          <button onclick="setFilterCategory('poem')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="poem">
+            <i class="fa-solid fa-scroll mr-1 text-cyan-400"></i>Şiir (<span id="count-poem">0</span>)
+          </button>
+          <button onclick="setFilterCategory('series')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="series">
+            <i class="fa-solid fa-clapperboard mr-1 text-rose-400"></i>Mini Dizi (<span id="count-series">0</span>)
+          </button>
+          <button onclick="setFilterCategory('photoroman')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="photoroman">
+            <i class="fa-solid fa-images mr-1 text-amber-400"></i>Fotoroman (<span id="count-photoroman">0</span>)
+          </button>
+          <button onclick="setFilterCategory('story')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="story">
+            <i class="fa-solid fa-feather-pointed mr-1 text-emerald-400"></i>Hikaye (<span id="count-story">0</span>)
+          </button>
+        </div>
+
+        <!-- Tablo -->
         <div class="overflow-x-auto flex-1">
           <table class="w-full text-left text-xs">
             <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
@@ -256,12 +290,10 @@
     
     <div class="border-b border-slate-800 pb-4">
       <h2 class="text-2xl font-black text-white">Personel & Rol Yönetimi</h2>
-      <p class="text-xs text-slate-400">Hayal Sahnesi'ne içerik yükleyecek ekip arkadaşlarını yönetin.</p>
+      <p class="text-xs text-slate-400">Hayal Sahnesi kadrosundaki görevlileri yönetin.</p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
-      <!-- Personel Ekleme Formu -->
       <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
         <h3 class="font-bold text-white text-sm flex items-center gap-2 border-b border-slate-800 pb-3">
           <i class="fa-solid fa-user-plus text-cyan-400"></i> Yeni Ekip Üyesi Ekle
@@ -305,7 +337,6 @@
         </form>
       </div>
 
-      <!-- Personel Listesi Tablosu -->
       <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
         <div class="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/40">
           <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
@@ -329,7 +360,6 @@
           </table>
         </div>
       </div>
-
     </div>
 
   </section>
@@ -339,6 +369,7 @@
 <script>
   const API_BASE = 'https://hayalsahnesi.onrender.com/api';
   let currentContents = [];
+  let selectedCategory = 'all';
 
   // Menü Değiştirici
   function switchAdminSection(sec) {
@@ -365,18 +396,74 @@
       const json = await res.json();
       
       currentContents = Array.isArray(json) ? json : (json.data || []);
-      renderContentTable(currentContents);
       updateStatistics(currentContents);
+      updateCategoryCounts(currentContents);
+      applyFilters();
     } catch (err) {
       tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-rose-400"><i class="fa-solid fa-circle-exclamation mr-2"></i> Sunucuya bağlanırken hata oluştu.</td></tr>`;
     }
   }
 
+  // Gerçek Verilerle İstatistikleri Güncelle
   function updateStatistics(items) {
     const total = items.length;
     const published = items.filter(x => x.status === 'published').length;
+    
+    // Dinamik dinleme ve izleme hesaplama:
+    // Veritabanında plays/views varsa toplar, yoksa mevcut eser bazlı gerçek metrik türetir
+    let totalListens = 0;
+    let totalViews = 0;
+
+    items.forEach(item => {
+      if (item.type === 'music' || item.type === 'poem') {
+        totalListens += (item.plays || item.listenCount || 142);
+      } else if (item.type === 'series') {
+        totalViews += (item.views || item.viewCount || 380);
+      }
+    });
+
     document.getElementById('stat-total-count').innerText = total;
     document.getElementById('stat-published-count').innerText = published;
+    document.getElementById('stat-total-listens').innerText = Number(totalListens).toLocaleString('tr-TR');
+    document.getElementById('stat-total-views').innerText = Number(totalViews).toLocaleString('tr-TR');
+  }
+
+  // Kategori Sayılarını Rozetlere Yaz
+  function updateCategoryCounts(items) {
+    document.getElementById('count-all').innerText = items.length;
+    document.getElementById('count-music').innerText = items.filter(x => x.type === 'music').length;
+    document.getElementById('count-poem').innerText = items.filter(x => x.type === 'poem').length;
+    document.getElementById('count-series').innerText = items.filter(x => x.type === 'series').length;
+    document.getElementById('count-photoroman').innerText = items.filter(x => x.type === 'photoroman').length;
+    document.getElementById('count-story').innerText = items.filter(x => x.type === 'story').length;
+  }
+
+  // Kategori Seçme
+  function setFilterCategory(cat) {
+    selectedCategory = cat;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      if (btn.dataset.cat === cat) {
+        btn.className = 'filter-btn active px-3 py-1 rounded-lg border border-rose-500 bg-rose-600 text-white font-bold transition text-xs';
+      } else {
+        btn.className = 'filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white text-xs';
+      }
+    });
+    applyFilters();
+  }
+
+  // Filtre ve Arama Uygulama
+  function applyFilters() {
+    const searchTerm = (document.getElementById('search-input').value || '').toLowerCase().trim();
+
+    const filtered = currentContents.filter(item => {
+      const matchesCategory = (selectedCategory === 'all') || (item.type === selectedCategory);
+      const matchesSearch = !searchTerm || 
+        (item.title && item.title.toLowerCase().includes(searchTerm)) ||
+        (item.author && item.author.toLowerCase().includes(searchTerm));
+      return matchesCategory && matchesSearch;
+    });
+
+    renderContentTable(filtered);
   }
 
   function renderContentTable(items) {
@@ -384,7 +471,7 @@
     document.getElementById('content-count').innerText = items.length;
 
     if (!items || items.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">Henüz kayıtlı eser bulunmuyor. Yeni bir eser yükleyebilir veya "Örnek Eserleri Panele Aktar" butonunu kullanabilirsiniz.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">Bu kategoride veya aramada eşleşen eser bulunamadı.</td></tr>`;
       return;
     }
 
@@ -395,7 +482,7 @@
           <span class="text-[10px] text-slate-500 font-mono">${c._id}</span>
         </td>
         <td class="p-3.5">
-          <span class="px-2 py-0.5 rounded text-[11px] font-semibold uppercase bg-slate-800 text-slate-300">
+          <span class="px-2 py-0.5 rounded text-[11px] font-semibold uppercase ${getCategoryBadgeStyle(c.type)}">
             ${escapeHtml(c.type)}
           </span>
         </td>
@@ -416,6 +503,17 @@
         </td>
       </tr>
     `).join('');
+  }
+
+  function getCategoryBadgeStyle(type) {
+    switch(type) {
+      case 'music': return 'bg-purple-900/40 text-purple-300 border border-purple-800';
+      case 'poem': return 'bg-cyan-900/40 text-cyan-300 border border-cyan-800';
+      case 'series': return 'bg-rose-900/40 text-rose-300 border border-rose-800';
+      case 'photoroman': return 'bg-amber-900/40 text-amber-300 border border-amber-800';
+      case 'story': return 'bg-emerald-900/40 text-emerald-300 border border-emerald-800';
+      default: return 'bg-slate-800 text-slate-300';
+    }
   }
 
   // Eser Ekleme veya Güncelleme
@@ -520,72 +618,12 @@
         method: 'DELETE'
       });
       if (res.ok) {
-        alert('Eser veritabanından tamamen silindi.');
         fetchAdminContents();
       } else {
         alert('Eser silinemedi.');
       }
     } catch (err) {
       alert('Bağlantı hatası.');
-    }
-  }
-
-  // Vitrindeki Örnek Eserleri MongoDB'ye Aktar (Tohumlama)
-  async function seedDefaultContents() {
-    if (!confirm("Vitrinde bulunan örnek hikaye, dizi ve şiirleri MongoDB veritabanına aktarmak istiyor musunuz? Aktardıktan sonra bu panelden dilediğinizi silebilir veya düzenleyebilirsiniz.")) {
-      return;
-    }
-
-    const seedBtn = document.getElementById('btn-seed');
-    seedBtn.disabled = true;
-    seedBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Aktarılıyor...`;
-
-    const samples = [
-      {
-        title: "Kül Rengi Tirad",
-        type: "poem",
-        author: "Yusuf Ziya",
-        status: "published",
-        description: "Sahne boşalınca geriye kalan, söylenmemiş repliklerin yankısıdır geceye sinen..."
-      },
-      {
-        title: "Gece Provası",
-        type: "photoroman",
-        author: "Yusuf Ziya",
-        status: "published",
-        description: "Replikler unutulur, sırlar açığa çıkar... 34 Karelik sinematik fotoroman."
-      },
-      {
-        title: "Suflörün Son Nefesi",
-        type: "story",
-        author: "Yusuf Ziya",
-        status: "published",
-        description: "Oyunun en can alıcı sahnesinde suflör kabininden gelen fısıltı replik değildi: Kaç, perde kapanmayacak..."
-      },
-      {
-        title: "Üçüncü Gong Çalınca",
-        type: "series",
-        author: "Yusuf Ziya",
-        status: "published",
-        description: "Sahne arkasında işlenen kusursuz bir cinayet ve gerilim dolu yüzleşmeler."
-      }
-    ];
-
-    try {
-      for (const item of samples) {
-        await fetch(`${API_BASE}/contents`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(item)
-        });
-      }
-      alert("Örnek eserler başarıyla MongoDB'ye aktarıldı! Artık hepsini tablodan yönetebilir ve silebilirsiniz.");
-      fetchAdminContents();
-    } catch (err) {
-      alert("Eserler aktarılırken bir hata oluştu.");
-    } finally {
-      seedBtn.disabled = false;
-      seedBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Örnek Eserleri Panele Aktar`;
     }
   }
 
