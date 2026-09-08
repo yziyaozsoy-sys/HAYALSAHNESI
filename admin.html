@@ -10,7 +10,7 @@
   body {
     background-color: #07090e;
     color: #e2e8f0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
   .stage-gradient {
     background: linear-gradient(135deg, #e11d48 0%, #7c3aed 100%);
@@ -40,7 +40,6 @@
 <!-- ================= GÜVENLİ GİRİŞ / KİLİT EKRANI ================= -->
 <div id="login-overlay" class="fixed inset-0 z-50 bg-[#07090e] flex items-center justify-center p-4">
   <div class="card-stage border border-slate-800 rounded-3xl p-8 max-w-md w-full glow-box space-y-6 text-center">
-    
     <div class="w-16 h-16 rounded-2xl stage-gradient mx-auto flex items-center justify-center text-white text-2xl shadow-xl shadow-rose-900/40">
       <i class="fa-solid fa-masks-theater"></i>
     </div>
@@ -48,7 +47,7 @@
     <div class="space-y-1">
       <h2 class="text-2xl font-black text-white tracking-wider uppercase">HAYAL SAHNESİ</h2>
       <p class="text-xs text-rose-400 font-bold uppercase tracking-widest">Kürasyon & Yönetim Kapısı</p>
-      <p class="text-[11px] text-slate-400 pt-2">Admin veya Editör bilgilerinizi kullanarak giriş yapın.</p>
+      <p class="text-[11px] text-slate-400 pt-2">Admin veya Editör bilgilerinizle giriş yapın.</p>
     </div>
 
     <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4 text-left">
@@ -84,9 +83,8 @@
       <a href="index.html" class="hover:text-rose-400 transition flex items-center gap-1">
         <i class="fa-solid fa-arrow-left"></i> Vitrine Dön
       </a>
-      <span class="font-mono text-[10px]">v2.7 Multi-Role Auth</span>
+      <span class="font-mono text-[10px]">v3.0 Final Auth</span>
     </div>
-
   </div>
 </div>
 
@@ -106,7 +104,7 @@
         </div>
       </div>
 
-      <!-- Kullanıcı Profil Kartı -->
+      <!-- Profil Kartı -->
       <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center space-x-3">
         <div id="user-avatar" class="w-8 h-8 rounded-full bg-rose-600/30 text-rose-400 flex items-center justify-center font-bold text-xs">
           YZ
@@ -123,7 +121,6 @@
           <span>Eser Kürasyonu</span>
         </button>
         
-        <!-- Sadece Süper Admin'e Açık Sekme -->
         <button onclick="switchAdminSection('staff')" id="nav-staff" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
           <i class="fa-solid fa-users-gear text-sm"></i>
           <span>Personel & Editörler</span>
@@ -154,7 +151,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
           <h2 class="text-2xl font-black text-white">Eser Havuzu & Kürasyon</h2>
-          <p id="section-desc" class="text-xs text-slate-400">Canlı MongoDB veritabanı istatistikleri ve kategorilere ayrılmış sahne eserleri.</p>
+          <p class="text-xs text-slate-400">Gelen başvuruları inceleyin, tam metinlerini okuyun ve sahneye kabul edin.</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
           <button onclick="fetchAdminContents()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
@@ -163,9 +160,8 @@
         </div>
       </div>
 
-      <!-- DİNAMİK İSTATİSTİK KARTLARI -->
+      <!-- Dinamik İstatistik Kartları -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        
         <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
           <div class="space-y-1">
             <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Müzik & Şiir Dinleme</p>
@@ -209,13 +205,11 @@
             <i class="fa-solid fa-layer-group"></i>
           </div>
         </div>
-
       </div>
 
       <!-- Form ve Eser Tablosu -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        <!-- Sol Panel: Yeni Eser Ekleme & Düzenleme Formu -->
+        <!-- Sol Panel: Form -->
         <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
           <div class="flex items-center justify-between border-b border-slate-800 pb-3">
             <h3 id="form-heading" class="font-bold text-white text-sm flex items-center gap-2">
@@ -268,8 +262,8 @@
             </div>
 
             <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Açıklama</label>
-              <textarea id="form-text-body" rows="3" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Şiir mısraları veya eser açıklaması..."></textarea>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Şiir Mısraları / Açıklama</label>
+              <textarea id="form-text-body" rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserin tüm sözleri, açıklaması ya da sahne notu..."></textarea>
             </div>
 
             <button id="form-submit-btn" type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-rose-900/30 hover:opacity-95 transition flex items-center justify-center gap-2">
@@ -278,9 +272,8 @@
           </form>
         </div>
 
-        <!-- Sağ Panel: Kategori Filtreli Eser Tablosu -->
+        <!-- Sağ Panel: Tablo -->
         <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
-          
           <div class="p-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/40">
             <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
               <i class="fa-solid fa-database text-rose-500"></i> MongoDB Eser Kütüphanesi (<span id="content-count">0</span>)
@@ -314,16 +307,16 @@
             </button>
           </div>
 
-          <!-- Tablo -->
+          <!-- Tablo Gövdesi -->
           <div class="overflow-x-auto flex-1">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
                 <tr>
                   <th class="p-3.5">Eser Adı</th>
                   <th class="p-3.5">Kategori</th>
-                  <th class="p-3.5">Yazar / Rol</th>
+                  <th class="p-3.5">Yazar / Gönderen</th>
                   <th class="p-3.5">Durum</th>
-                  <th class="p-3.5 text-right">İşlem</th>
+                  <th class="p-3.5 text-right">İşlem & İnceleme</th>
                 </tr>
               </thead>
               <tbody id="content-table-body" class="divide-y divide-slate-800/60 text-slate-300">
@@ -336,13 +329,11 @@
             </table>
           </div>
         </div>
-
       </div>
     </section>
 
-    <!-- BÖLÜM 2: PERSONEL VE EDİTÖR YÖNETİMİ (SÜPER ADMİN ÖZEL) -->
+    <!-- BÖLÜM 2: PERSONEL VE EDİTÖR YÖNETİMİ -->
     <section id="section-staff" class="hidden space-y-6">
-      
       <div class="border-b border-slate-800 pb-4">
         <h2 class="text-2xl font-black text-white">Personel & Editör Hesapları</h2>
         <p class="text-xs text-slate-400">Yeni editörler oluşturun, giriş şifreleri belirleyin veya yetkilerini yönetin.</p>
@@ -419,11 +410,49 @@
           </div>
         </div>
       </div>
-
     </section>
 
   </main>
 
+</div>
+
+<!-- ================= MODAL: GELEN ESERİ İNCELEME & OKUMA ================= -->
+<div id="modal-inspector" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="card-stage border border-slate-800 rounded-3xl p-6 md:p-8 max-w-2xl w-full space-y-4 max-h-[90vh] flex flex-col">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <div>
+        <span id="inspect-type" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-500/20 text-rose-400">TÜR</span>
+        <h3 id="inspect-title" class="text-xl font-black text-white mt-1">Eser Başlığı</h3>
+        <p id="inspect-author" class="text-xs text-slate-400">Gönderen: -</p>
+      </div>
+      <button onclick="closeInspector()" class="text-slate-400 hover:text-white text-xl p-2"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto space-y-4 pr-1">
+      <div id="inspect-media-container" class="hidden p-3 bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-between">
+        <span class="text-xs text-slate-300 flex items-center gap-2">
+          <i class="fa-solid fa-link text-rose-400"></i> Medya Linki Mevcut
+        </span>
+        <a id="inspect-media-link" href="#" target="_blank" class="text-xs text-rose-400 hover:underline font-bold flex items-center gap-1">
+          Medyayı Aç <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+        </a>
+      </div>
+
+      <div>
+        <h5 class="text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wide">Eser Metni / Şiir Mısraları:</h5>
+        <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800/80 font-serif text-slate-200 text-sm whitespace-pre-line leading-relaxed max-h-72 overflow-y-auto" id="inspect-body">
+          Metin bulunamadı.
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+      <button onclick="closeInspector()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold transition">Kapat</button>
+      <button id="inspect-publish-btn" onclick="publishFromInspector()" class="px-5 py-2 rounded-xl stage-gradient text-white text-xs font-bold shadow-lg shadow-rose-900/40 hover:opacity-95 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-check"></i> Doğrudan Yayına Al
+      </button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -431,14 +460,13 @@
   let currentContents = [];
   let selectedCategory = 'all';
   let currentUser = null;
+  let inspectingItem = null;
 
-  // --- PERSONEL / HESAP VERİTABANI ---
   let staffList = JSON.parse(localStorage.getItem('hayal_staff_v2')) || [
     { id: 'stf_1', name: 'Yusuf Ziya', username: 'yusuf', password: 'hayal2026', role: 'Genel Sanat Yönetmeni', access: 'admin' },
     { id: 'stf_2', name: 'Ahmet Editör', username: 'editor1', password: 'sahne123', role: 'İçerik Editörü', access: 'editor' }
   ];
 
-  // --- GİRİŞ & ROL DOĞRULAMA MOTORU ---
   function handleLogin(e) {
     e.preventDefault();
     const userVal = document.getElementById('login-username').value.trim().toLowerCase();
@@ -449,10 +477,8 @@
     submitBtn.disabled = true;
     submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Doğrulanıyor...`;
 
-    // Süper Admin Doğrulaması veya Personel Listesinden Eşleşme
     let foundAccount = staffList.find(s => s.username.toLowerCase() === userVal && s.password === passVal);
 
-    // Ana Süper Admin Yedek Kontrolü
     if (!foundAccount && userVal === 'yusuf' && passVal === 'hayal2026') {
       foundAccount = { id: 'stf_1', name: 'Yusuf Ziya', username: 'yusuf', role: 'Genel Sanat Yönetmeni', access: 'admin' };
     }
@@ -470,12 +496,10 @@
     }
   }
 
-  // Role Göre Arayüzü Ayarla
   function unlockInterfaceByRole(user) {
     document.getElementById('login-overlay').classList.add('hidden');
     document.getElementById('admin-app').classList.remove('hidden');
 
-    // Profil Bilgilerini Bas
     document.getElementById('user-avatar').innerText = user.name.substring(0, 2).toUpperCase();
     document.getElementById('user-display-name').innerText = user.name;
     
@@ -487,17 +511,15 @@
       roleBadge.innerText = 'Süper Admin (Tam Yetki)';
       roleBadge.className = 'text-[10px] text-rose-400 font-bold';
       appBadgeRole.innerText = 'Yönetim Masası';
-      navStaff.classList.remove('hidden'); // Ekip yönetimi açık
+      navStaff.classList.remove('hidden');
     } else {
       roleBadge.innerText = 'Editör (' + (user.role || 'İçerik') + ')';
       roleBadge.className = 'text-[10px] text-cyan-400 font-bold';
       appBadgeRole.innerText = 'Editör Masası';
-      navStaff.classList.add('hidden'); // Editör başkalarını göremez/ekleyemez
+      navStaff.classList.add('hidden');
     }
 
-    // Eser formundaki yazarı varsayılan olarak giriş yapan kişi yap
     document.getElementById('form-author').value = user.name;
-
     fetchAdminContents();
     if (user.access === 'admin') renderStaffTable();
   }
@@ -521,7 +543,6 @@
     }
   }
 
-  // Menü Değiştirici
   function switchAdminSection(sec) {
     document.getElementById('section-contents').classList.toggle('hidden', sec !== 'contents');
     document.getElementById('section-staff').classList.toggle('hidden', sec !== 'staff');
@@ -535,8 +556,7 @@
       : 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition';
   }
 
-  // --- ESER İŞLEMLERİ (MONGODB) ---
-
+  // --- MONGODB ESER İŞLEMLERİ ---
   async function fetchAdminContents() {
     const tbody = document.getElementById('content-table-body');
     tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Eserler yükleniyor...</td></tr>`;
@@ -557,7 +577,6 @@
   function updateStatistics(items) {
     const total = items.length;
     const published = items.filter(x => x.status === 'published').length;
-    
     let totalListens = 0;
     let totalViews = 0;
 
@@ -640,11 +659,12 @@
           </button>
         </td>
         <td class="p-3.5 text-right space-x-1.5">
-          <!-- Düzenle Butonu (Herkese Açık) -->
+          <button onclick="inspectContent('${c._id}')" title="Metni Oku & İncele" class="px-2.5 py-1 rounded-lg bg-cyan-950/40 hover:bg-cyan-600 text-cyan-300 hover:text-white transition border border-cyan-800/40">
+            <i class="fa-solid fa-eye"></i>
+          </button>
           <button onclick="editContent('${c._id}')" title="Düzenle" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
-          <!-- Sil Butonu: Sadece Süper Admin Görür -->
           ${isAdmin ? `
             <button onclick="deleteContent('${c._id}', '${escapeHtml(c.title)}')" title="Kaldır / Sil" class="px-2.5 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-600 text-rose-300 hover:text-white transition border border-rose-900/40">
               <i class="fa-solid fa-trash"></i>
@@ -666,12 +686,61 @@
     }
   }
 
+  // --- İNCELEME MODALI FONKSİYONLARI ---
+  function inspectContent(id) {
+    const item = currentContents.find(x => x._id === id);
+    if (!item) return;
+
+    inspectingItem = item;
+    document.getElementById('inspect-title').innerText = item.title || 'Başlıksız Eser';
+    document.getElementById('inspect-author').innerText = 'Gönderen / Yazar: ' + (item.author || 'Bilinmiyor');
+    document.getElementById('inspect-type').innerText = item.type || 'ESER';
+    
+    const bodyText = item.textBody || item.description || 'Bu eser için herhangi bir metin girilmemiş.';
+    document.getElementById('inspect-body').innerText = bodyText;
+
+    const mediaBox = document.getElementById('inspect-media-container');
+    const mediaLink = document.getElementById('inspect-media-link');
+    if (item.mediaUrl) {
+      mediaBox.classList.remove('hidden');
+      mediaLink.href = item.mediaUrl;
+    } else {
+      mediaBox.classList.add('hidden');
+    }
+
+    const publishBtn = document.getElementById('inspect-publish-btn');
+    if (item.status === 'published') {
+      publishBtn.innerHTML = `<i class="fa-solid fa-box-archive"></i> Taslağa Al`;
+      publishBtn.className = 'px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 text-xs font-bold transition flex items-center gap-1.5';
+    } else {
+      publishBtn.innerHTML = `<i class="fa-solid fa-check"></i> Doğrudan Yayına Al`;
+      publishBtn.className = 'px-5 py-2 rounded-xl stage-gradient text-white text-xs font-bold shadow-lg shadow-rose-900/40 hover:opacity-95 transition flex items-center gap-1.5';
+    }
+
+    document.getElementById('modal-inspector').classList.remove('hidden');
+  }
+
+  function closeInspector() {
+    document.getElementById('modal-inspector').classList.add('hidden');
+    inspectingItem = null;
+  }
+
+  async function publishFromInspector() {
+    if (!inspectingItem) return;
+    const newStatus = inspectingItem.status === 'published' ? 'draft' : 'published';
+    await toggleContentStatus(inspectingItem._id, inspectingItem.status);
+    closeInspector();
+  }
+
+  // --- ESER CRUD İŞLEMLERİ ---
   async function handleContentSubmit(e) {
     e.preventDefault();
     const editId = document.getElementById('edit-content-id').value;
     const btn = document.getElementById('form-submit-btn');
     btn.disabled = true;
     btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> İşleniyor...`;
+
+    const textVal = document.getElementById('form-text-body').value.trim();
 
     const payload = {
       title: document.getElementById('form-title').value.trim(),
@@ -680,7 +749,8 @@
       author: document.getElementById('form-author').value.trim(),
       mediaUrl: document.getElementById('form-media-url').value.trim(),
       thumbnail: document.getElementById('form-thumbnail').value.trim(),
-      textBody: document.getElementById('form-text-body').value.trim()
+      textBody: textVal,
+      description: textVal
     };
 
     try {
@@ -766,9 +836,7 @@
     }
 
     try {
-      const res = await fetch(`${API_BASE}/contents/${id}`, {
-        method: 'DELETE'
-      });
+      const res = await fetch(`${API_BASE}/contents/${id}`, { method: 'DELETE' });
       if (res.ok) {
         alert('Eser silindi.');
         fetchAdminContents();
@@ -781,7 +849,6 @@
   }
 
   // --- PERSONEL VE EDİTÖR YÖNETİMİ ---
-
   function renderStaffTable() {
     const tbody = document.getElementById('staff-table-body');
     document.getElementById('staff-count').innerText = staffList.length;
@@ -819,7 +886,6 @@
     e.preventDefault();
     const uName = document.getElementById('staff-username').value.trim().toLowerCase();
 
-    // Çift kullanıcı adı kontrolü
     if (staffList.some(s => s.username.toLowerCase() === uName)) {
       alert('Bu kullanıcı adı zaten kullanılıyor! Lütfen başka bir kullanıcı adı belirleyin.');
       return;
@@ -855,7 +921,6 @@
     });
   }
 
-  // SAYFA YÜKLENİRKEN OTURUM KONTROLÜ
   window.addEventListener('DOMContentLoaded', () => {
     const savedUser = sessionStorage.getItem('hayal_current_user');
     if (savedUser) {
