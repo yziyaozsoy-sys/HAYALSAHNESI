@@ -108,8 +108,8 @@
         <button onclick="openReader('Gece Provası', 'Tiyatro kulisinde başlayan bir gizem...', '34 Kare')" class="stage-gradient text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 hover:opacity-95 transition shadow-lg shadow-rose-600/30">
           <i class="fa-solid fa-book-open-reader"></i> Öne Çıkan Fotoromanı Oku
         </button>
-        <button onclick="handleMediaPlay('Üçüncü Gong Çalınca', 'Mini Dizi Teaser', 'https://www.youtube.com/watch?v=xc7z_9mOf-o')" class="card-stage px-5 py-2.5 rounded-xl text-sm font-semibold text-white hover:bg-slate-800/80 transition flex items-center gap-2">
-          <i class="fa-solid fa-play"></i> Mini Dizi Fragmanı İzle
+        <button onclick="openVideoPlayer('Hayal Sahnesi Tanıtım', 'Özel Gösterim', 'https://www.youtube.com/watch?v=xc7z_9mOf-o')" class="card-stage px-5 py-2.5 rounded-xl text-sm font-semibold text-white hover:bg-slate-800/80 transition flex items-center gap-2">
+          <i class="fa-solid fa-play"></i> Fragman İzle
         </button>
       </div>
     </div>
@@ -140,7 +140,7 @@
         <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between">
           <span class="text-xs text-slate-400">Seslendiren: Y. K.</span>
           <button onclick="handleMediaPlay('Kül Rengi Tirad', 'Şiir Dinletisi', '')" class="bg-cyan-600/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-play"></i> Dinle
+            <i class="fa-solid fa-headphones"></i> Dinle
           </button>
         </div>
       </div>
@@ -159,7 +159,7 @@
         <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between">
           <span class="text-xs text-slate-400">Yazar: E. Sarser</span>
           <button onclick="handleMediaPlay('Geceyarısı Yağmuru', 'Piyano Eşliğinde Dinleti', '')" class="bg-cyan-600/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-play"></i> Dinle
+            <i class="fa-solid fa-headphones"></i> Dinle
           </button>
         </div>
       </div>
@@ -178,7 +178,7 @@
         <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between">
           <span class="text-xs text-slate-400">Kollektif Eser</span>
           <button onclick="handleMediaPlay('Dağın Çağrısı', 'Mistik & Epik Dinleti', '')" class="bg-cyan-600/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-play"></i> Dinle
+            <i class="fa-solid fa-headphones"></i> Dinle
           </button>
         </div>
       </div>
@@ -245,7 +245,6 @@
 
   <!-- Fotoromanlar & Hikayeler -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-    <!-- Fotoroman Sahnesi -->
     <section id="sec-photoroman" class="space-y-4">
       <div class="flex items-center space-x-2.5 border-b border-slate-800/80 pb-3">
         <div class="w-2.5 h-6 bg-amber-500 rounded-sm"></div>
@@ -284,7 +283,6 @@
       </div>
     </section>
 
-    <!-- Hikayeler -->
     <section id="sec-stories" class="space-y-4">
       <div class="flex items-center space-x-2.5 border-b border-slate-800/80 pb-3">
         <div class="w-2.5 h-6 bg-emerald-500 rounded-sm"></div>
@@ -304,47 +302,47 @@
     </section>
   </div>
 
-  <!-- Müzikler -->
+  <!-- Müzikler (Canlı ve Statik) -->
   <section id="sec-music" class="space-y-4">
     <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
       <div class="flex items-center space-x-2.5">
         <div class="w-2.5 h-6 bg-purple-500 rounded-sm"></div>
         <h3 class="text-xl font-extrabold text-white">Sahne Müzikleri (OST)</h3>
       </div>
-      <span class="text-xs text-purple-400 font-semibold bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 rounded">Canlı Eserler</span>
+      <span class="text-xs text-purple-400 font-semibold bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 rounded">Seçenekli Oynatıcı</span>
     </div>
 
     <div id="music-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div class="card-stage p-4 rounded-xl flex items-center justify-between hover:border-purple-500/40 transition">
         <div class="flex items-center space-x-3">
           <button onclick="handleMediaPlay('Perde Açılış Prelüdü', 'Hayal Sahnesi OST', '')" class="w-10 h-10 rounded-full bg-purple-600/30 text-purple-400 flex items-center justify-center hover:scale-105 transition">
-            <i class="fa-solid fa-play text-sm"></i>
+            <i class="fa-solid fa-headphones text-sm"></i>
           </button>
           <div>
             <p class="text-sm font-semibold text-white">Perde Açılış Prelüdü</p>
-            <p class="text-[11px] text-slate-400">03:12</p>
+            <p class="text-[11px] text-slate-400">03:12 • Enstrümantal</p>
           </div>
         </div>
       </div>
       <div class="card-stage p-4 rounded-xl flex items-center justify-between hover:border-purple-500/40 transition">
         <div class="flex items-center space-x-3">
           <button onclick="handleMediaPlay('Kuzey Ormanında Gece', 'Mistik Ambient', '')" class="w-10 h-10 rounded-full bg-purple-600/30 text-purple-400 flex items-center justify-center hover:scale-105 transition">
-            <i class="fa-solid fa-play text-sm"></i>
+            <i class="fa-solid fa-headphones text-sm"></i>
           </button>
           <div>
             <p class="text-sm font-semibold text-white">Kuzey Ormanında Gece</p>
-            <p class="text-[11px] text-slate-400">04:45</p>
+            <p class="text-[11px] text-slate-400">04:45 • Ambient</p>
           </div>
         </div>
       </div>
       <div class="card-stage p-4 rounded-xl flex items-center justify-between hover:border-purple-500/40 transition">
         <div class="flex items-center space-x-3">
           <button onclick="handleMediaPlay('Yalnız Monolog (Piyano)', 'Solo Piyano Teması', '')" class="w-10 h-10 rounded-full bg-purple-600/30 text-purple-400 flex items-center justify-center hover:scale-105 transition">
-            <i class="fa-solid fa-play text-sm"></i>
+            <i class="fa-solid fa-headphones text-sm"></i>
           </button>
           <div>
             <p class="text-sm font-semibold text-white">Yalnız Monolog</p>
-            <p class="text-[11px] text-slate-400">02:38</p>
+            <p class="text-[11px] text-slate-400">02:38 • Solo Piyano</p>
           </div>
         </div>
       </div>
@@ -360,8 +358,8 @@
       <i id="player-icon" class="fa-solid fa-compact-disc"></i>
     </div>
     <div>
-      <p id="player-title" class="text-xs font-bold text-white">Perde Açılış Prelüdü</p>
-      <p id="player-subtitle" class="text-[10px] text-slate-400">Hayal Sahnesi • Çalıyor</p>
+      <p id="player-title" class="text-xs font-bold text-white">Bir Eser Seçin</p>
+      <p id="player-subtitle" class="text-[10px] text-slate-400">Hayal Sahnesi Ses Sistemi</p>
     </div>
   </div>
 
@@ -414,19 +412,17 @@
   </div>
 </div>
 
-<!-- MODAL: VİDEO / MİNİ DİZİ OYNATICI -->
+<!-- MODAL: VİDEO / MİNİ DİZİ / YOUTUBE SİNEMA EKRANI -->
 <div id="modal-video" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex flex-col p-4 md:p-8">
   <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800">
     <div>
-      <h3 id="video-title" class="font-bold text-lg">Dizi Başlığı</h3>
-      <p id="video-ep" class="text-xs text-rose-400">Bölüm 1</p>
+      <h3 id="video-title" class="font-bold text-lg">Sahne Perdesi</h3>
+      <p id="video-ep" class="text-xs text-rose-400">Sinematik Oynatıcı</p>
     </div>
     <button onclick="closeModal('modal-video')" class="text-slate-400 hover:text-white text-xl p-2"><i class="fa-solid fa-xmark"></i></button>
   </div>
   <div class="flex-1 flex items-center justify-center max-w-4xl mx-auto w-full py-4">
     <div id="video-container" class="w-full aspect-video bg-slate-950 rounded-2xl border border-slate-800 flex flex-col items-center justify-center relative shadow-2xl overflow-hidden">
-      <i class="fa-solid fa-clapperboard text-6xl text-slate-800 mb-3"></i>
-      <p class="text-sm font-semibold text-slate-400">Video Yükleniyor / Sahne Hazırlanıyor</p>
     </div>
   </div>
 </div>
@@ -484,7 +480,7 @@
   const API_BASE = 'https://hayalsahnesi.onrender.com/api';
   const globalAudio = document.getElementById('global-audio');
   let ytPlayer = null;
-  let activeSourceType = 'none'; // 'audio' veya 'youtube'
+  let activeSourceType = 'none';
   let isPlaying = false;
 
   // YouTube API Hazırlığı
@@ -529,27 +525,33 @@
   function distributeLiveContents(items) {
     const musics = items.filter(x => x.type === 'music');
     const poems = items.filter(x => x.type === 'poem');
-    const series = items.filter(x => x.type === 'series');
-    const photoromans = items.filter(x => x.type === 'photoroman');
-    const stories = items.filter(x => x.type === 'story');
 
-    // Müzikleri Listele
+    // Müzikleri Listele: HEM DİNLE (Alt Konsol) HEM İZLE (Video Perdesi)
     if (musics.length > 0) {
       const musicGrid = document.getElementById('music-grid');
       const liveCards = musics.map(m => `
-        <div class="card-stage p-5 rounded-2xl flex items-center justify-between hover:border-purple-500/50 transition border border-purple-900/40 bg-purple-950/20">
+        <div class="card-stage p-5 rounded-2xl flex flex-col justify-between hover:border-purple-500/50 transition border border-purple-900/40 bg-purple-950/20 gap-4">
           <div class="flex items-center space-x-3.5">
             <div class="w-12 h-12 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center text-lg font-bold border border-purple-500/30">
-              <i class="fa-solid fa-music"></i>
+              <i class="fa-solid fa-compact-disc"></i>
             </div>
             <div>
               <h4 class="font-bold text-white text-base">${escapeHtml(m.title)}</h4>
-              <p class="text-xs text-purple-400 font-semibold">${escapeHtml(m.author || 'Yusuf Ziya')} • Yayında</p>
+              <p class="text-xs text-purple-400 font-semibold">${escapeHtml(m.author || 'Yusuf Ziya')} • Canlı Eser</p>
             </div>
           </div>
-          <button onclick="handleMediaPlay('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Yusuf Ziya')}', '${escapeHtml(m.mediaUrl || '')}')" class="stage-gradient text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md shadow-rose-900/40 hover:opacity-90">
-            <i class="fa-solid fa-play"></i> Oynat
-          </button>
+          
+          <div class="flex items-center gap-2 pt-2 border-t border-purple-900/40">
+            <!-- Alt Çalarda Çal -->
+            <button onclick="handleMediaPlay('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Yusuf Ziya')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 bg-purple-600/25 hover:bg-purple-600 text-purple-200 hover:text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
+              <i class="fa-solid fa-headphones"></i> Dinle
+            </button>
+            
+            <!-- Video Perdesini Aç -->
+            <button onclick="openVideoPlayer('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Yusuf Ziya')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 stage-gradient text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-md shadow-rose-900/40 hover:opacity-90 transition">
+              <i class="fa-solid fa-film"></i> İzle
+            </button>
+          </div>
         </div>
       `).join('');
       musicGrid.innerHTML = liveCards + musicGrid.innerHTML;
@@ -572,9 +574,11 @@
           </div>
           <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between">
             <span class="text-xs text-slate-400">${escapeHtml(p.author || 'Yusuf Ziya')}</span>
-            <button onclick="handleMediaPlay('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Yusuf Ziya')}', '${escapeHtml(p.mediaUrl || '')}')" class="bg-cyan-600/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-              <i class="fa-solid fa-play"></i> Dinle
-            </button>
+            <div class="flex gap-2">
+              <button onclick="handleMediaPlay('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Yusuf Ziya')}', '${escapeHtml(p.mediaUrl || '')}')" class="bg-cyan-600/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
+                <i class="fa-solid fa-headphones"></i> Dinle
+              </button>
+            </div>
           </div>
         </div>
       `).join('');
@@ -582,50 +586,76 @@
     }
   }
 
-  // Sabit Alt Çalar ile Entegre Medya Oynatma
+  // 1. SEÇENEK: ALT SAHNE ÇALARI (Sadece Ses / Arka Plan)
   function handleMediaPlay(title, author, mediaUrl) {
     document.getElementById('player-title').innerText = title;
     document.getElementById('player-subtitle').innerText = author + ' • Sahne Çalıyor';
 
-    // Önceki sesleri durdur
     if (globalAudio.src) globalAudio.pause();
     if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
 
     if (!mediaUrl) {
-      // Varsayılan atmosferik parça
       activeSourceType = 'none';
       setPlayerPlayingUI(true);
       return;
     }
 
-    // YouTube Linki Kontrolü
     if (mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be')) {
-      let videoId = '';
-      if (mediaUrl.includes('youtu.be/')) {
-        videoId = mediaUrl.split('youtu.be/')[1].split('?')[0];
-      } else if (mediaUrl.includes('watch?v=')) {
-        videoId = mediaUrl.split('watch?v=')[1].split('&')[0];
-      }
-
+      let videoId = getYouTubeId(mediaUrl);
       if (videoId && ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
         activeSourceType = 'youtube';
         ytPlayer.loadVideoById(videoId);
         ytPlayer.playVideo();
         setPlayerPlayingUI(true);
       } else {
-        // YouTube API henüz yüklenmediyse doğrudan aç
         window.open(mediaUrl, '_blank');
       }
     } else {
-      // MP3 / WAV Doğrudan Ses Dosyası
       activeSourceType = 'audio';
       globalAudio.src = mediaUrl;
       globalAudio.play().then(() => {
         setPlayerPlayingUI(true);
-      }).catch(err => {
-        console.warn('Ses oynatılamadı:', err);
-      });
+      }).catch(err => console.warn('Ses oynatılamadı:', err));
     }
+  }
+
+  // 2. SEÇENEK: SİNEMATİK VİDEO MODALI (Görsel ve Ses Birlikte)
+  function openVideoPlayer(title, author, mediaUrl) {
+    document.getElementById('video-title').innerText = title;
+    document.getElementById('video-ep').innerText = author || 'Özel Gösterim';
+
+    // Alt çaları durdur ki sesler çakışmasın
+    if (activeSourceType === 'audio') globalAudio.pause();
+    if (activeSourceType === 'youtube' && ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
+    setPlayerPlayingUI(false);
+
+    const container = document.getElementById('video-container');
+    
+    if (mediaUrl && (mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be'))) {
+      let videoId = getYouTubeId(mediaUrl);
+      container.innerHTML = `
+        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      `;
+    } else {
+      container.innerHTML = `
+        <div class="text-center p-6 space-y-3">
+          <i class="fa-solid fa-clapperboard text-5xl text-rose-500/60"></i>
+          <p class="text-white font-bold text-sm">Bu eser için video akışı hazırlanıyor.</p>
+          <p class="text-xs text-slate-400">Dilerseniz alt konsoldan dinleyebilirsiniz.</p>
+        </div>
+      `;
+    }
+
+    openModal('modal-video');
+  }
+
+  function getYouTubeId(url) {
+    if (url.includes('youtu.be/')) {
+      return url.split('youtu.be/')[1].split('?')[0];
+    } else if (url.includes('watch?v=')) {
+      return url.split('watch?v=')[1].split('&')[0];
+    }
+    return '';
   }
 
   function togglePlayState() {
@@ -653,13 +683,13 @@
     }
   }
 
-  // Modal Fonksiyonları
+  // Modal Yönetimi
   function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
   function closeModal(id) { 
     document.getElementById(id).classList.add('hidden'); 
     if (id === 'modal-video') {
       const v = document.getElementById('video-container');
-      if (v) v.innerHTML = '';
+      if (v) v.innerHTML = ''; // Video sesini anında durdur
     }
   }
 
@@ -678,12 +708,6 @@
       rIcon.classList.remove('hidden');
     }
     openModal('modal-reader');
-  }
-
-  function openVideoPlayer(title, ep) {
-    document.getElementById('video-title').innerText = title;
-    document.getElementById('video-ep').innerText = ep;
-    openModal('modal-video');
   }
 
   function openStory(title, content) {
@@ -738,14 +762,14 @@
       });
       const data = await res.json();
       if (data.success || res.ok) {
-        alert('Eseriniz Hayal Sahnesi kürasyon masasına iletildi! Onaylandıktan sonra yayına alınacaktır.');
+        alert('Eseriniz Hayal Sahnesi kürasyon masasına iletildi!');
         closeModal('modal-contact');
         e.target.reset();
       } else {
         alert('Gönderim sırasında bir hata oluştu.');
       }
     } catch (err) {
-      alert('Sunucuya bağlanılamadı. Lütfen az sonra tekrar deneyiniz.');
+      alert('Sunucuya bağlanılamadı.');
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerText = "Gönderimi Tamamla";
