@@ -73,12 +73,12 @@
       <i class="fa-solid fa-compact-disc mr-1.5 text-purple-400"></i>Müzikler
     </button>
   </nav>
-  <!-- KARIŞIK ÇAL BUTONU -->
-  <div class="flex justify-end items-center my-3 px-2">
-    <button onclick="playRandomMusicList()" type="button" class="px-4 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/30 text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-purple-900/30">
-      <i class="fa-solid fa-shuffle"></i> Müzikleri Karışık Çal
-    </button>
-  </div>
+ <!-- KARIŞIK ÇAL BUTONU (Sadece Müzikler sekmesinde açılacak) -->
+<div id="shuffle-music-box" class="hidden flex justify-end items-center my-3 px-2">
+  <button onclick="playRandomMusicList()" type="button" class="px-4 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white border border-purple-500/30 text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-purple-900/30">
+    <i class="fa-solid fa-shuffle"></i> Müzikleri Karışık Çal
+  </button>
+</div>
   <!-- Giriş / Eser Gönder -->
   <div class="flex items-center space-x-3">
     <a href="admin.html" class="hidden sm:flex text-slate-300 hover:text-white text-xs px-3.5 py-2 rounded-lg font-bold transition items-center gap-1.5 bg-slate-900 border border-slate-700 hover:border-rose-500">
@@ -587,6 +587,90 @@
     currentShuffleIndex = (currentShuffleIndex + 1) % musicPlaylist.length;
     playCurrentShuffleTrack();
   }
+  // ==========================================
+  // KARIŞIK MÜZİK ÇALMA SİSTEMİ (SHUFFLE PLAY)
+  // ==========================================
+  let musicPlaylist = [];
+  let currentShuffleIndex = 0;
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function playRandomMusicList() {
+    let musics = [];
+
+    // 1. Önce global değişkenlerden dene
+    const pool = (typeof allContents !== 'undefined' ? allContents : 
+                 (typeof currentContents !== 'undefined' ? currentContents : 
+                 (typeof contents !== 'undefined' ? contents : [])));
+
+    musics = pool.filter(item => (item.type === 'music' || item.type === 'Müzik' || item.category === 'music') && item.mediaUrl);
+
+    // 2. Eğer global dizide bulunamazsa, ekrandaki Sahne Müzikleri butonlarından topla
+    if (!musics || musics.length === 0) {
+      const playButtons = document.querySelectorAll('button[onclick*="openVideoPlayer"]');
+      playButtons.forEach(btn => {
+        const onclickAttr = btn.getAttribute('onclick') || '';
+        const match = onclickAttr.match(/openVideoPlayer\(\s*['"]([^'"]+)['"]\s*,\s*['"]([^'"]*)['"]\s*,\s*['"]([^'"]+)['"]\s*\)/);
+        if (match && match[3]) {
+          musics.push({
+            title: match[1],
+            author: match[2],
+            mediaUrl: match[3]
+          });
+        }
+      });
+    }
+
+    if (!musics || musics.length === 0) {
+      alert('Şu anda çalınabilecek yayında bir müzik bulunamadı!');
+      return;
+    }
+
+    // Karıştır ve ilk parçayı başlat
+    musicPlaylist = shuffleArray([...musics]);
+    currentShuffleIndex = 0;
+    playCurrentShuffleTrack();
+  }
+
+  function playCurrentShuffleTrack() {
+    if (musicPlaylist.length === 0) return;
+    const track = musicPlaylist[currentShuffleIndex];
+    
+    openVideoPlayer(
+      track.title, 
+      `${track.author || 'Müzisyen'} • (Karışık Çalma: ${currentShuffleIndex + 1}/${musicPlaylist.length})`, 
+      track.mediaUrl
+    );
+
+    // Oynatıcı altına 'Sıradaki Rastgele Müzik' butonu ekle
+    setTimeout(() => {
+      const container = document.getElementById('video-container');
+      if (container && !document.getElementById('btn-next-shuffle')) {
+        const nextDiv = document.createElement('div');
+        nextDiv.id = 'btn-next-shuffle';
+        nextDiv.className = "p-2 bg-slate-900/90 text-right border-t border-slate-800";
+        nextDiv.innerHTML = `
+          <button onclick="playNextShuffleTrack()" type="button" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold transition inline-flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-forward-step"></i> Sıradaki Rastgele Müzik
+          </button>
+        `;
+        container.appendChild(nextDiv);
+      }
+    }, 100);
+  }
+
+  function playNextShuffleTrack() {
+    if (musicPlaylist.length === 0) return;
+    currentShuffleIndex = (currentShuffleIndex + 1) % musicPlaylist.length;
+    playCurrentShuffleTrack();
+  }
+  // ==========================================
 
   function openVideoPlayer(title, author, mediaUrl) {
     document.getElementById('video-title').innerText = title;
@@ -646,6 +730,16 @@
         ? 'tab-btn active px-3.5 py-1.5 rounded-full text-xs font-semibold transition'
         : 'tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold transition text-slate-400 hover:text-white';
     });
+        // --- KARIŞIK ÇAL BUTONU KONTROLÜ (İŞTE BURAYA EKLENDİ) ---
+    const shuffleBox = document.getElementById('shuffle-music-box');
+    if (shuffleBox) {
+      if (category === 'music') {
+        shuffleBox.classList.remove('hidden');
+      } else {
+        shuffleBox.classList.add('hidden');
+      }
+    }
+    // --------------------------------------------------------
     const sections = {
       poems: document.getElementById('sec-poems'),
       series: document.getElementById('sec-series'),
