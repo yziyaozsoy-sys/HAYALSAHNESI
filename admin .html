@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hayal Sahnesi | Yönetim Masası</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body{background:#07090e;color:#e2e8f0;font-family:Arial,sans-serif}.stage-gradient{background:linear-gradient(135deg,#e11d48,#7c3aed)}.card-panel{background:rgba(15,20,31,.85);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08)}.sidebar-active{background:rgba(225,29,72,.15);border-left:3px solid #e11d48;color:#fff}
+</style>
+</head>
+<body class="min-h-screen flex selection:bg-rose-600 selection:text-white">
+<aside class="w-64 card-panel border-r border-slate-800 hidden md:flex flex-col justify-between">
+<div><div class="p-6 border-b border-slate-800 flex items-center gap-3"><div class="w-9 h-9 rounded-xl stage-gradient flex items-center justify-center"><i class="fa-solid fa-masks-theater"></i></div><div><b class="text-sm tracking-wider">HAYAL SAHNESİ</b><small class="block text-[10px] text-rose-400 font-bold">YÖNETİM MASASI</small></div></div>
+<nav class="p-4 space-y-1 text-xs font-semibold"><a href="#" onclick="showTab('dashboard');return false" class="nav-item sidebar-active flex gap-3 p-3 rounded-lg"><i class="fa-solid fa-chart-pie w-5 text-rose-400"></i>Genel Durum</a><a href="#" onclick="showTab('upload');return false" class="nav-item flex gap-3 p-3 rounded-lg text-slate-400"><i class="fa-solid fa-cloud-arrow-up w-5 text-cyan-400"></i>Yeni İçerik Yükle</a><a href="#" onclick="showTab('content');return false" class="nav-item flex gap-3 p-3 rounded-lg text-slate-400"><i class="fa-solid fa-layer-group w-5 text-amber-400"></i>Eser Kütüphanesi</a><a id="menu-staff" href="#" onclick="showTab('staff');return false" class="nav-item flex gap-3 p-3 rounded-lg text-slate-400"><i class="fa-solid fa-users-gear w-5 text-purple-400"></i>Personel & Roller</a></nav></div>
+<div class="p-4 border-t border-slate-800 space-y-3"><div class="bg-slate-900 p-3 rounded-xl"><b class="text-xs">Yusuf Ziya</b><small id="user-role-label" class="block text-[10px] text-rose-400">Süper Admin</small></div><select onchange="changeRole(this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs"><option value="admin">Süper Admin Modu</option><option value="staff">Personel (Editör) Modu</option></select><a href="index.html" class="block text-center text-xs text-slate-400">Siteye Dön</a></div>
+</aside>
+<main class="flex-1 min-w-0 overflow-y-auto"><header class="card-panel border-b border-slate-800 px-6 py-4 flex justify-between"><h1 id="page-title" class="font-extrabold text-lg">Genel Durum & İstatistikler</h1><button onclick="showTab('upload')" class="stage-gradient px-4 py-2 rounded-lg text-xs font-bold">+ Hızlı Eser Ekle</button></header>
+<div class="p-6 md:p-8">
+<section id="tab-dashboard" class="space-y-6"><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">${''}<div class="card-panel p-5 rounded-2xl"><small>Toplam Dinleme (Şiir/OST)</small><strong class="block text-2xl text-cyan-400">14.820</strong></div><div class="card-panel p-5 rounded-2xl"><small>Mini Dizi İzlenmeleri</small><strong class="block text-2xl text-rose-400">8.340</strong></div><div class="card-panel p-5 rounded-2xl"><small>Fotoroman Görüntüleme</small><strong class="block text-2xl text-amber-400">6.120</strong></div><div class="card-panel p-5 rounded-2xl"><small>Aktif Personel / Yazar</small><strong class="block text-2xl text-purple-400">6</strong></div></div><div class="card-panel rounded-2xl p-6"><h3 class="font-bold mb-4">Son Eklenen Eserler</h3><div class="overflow-x-auto"><table class="w-full text-left text-xs"><tr class="text-slate-400"><th class="p-3">Eser Adı</th><th class="p-3">Kategori</th><th class="p-3">Durum</th></tr><tr class="border-t border-slate-800"><td class="p-3 font-bold">Kül Rengi Tirad</td><td class="p-3 text-cyan-400">Şiir & Dinleti</td><td class="p-3 text-emerald-400">Yayında</td></tr><tr class="border-t border-slate-800"><td class="p-3 font-bold">Üçüncü Gong Çalınca</td><td class="p-3 text-rose-400">Mini Dizi</td><td class="p-3 text-amber-400">Onay Bekliyor</td></tr></table></div></div></section>
+<section id="tab-upload" class="hidden max-w-3xl"><div class="card-panel p-6 rounded-2xl"><h3 class="text-lg font-bold">Yeni Sahne Eseri Yükle</h3><p class="text-xs text-slate-400 mb-5">Şiir, video, fotoroman veya hikaye ekleyin.</p><form onsubmit="handleUpload(event)" class="space-y-4"><select class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs"><option>Şiir & Sesli Dinleti</option><option>Mini Dizi</option><option>Fotoroman</option><option>Hikaye</option><option>Sahne Müziği</option></select><input required placeholder="Eser Başlığı" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs"><textarea rows="5" placeholder="Metin / Sözler / Açıklama" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs"></textarea><input type="file" class="w-full text-xs"><button class="stage-gradient px-5 py-3 rounded-xl text-xs font-bold">Eseri Kaydet & Sahneye Ekle</button></form></div></section>
+<section id="tab-content" class="hidden card-panel p-6 rounded-2xl"><h3 class="font-bold">Eser Kütüphanesi</h3><p class="text-xs text-slate-400 mt-2">Tüm eserlerinizi buradan yönetin.</p></section><section id="tab-staff" class="hidden card-panel p-6 rounded-2xl"><h3 class="font-bold">Personel & Rol Yönetimi</h3><p class="text-xs text-slate-400 mt-2">Yusuf Ziya — Süper Admin</p><p class="text-xs text-slate-400">Ahmet Editör — Personel / Editör</p></section>
+</div></main>
+<script>
+function showTab(id){document.querySelectorAll('main section').forEach(x=>x.classList.add('hidden'));document.getElementById('tab-'+id).classList.remove('hidden');document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('sidebar-active'));let n=[...document.querySelectorAll('.nav-item')].find(x=>x.getAttribute('onclick').includes("'"+id+"'"));if(n)n.classList.add('sidebar-active');document.getElementById('page-title').textContent={dashboard:'Genel Durum & İstatistikler',upload:'Yeni Sahne Eseri Yükle',content:'Eser Kütüphanesi',staff:'Personel & Rol Yetkilendirme'}[id]}
+function changeRole(role){let s=document.getElementById('menu-staff'),l=document.getElementById('user-role-label');s.classList.toggle('hidden',role==='staff');l.textContent=role==='staff'?'Personel / Editör':'Süper Admin';l.className='block text-[10px] '+(role==='staff'?'text-cyan-400':'text-rose-400')}
+function handleUpload(e){e.preventDefault();alert('Eser sisteme kaydedildi ve listeye eklendi!');showTab('dashboard')}
+</script></body></html>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hayal Sahnesi | Yönetici & Personel Portalı</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  body {
+    background-color: #07090e;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .stage-gradient {
+    background: linear-gradient(135deg, #e11d48 0%, #7c3aed 100%);
+  }
+  .card-panel {
+    background: rgba(15, 20, 31, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .sidebar-active {
+    background: rgba(225, 29, 72, 0.15);
+    border-left: 3px solid #e11d48;
+    color: #fff;
+  }
+</style>
+</head>
+<body class="min-h-screen flex selection:bg-rose-600 selection:text-white">
+
+<!-- Yan Menü (Sidebar) -->
+<aside class="w-64 card-panel border-r border-slate-800 flex flex-col justify-between hidden md:flex">
+  <div>
+    <!-- Logo -->
+    <div class="p-6 border-b border-slate-800 flex items-center space-x-3">
+      <div class="w-9 h-9 rounded-xl stage-gradient flex items-center justify-center font-bold text-white shadow-md">
+        <i class="fa-solid fa-masks-theater text-sm"></i>
+      </div>
+      <div>
+        <h2 class="font-extrabold text-sm tracking-wider text-white">HAYAL SAHNESİ</h2>
+        <span class="text-[10px] text-rose-400 font-bold uppercase tracking-wider">Yönetim Masası</span>
+      </div>
+    </div>
+
+    <!-- Menü Linkleri -->
+    <nav class="p-4 space-y-1 text-xs font-semibold">
+      <a href="#stats" onclick="showTab('dashboard')" class="nav-item sidebar-active flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800/50 transition">
+        <i class="fa-solid fa-chart-pie w-5 text-center text-rose-400"></i>
+        <span>Genel Durum</span>
+      </a>
+      <a href="#upload" onclick="showTab('upload')" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+        <i class="fa-solid fa-cloud-arrow-up w-5 text-center text-cyan-400"></i>
+        <span>Yeni İçerik Yükle</span>
+      </a>
+      <a href="#content" onclick="showTab('content-list')" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+        <i class="fa-solid fa-layer-group w-5 text-center text-amber-400"></i>
+        <span>Eser Kütüphanesi</span>
+      </a>
+      <a href="#staff" onclick="showTab('staff')" id="menu-staff" class="nav-item flex items-center space-x-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition">
+        <i class="fa-solid fa-users-gear w-5 text-center text-purple-400"></i>
+        <span>Personel & Roller</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Aktif Kullanıcı & Rol Seçici -->
+  <div class="p-4 border-t border-slate-800 space-y-3">
+    <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded-full bg-rose-600/30 text-rose-400 flex items-center justify-center font-bold text-xs">
+          YZ
+        </div>
+        <div>
+          <p class="text-xs font-bold text-white">Yusuf Ziya</p>
+          <p id="user-role-label" class="text-[10px] text-rose-400 font-semibold">Süper Admin</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Rol Değiştirme Simülatörü -->
+    <div class="text-[11px] text-slate-400">
+      <label class="block mb-1 text-[10px] uppercase font-bold text-slate-500">Görünüm Modu Değiştir:</label>
+      <select onchange="changeRole(this.value)" class="w-full bg-slate-900 border border-slate-800 text-slate-300 rounded-lg p-1.5 text-xs focus:outline-none">
+        <option value="admin">Süper Admin Modu</option>
+        <option value="staff">Personel (Editör) Modu</option>
+      </select>
+    </div>
+
+    <a href="index.html" class="block text-center text-xs text-slate-400 hover:text-rose-400 transition font-semibold">
+      <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> Siteye Dön
+    </a>
+  </div>
+</aside>
+
+<!-- Ana Panel Alanı -->
+<main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+  <!-- Üst Başlık Barı -->
+  <header class="card-panel border-b border-slate-800 px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <h1 id="page-title" class="font-extrabold text-lg text-white">Genel Durum & İstatistikler</h1>
+    </div>
+    <div class="flex items-center space-x-3">
+      <button onclick="showTab('upload')" class="stage-gradient text-white text-xs font-bold px-3.5 py-2 rounded-lg flex items-center gap-1.5 hover:opacity-90 transition">
+        <i class="fa-solid fa-plus"></i> Hızlı Eser Ekle
+      </button>
+    </div>
+  </header>
+
+  <div class="p-6 md:p-8 space-y-8 flex-1">
+    
+    <!-- TAB 1: DASHBOARD -->
+    <section id="tab-dashboard" class="space-y-6">
+      <!-- İstatistik Sayaçları -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="card-panel p-5 rounded-2xl border border-slate-800/80">
+          <span class="text-xs text-slate-400 font-semibold">Toplam Dinleme (Şiir/OST)</span>
+          <div class="flex items-baseline justify-between mt-2">
+            <span class="text-2xl font-black text-cyan-400">14.820</span>
+            <span class="text-xs text-emerald-400"><i class="fa-solid fa-arrow-trend-up"></i> +18%</span>
+          </div>
+        </div>
+        <div class="card-panel p-5 rounded-2xl border border-slate-800/80">
+          <span class="text-xs text-slate-400 font-semibold">Mini Dizi İzlenmeleri</span>
+          <div class="flex items-baseline justify-between mt-2">
+            <span class="text-2xl font-black text-rose-400">8.340</span>
+            <span class="text-xs text-emerald-400"><i class="fa-solid fa-arrow-trend-up"></i> +24%</span>
+          </div>
+        </div>
+        <div class="card-panel p-5 rounded-2xl border border-slate-800/80">
+          <span class="text-xs text-slate-400 font-semibold">Fotoroman Görüntüleme</span>
+          <div class="flex items-baseline justify-between mt-2">
+            <span class="text-2xl font-black text-amber-400">6.120</span>
+            <span class="text-xs text-emerald-400"><i class="fa-solid fa-arrow-trend-up"></i> +9%</span>
+          </div>
+        </div>
+        <div class="card-panel p-5 rounded-2xl border border-slate-800/80">
+          <span class="text-xs text-slate-400 font-semibold">Aktif Personel / Yazar</span>
+          <div class="flex items-baseline justify-between mt-2">
+            <span class="text-2xl font-black text-purple-400">6</span>
+            <span class="text-xs text-slate-400">Yönetim Tam</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Son Yüklenenler Listesi -->
+      <div class="card-panel rounded-2xl border border-slate-800 p-6 space-y-4">
+        <h3 class="font-bold text-white text-base">Son Eklenen Eserler & Onay Durumları</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="text-[11px] uppercase bg-slate-900/60 text-slate-400 border-b border-slate-800">
+              <tr>
+                <th class="p-3">Eser Adı</th>
+                <th class="p-3">Kategori</th>
+                <th class="p-3">Yükleyen</th>
+                <th class="p-3">Tarih</th>
+                <th class="p-3">Durum</th>
+                <th class="p-3 text-right">İşlem</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800/60">
+              <tr>
+                <td class="p-3 font-semibold text-white">Kül Rengi Tirad</td>
+                <td class="p-3"><span class="text-cyan-400">Şiir & Dinleti</span></td>
+                <td class="p-3">Yusuf Ziya</td>
+                <td class="p-3 text-slate-400">08 Eyl 2026</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">Yayında</span></td>
+                <td class="p-3 text-right space-x-2">
+                  <button class="text-slate-400 hover:text-white"><i class="fa-solid fa-pen"></i></button>
+                  <button class="text-slate-400 hover:text-rose-400"><i class="fa-solid fa-trash"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-white">Üçüncü Gong Çalınca (Bölüm 2)</td>
+                <td class="p-3"><span class="text-rose-400">Mini Dizi</span></td>
+                <td class="p-3">Ahmet Editör</td>
+                <td class="p-3 text-slate-400">07 Eyl 2026</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">Onay Bekliyor</span></td>
+                <td class="p-3 text-right space-x-2">
+                  <button class="text-emerald-400 hover:underline font-bold">Onayla</button>
+                  <button class="text-slate-400 hover:text-white"><i class="fa-solid fa-pen"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td class="p-3 font-semibold text-white">Gece Provası (Sahne 1-12)</td>
+                <td class="p-3"><span class="text-amber-400">Fotoroman</span></td>
+                <td class="p-3">Selin Sanat</td>
+                <td class="p-3 text-slate-400">06 Eyl 2026</td>
+                <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-bold">Yayında</span></td>
+                <td class="p-3 text-right space-x-2">
+                  <button class="text-slate-400 hover:text-white"><i class="fa-solid fa-pen"></i></button>
+                  <button class="text-slate-400 hover:text-rose-400"><i class="fa-solid fa-trash"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: YENİ İÇERİK YÜKLEME FORMU -->
+    <section id="tab-upload" class="hidden max-w-3xl space-y-6">
+      <div class="card-panel p-6 rounded-2xl border border-slate-800 space-y-5">
+        <div class="border-b border-slate-800 pb-3">
+          <h3 class="font-extrabold text-white text-lg">Yeni Sahne Eseri Yükle</h3>
+          <p class="text-xs text-slate-400">Şiir, fotoroman kareleri, mini dizi video bağlantısı veya hikaye ekleyin.</p>
+        </div>
+
+        <form onsubmit="handleUpload(event)" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Eser Türü</label>
+              <select id="upload-type" onchange="adjustFormFields(this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                <option value="poem">Şiir & Sesli Dinleti (Audio)</option>
+                <option value="series">Mini Dizi (Video / Stream Link)</option>
+                <option value="photoroman">Fotoroman (Görsel Paneller)</option>
+                <option value="story">Hikaye (Edebi Metin)</option>
+                <option value="music">Sahne Müziği (OST)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Eser Başlığı</label>
+              <input required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yağmurun Tiradı">
+            </div>
+          </div>
+
+          <!-- Dinamik Medya Alanı -->
+          <div id="media-field" class="p-4 bg-slate-900/60 rounded-xl border border-slate-800/80 space-y-3">
+            <label class="block text-xs font-semibold text-slate-300">Medya Kaynağı (Ses Dosyası / MP3)</label>
+            <div class="border-2 border-dashed border-slate-700 hover:border-cyan-500 rounded-xl p-6 text-center cursor-pointer transition">
+              <i class="fa-solid fa-cloud-arrow-up text-3xl text-slate-500 mb-2"></i>
+              <p class="text-xs text-slate-300">Ses dosyasını (MP3/WAV) buraya sürükleyin veya seçin</p>
+              <span class="text-[10px] text-slate-500">Maksimum 50 MB</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Metin / Sözler / Açıklama</label>
+            <textarea rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Şiir mısralarını veya hikaye içeriğini buraya girin..."></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Yayın Durumu</label>
+              <select class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                <option>Doğrudan Yayına Al (Canlı)</option>
+                <option>Taslak Olarak Kaydet</option>
+                <option>Yönetici Onayına Gönder</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Görsel Kapak</label>
+              <input type="file" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-400">
+            </div>
+          </div>
+
+          <div class="pt-3">
+            <button type="submit" class="stage-gradient text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-rose-900/30 hover:opacity-95 transition">
+              Eseri Kaydet & Sahneye Ekle
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 3: PERSONEL & YETKİLENDİRME (Admin Özel) -->
+    <section id="tab-staff" class="hidden space-y-6">
+      <div class="card-panel p-6 rounded-2xl border border-slate-800 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="font-bold text-white text-base">Personel & Rol Yönetimi</h3>
+            <p class="text-xs text-slate-400">Hayal Sahnesi'ne içerik yükleyecek ekip arkadaşlarını yönetin.</p>
+          </div>
+          <button class="bg-purple-600 hover:bg-purple-500 text-white text-xs px-3.5 py-2 rounded-lg font-bold transition">
+            + Yeni Personel Davet Et
+          </button>
+        </div>
+
+        <div class="space-y-3">
+          <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-full bg-rose-600 flex items-center justify-center font-bold text-xs text-white">YZ</div>
+              <div>
+                <h5 class="text-xs font-bold text-white">Yusuf Ziya</h5>
+                <p class="text-[10px] text-slate-400">yusuf@hayalsahnesi.com</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="px-2.5 py-1 rounded bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[11px] font-bold">Süper Admin</span>
+              <span class="text-xs text-slate-500">Tüm Yetkiler</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-full bg-cyan-600 flex items-center justify-center font-bold text-xs text-white">AE</div>
+              <div>
+                <h5 class="text-xs font-bold text-white">Ahmet Editör</h5>
+                <p class="text-[10px] text-slate-400">ahmet@hayalsahnesi.com</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="px-2.5 py-1 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 text-[11px] font-bold">Personel / Editör</span>
+              <button class="text-xs text-slate-400 hover:text-white">Yetki Düzenle</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script>
+  function showTab(tabId) {
+    document.querySelectorAll('#tab-dashboard, #tab-upload, #tab-staff').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('sidebar-active'));
+
+    if (tabId === 'dashboard') {
+      document.getElementById('tab-dashboard').classList.remove('hidden');
+      document.getElementById('page-title').innerText = "Genel Durum & İstatistikler";
+    } else if (tabId === 'upload') {
+      document.getElementById('tab-upload').classList.remove('hidden');
+      document.getElementById('page-title').innerText = "Yeni Sahne Eseri Yükle";
+    } else if (tabId === 'staff') {
+      document.getElementById('tab-staff').classList.remove('hidden');
+      document.getElementById('page-title').innerText = "Personel & Rol Yetkilendirme";
+    }
+  }
+
+  function adjustFormFields(type) {
+    const field = document.getElementById('media-field');
+    if (type === 'poem' || type === 'music') {
+      field.innerHTML = `
+        <label class="block text-xs font-semibold text-slate-300">Medya Kaynağı (Ses / MP3)</label>
+        <div class="border-2 border-dashed border-slate-700 hover:border-cyan-500 rounded-xl p-6 text-center cursor-pointer transition">
+          <i class="fa-solid fa-music text-3xl text-cyan-400 mb-2"></i>
+          <p class="text-xs text-slate-300">Ses dosyasını (MP3) seçin veya buraya sürükleyin</p>
+        </div>`;
+    } else if (type === 'series') {
+      field.innerHTML = `
+        <label class="block text-xs font-semibold text-slate-300">Video Akış Linki (Cloudflare Stream, Vimeo, HLS)</label>
+        <input type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://stream.cloudflare.com/... veya video URL">`;
+    } else if (type === 'photoroman') {
+      field.innerHTML = `
+        <label class="block text-xs font-semibold text-slate-300">Fotoroman Kareleri (Çoklu Resim Seçimi)</label>
+        <div class="border-2 border-dashed border-slate-700 hover:border-amber-500 rounded-xl p-6 text-center cursor-pointer transition">
+          <i class="fa-solid fa-images text-3xl text-amber-400 mb-2"></i>
+          <p class="text-xs text-slate-300">Sıralı sahneleri (JPG/PNG/WEBP) toplu olarak yükleyin</p>
+        </div>`;
+    } else {
+      field.innerHTML = `<p class="text-xs text-slate-400">Bu içerik tipi için ek medya gerekmez; aşağıdaki metin editörünü kullanın.</p>`;
+    }
+  }
+
+  function changeRole(role) {
+    const label = document.getElementById('user-role-label');
+    const staffMenu = document.getElementById('menu-staff');
+    if (role === 'staff') {
+      label.innerText = "Personel / Editör";
+      label.className = "text-[10px] text-cyan-400 font-semibold";
+      staffMenu.classList.add('hidden'); // Personel diğer personelleri yönetemez
+    } else {
+      label.innerText = "Süper Admin";
+      label.className = "text-[10px] text-rose-400 font-semibold";
+      staffMenu.classList.remove('hidden');
+    }
+  }
+
+  function handleUpload(e) {
+    e.preventDefault();
+    alert('Eser sisteme kaydedildi ve listeye eklendi!');
+    showTab('dashboard');
+  }
+</script>
+</body>
+</html>
