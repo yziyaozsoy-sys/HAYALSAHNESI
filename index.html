@@ -589,38 +589,71 @@
       return;
     }
 
-    // Karıştır ve ilk parçayı başlat
-    musicPlaylist = shuffleArray([...musics]);
-    currentShuffleIndex = 0;
-    playCurrentShuffleTrack();
-  }
-
-     // 1. Şarkıyı Çal ve Bilgileri Güncelle
+      // 1. Şarkıyı Sitenin Kendi İçinde (Gizli YouTube veya Audio) Başlat
   function playCurrentShuffleTrack() {
     if (!musicPlaylist || musicPlaylist.length === 0) return;
     const track = musicPlaylist[currentShuffleIndex];
 
-    const audio = document.getElementById('global-audio');
+    // Başlık ve Sanatçı Bilgilerini Alt Bar'a Yazdır
     const playerTitle = document.getElementById('player-title') || document.querySelector('.player-title');
     const playerArtist = document.getElementById('player-artist') || document.querySelector('.player-artist');
-
-    if (playerTitle) playerTitle.innerText = track.title;
+    if (playerTitle) playerTitle.innerText = track.title || 'Müzik';
     if (playerArtist) playerArtist.innerText = `${track.author || 'Müzisyen'} • (${currentShuffleIndex + 1}/${musicPlaylist.length})`;
 
-    if (audio && track.mediaUrl) {
-      audio.src = track.mediaUrl;
-      audio.play().then(() => {
-        // Alt bardaki kırmızı play ikonunu Pause simgesine çevir
-        const btnIcon = document.querySelector('#play-pause-btn i');
-        if (btnIcon) {
-          btnIcon.className = 'fa-solid fa-pause text-xs';
-        }
-      }).catch(e => console.log('Oynatma başlatılamadı:', e));
+    const audio = document.getElementById('global-audio');
+    const url = track.mediaUrl || '';
+    const isYT = url.includes('youtube.com') || url.includes('youtu.be');
 
-      // Parça bittiğinde otomatik bir sonraki parçaya geç
-      audio.onended = function() {
-        playNextShuffleTrack();
-      };
+    if (isYT) {
+      // Normal ses elementini durdur
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+      }
+
+      // YouTube Video ID Çıkar
+      let videoId = '';
+      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+      if (match) videoId = match[1];
+
+      // Arka plandaki YouTube IFrame API oynatıcısını çalıştır
+      if (videoId) {
+        if (window.ytPlayer && typeof window.ytPlayer.loadVideoById === 'function') {
+          window.ytPlayer.loadVideoById(videoId);
+          window.ytPlayer.playVideo();
+        } else {
+          // Eğer ytPlayer objesi henüz oluşmadıysa doğrudan iframe enjekte et
+          const ytContainer = document.getElementById('hidden-yt-container') || document.getElementById('yt-player');
+          if (ytContainer) {
+            ytContainer.classList.remove('hidden');
+            ytContainer.innerHTML = `<iframe id="active-bg-yt" width="200" height="200" src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1" frameborder="0" allow="autoplay"></iframe>`;
+          }
+        }
+      }
+    } else {
+      // Doğrudan ses dosyası (MP3 vb.) ise
+      const ytFrame = document.getElementById('active-bg-yt');
+      if (ytFrame) ytFrame.src = '';
+      if (window.ytPlayer && typeof window.ytPlayer.stopVideo === 'function') {
+        window.ytPlayer.stopVideo();
+      }
+
+      if (audio && url) {
+        audio.src = url;
+        audio.play().catch(e => console.log('Oynatma hatası:', e));
+        audio.onended = function() {
+          playNextShuffleTrack();
+        };
+      }
+    }
+
+    // Play İkonunu Pause (Durdur) İkonuna Çevir
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    if (playPauseBtn) {
+      const icon = playPauseBtn.querySelector('i');
+      if (icon) {
+        icon.className = 'fa-solid fa-pause text-xs';
+      }
     }
   }
 
