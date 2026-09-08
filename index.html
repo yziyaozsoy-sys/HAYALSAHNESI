@@ -229,11 +229,21 @@
       </div>
     </div>
     
-    <div class="flex items-center gap-3">
-      <div class="hidden sm:flex items-center gap-1.5 text-xs text-purple-400 bg-purple-950/40 px-2.5 py-1 rounded-full border border-purple-800/40">
-        <i class="fa-solid fa-volume-high animate-pulse"></i>
-        <span>Atmosfer Müziği (Loop)</span>
+        <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Ses Seviyesi ve Aç/Kapa Kontrol Masası -->
+      <div class="flex items-center gap-2 bg-slate-900/90 px-3 py-1.5 rounded-full border border-purple-800/40 shadow-inner">
+        <!-- Mute / Unmute Butonu -->
+        <button id="reader-mute-btn" onclick="toggleReaderAudioMute()" type="button" title="Müziği Aç / Kapat" class="text-purple-400 hover:text-white transition text-xs flex items-center justify-center w-5 h-5">
+          <i id="reader-volume-icon" class="fa-solid fa-volume-high"></i>
+        </button>
+
+        <!-- Ses Kısma / Açma Kaydırıcısı (Slider) -->
+        <input id="reader-volume-slider" oninput="changeReaderVolume(this.value)" type="range" min="0" max="1" step="0.05" value="0.5" class="w-16 sm:w-20 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rose-500" title="Ses Seviyesi">
+        
+        <span class="hidden md:inline text-[10px] text-purple-300 font-mono font-bold">Fon</span>
       </div>
+
+      <!-- Kapat Çarpı Butonu -->
       <button onclick="closeModal('modal-reader')" class="text-slate-400 hover:text-white text-xl p-1.5 transition">
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -723,7 +733,6 @@
     }
     openModal('modal-video');
   }
-
   // ==========================================
   // FOTOROMAN SİSTEMİ (SAYFA ÇEVİRME & LOOP MÜZİK)
   // ==========================================
@@ -767,7 +776,13 @@
       readerBgAudio.src = finalMusic;
       readerBgAudio.currentTime = 0;
       readerBgAudio.volume = 0.5;
+      readerBgAudio.muted = false;
       readerBgAudio.play().catch(e => console.log('Müzik başlatılamadı:', e));
+
+      // Slider ve ses ikonunu başlangıç seviyesine (0.5) eşitle
+      const volSlider = document.getElementById('reader-volume-slider');
+      if (volSlider) volSlider.value = "0.5";
+      updateReaderAudioIcon(0.5);
     }
 
     openModal('modal-reader');
@@ -807,6 +822,43 @@
     if (currentPhotoIndex > 0) {
       currentPhotoIndex--;
       renderPhotoPage();
+    }
+  }
+
+  // ==========================================
+  // [YENİ] FOTOROMAN SES KONTROL MOTORU (MUTE & SLIDER)
+  // ==========================================
+  function changeReaderVolume(val) {
+    if (!readerBgAudio) return;
+    readerBgAudio.volume = parseFloat(val);
+    readerBgAudio.muted = false;
+    updateReaderAudioIcon(parseFloat(val));
+  }
+
+  function toggleReaderAudioMute() {
+    if (!readerBgAudio) return;
+    readerBgAudio.muted = !readerBgAudio.muted;
+    const slider = document.getElementById('reader-volume-slider');
+
+    if (readerBgAudio.muted) {
+      updateReaderAudioIcon(0);
+    } else {
+      const currentVol = slider ? parseFloat(slider.value) : 0.5;
+      readerBgAudio.volume = currentVol > 0 ? currentVol : 0.5;
+      updateReaderAudioIcon(readerBgAudio.volume);
+    }
+  }
+
+  function updateReaderAudioIcon(vol) {
+    const icon = document.getElementById('reader-volume-icon');
+    if (!icon) return;
+
+    if ((readerBgAudio && readerBgAudio.muted) || vol === 0) {
+      icon.className = 'fa-solid fa-volume-xmark text-rose-400';
+    } else if (vol < 0.4) {
+      icon.className = 'fa-solid fa-volume-low text-purple-300';
+    } else {
+      icon.className = 'fa-solid fa-volume-high text-purple-400';
     }
   }
 
