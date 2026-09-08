@@ -1,3 +1,5 @@
+// server/index.js
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -5,20 +7,19 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// --- MONGODB BAĞLANTISI ---
-// Render ortamındaki MONGODB_URI kullanılır, yoksa mevcut bağlantı dizgisi devreye girer
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://Cluster0:Cluster0@cluster0.hayalsahnesi.mongodb.net/hayalsahnesi?retryWrites=true&w=majority";
+// MongoDB Bağlantısı (Render Environment'tan çeker)
+const MONGODB_URI = process.env.MONGODB_URI;
 
-mongoose.connect(MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('>>> [HAYAL SAHNESİ] MongoDB Atlas bağlantısı başarıyla kuruldu.'))
-.catch(err => console.error('MongoDB Atlas Bağlantı Hatası:', err));
+if (MONGODB_URI) {
+  mongoose.connect(MONGODB_URI)
+    .then(() => console.log('✅ MongoDB Hayal Sahnesi veritabanına bağlandı.'))
+    .catch((err) => console.error('❌ MongoDB bağlantı hatası:', err));
+} else {
+  console.warn('⚠️ MONGODB_URI ortam değişkeni tanımlanmadı (.env veya Render kontrol edin)');
+}
 
 // --- KRİTİK ŞEMA GÜNCELLEMESİ (METİNLER VE ŞİİRLER İÇİN) ---
 const contentSchema = new mongoose.Schema({
