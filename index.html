@@ -284,6 +284,27 @@
         <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Şiir Mısraları / Açıklama *</label>
         <textarea id="contact-text-body" required rows="5" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserinizin tüm sözlerini, mısralarını veya hikaye içeriğini buraya yazınız..."></textarea>
       </div>
+            <!-- İletişim Bilgileri: E-Posta ve Telefon -->
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">E-Posta Adresiniz *</label>
+          <input id="contact-email" required type="email" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="ornek@mail.com">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Telefon Numaranız *</label>
+          <input id="contact-phone" required type="tel" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="05XX XXX XX XX">
+        </div>
+      </div>
+
+      <!-- Yasal Sorumluluk & Telif Onay Kutusu -->
+      <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800">
+        <label class="flex items-start gap-2.5 cursor-pointer select-none">
+          <input id="contact-legal" required type="checkbox" class="mt-0.5 w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-slate-700 bg-slate-900 cursor-pointer">
+          <span class="text-[10px] text-slate-400 leading-tight">
+            Gönderdiğim eserin <strong class="text-white">şahsıma ait olduğunu</strong>, telif ihlali içermediğini, tüm yasal sorumluluğun tarafıma ait olduğunu ve eserin <strong class="text-rose-400">Hayal Sahnesi</strong>'nde yayınlanmasına <strong class="text-white">muvafakat ettiğimi</strong> kabul ve taahhüt ederim.
+          </span>
+        </label>
+      </div>
       <button id="btn-contact-submit" type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-rose-900/30 hover:opacity-95 transition flex items-center justify-center gap-2">
         <i class="fa-regular fa-paper-plane"></i> Eseri Sahneye Gönder
       </button>
@@ -432,22 +453,34 @@
     }
   }
 
-  async function handleContact(e) {
+   async function handleContact(e) {
     e.preventDefault();
     const submitBtn = document.getElementById('btn-contact-submit');
     submitBtn.disabled = true;
     submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> İletiliyor...`;
 
     const textVal = document.getElementById('contact-text-body').value.trim();
+    const legalAccepted = document.getElementById('contact-legal').checked;
+
+    // Yasal onay kontrolü
+    if (!legalAccepted) {
+      alert('Lütfen eserin telif ve yasal yayın taahhüdünü onaylayınız.');
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<i class="fa-regular fa-paper-plane"></i> Eseri Sahneye Gönder`;
+      return;
+    }
 
     const payload = {
       title: document.getElementById('contact-title').value.trim(),
       type: document.getElementById('contact-type').value,
       author: document.getElementById('contact-name').value.trim(),
+      email: document.getElementById('contact-email').value.trim(),
+      phone: document.getElementById('contact-phone').value.trim(),
       mediaUrl: document.getElementById('contact-media-url').value.trim(),
       textBody: textVal,
       description: textVal,
-      status: 'draft'
+      status: 'draft',
+      legalAccepted: true
     };
 
     try {
@@ -458,7 +491,7 @@
       });
 
       if (res.ok) {
-        alert('Eseriniz ve tüm metni başarıyla kürasyon masamıza iletildi! Yönetici onayından sonra sahnede parlayacak.');
+        alert('🎉 Eseriniz ve yasal onayınız başarıyla kürasyon masamıza iletildi! Yönetici onayından sonra sahnede parlayacak.');
         closeModal('modal-contact');
         e.target.reset();
       } else {

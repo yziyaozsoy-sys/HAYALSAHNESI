@@ -21,21 +21,29 @@ if (MONGODB_URI) {
   console.warn('⚠️ MONGODB_URI ortam değişkeni tanımlanmadı (.env veya Render kontrol edin)');
 }
 
-// --- KRİTİK ŞEMA GÜNCELLEMESİ (METİNLER VE ŞİİRLER İÇİN) ---
+// --- ŞEMA TANIMI (İLETİŞİM BİLGİLERİ VE YASAL TELİF ONAYI DAHİL) ---
 const contentSchema = new mongoose.Schema({
   title: { type: String, required: true },
   type: { type: String, required: true }, // music, poem, series, photoroman, story
-  author: { type: String, default: 'Yusuf Ziya' },
+  author: { type: String, default: 'Anonim' },
+  email: { type: String, default: '' },       // İletişim e-posta
+  phone: { type: String, default: '' },       // İletişim telefon
   status: { type: String, default: 'draft' }, // published, draft
   mediaUrl: { type: String, default: '' },
   thumbnail: { type: String, default: '' },
-  textBody: { type: String, default: '' }, // Şiir mısraları, hikaye içeriği
+  textBody: { type: String, default: '' },    // Şiir mısraları, hikaye içeriği
   description: { type: String, default: '' }, // Açıklama veya özet
   plays: { type: Number, default: 0 },
   views: { type: Number, default: 0 },
+  // Hukuki Sorumluluk ve Telif Onayı
+  legalConsent: {
+    accepted: { type: Boolean, default: false },
+    acceptedAt: { type: Date, default: null },
+    ipAddress: { type: String, default: '' }
+  },
   createdAt: { type: Date, default: Date.now }
 }, { 
-  strict: false // Esnek şema: Hiçbir metin alanı Mongoose tarafından filtrelenmez!
+  strict: false // Esnek şema: Hiçbir özel alan Mongoose tarafından filtrelenmez!
 });
 
 const Content = mongoose.model('Content', contentSchema);
@@ -62,25 +70,51 @@ app.get('/api/admin/contents', async (req, res) => {
   }
 });
 
-// 3. Yeni Eser Ekle (Metinleri hem textBody hem description olarak kaydeder)
+// 3. Eser Ekleme (Hem Admin Hem Dışarıdan Gönderimler İçin)
 app.post('/api/contents', async (req, res) => {
   try {
-    const { title, type, author, status, mediaUrl, thumbnail, textBody, description } = req.body;
+    const { 
+      title, 
+      type, 
+      author, 
+      email, 
+      phone, 
+      status, 
+      mediaUrl, 
+      thumbnail, 
+      textBody, 
+      description,
+      legalAccepted 
+    } = req.body;
+
     const contentText = textBody || description || '';
+
+    // İstemcinin IP adresini yakalayalım (Yasal delil kaydı için)
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
+
+    // Eğer dışarıdan gelen bir başvuruysa yasal onay kontrolü
+    const isConsentGiven = Boolean(legalAccepted);
 
     const newContent = new Content({
       title,
       type,
-      author: author || 'Yusuf Ziya',
-      status: status || 'draft',
+      author: author || 'Anonim Yazar',
+      email: email || '',
+      phone: phone || '',
+      status: status || 'draft', // Dışarıdan gelenler varsayılan taslak (onay bekleyen) olarak düşer
       mediaUrl: mediaUrl || '',
       thumbnail: thumbnail || '',
       textBody: contentText,
-      description: contentText
+      description: contentText,
+      legalConsent: {
+        accepted: isConsentGiven,
+        acceptedAt: isConsentGiven ? new Date() : null,
+        ipAddress: clientIp
+      }
     });
 
     const saved = await newContent.save();
-    console.log('Yeni Eser MongoDB\'ye Kaydedildi:', saved.title);
+    console.log('✅ Yeni Eser Kaydedildi:', saved.title, '| Yazar:', saved.author);
     res.status(201).json({ success: true, data: saved });
   } catch (err) {
     console.error('Kayıt Hatası:', err);
@@ -88,7 +122,7 @@ app.post('/api/contents', async (req, res) => {
   }
 });
 
-// 4. Eser Güncelleme (Düzenleme yapıldığında metni günceller)
+// 4. Eser Güncelleme (Düzenleme yapıldığında)
 app.patch('/api/contents/:id', async (req, res) => {
   try {
     const { id } = req.params;
