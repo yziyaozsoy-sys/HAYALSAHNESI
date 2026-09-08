@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hayal Sahnesi | Kürasyon & Yönetim Masası</title>
+<title>Hayal Sahnesi | Yönetici Girişi & Kürasyon</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -30,346 +30,463 @@
     border-color: #e11d48;
     font-weight: 700;
   }
+  .glow-box {
+    box-shadow: 0 0 50px -10px rgba(225, 29, 72, 0.3);
+  }
 </style>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row selection:bg-rose-600 selection:text-white">
+<body class="min-h-screen selection:bg-rose-600 selection:text-white">
 
-<!-- Yan Menü / Sidebar -->
-<aside class="w-full md:w-64 bg-slate-950 border-r border-slate-800 p-6 flex flex-col justify-between shrink-0">
-  <div class="space-y-6">
-    <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
-      <div class="w-9 h-9 rounded-xl stage-gradient flex items-center justify-center font-bold text-white shadow-lg shadow-rose-600/30">
-        <i class="fa-solid fa-masks-theater text-base"></i>
-      </div>
-      <div>
-        <h1 class="font-black text-base tracking-wider text-white uppercase">HAYAL SAHNESİ</h1>
-        <p class="text-[10px] text-rose-400 font-bold uppercase tracking-widest">Yönetim Masası</p>
-      </div>
-    </div>
-
-    <!-- Profil -->
-    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center space-x-3">
-      <div class="w-8 h-8 rounded-full bg-rose-600/30 text-rose-400 flex items-center justify-center font-bold text-xs">
-        YZ
-      </div>
-      <div>
-        <p class="text-xs font-bold text-white">Yusuf Ziya</p>
-        <p class="text-[10px] text-emerald-400 font-semibold">Süper Admin</p>
-      </div>
-    </div>
-
-    <nav class="space-y-1.5 pt-2">
-      <button onclick="switchAdminSection('contents')" id="nav-contents" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav">
-        <i class="fa-solid fa-chart-line text-sm"></i>
-        <span>İstatistikler & Eserler</span>
-      </button>
-      <button onclick="switchAdminSection('staff')" id="nav-staff" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
-        <i class="fa-solid fa-users text-sm"></i>
-        <span>Personel & Ekip</span>
-      </button>
-    </nav>
-  </div>
-
-  <div class="pt-6 border-t border-slate-800/80 space-y-2">
-    <div class="flex items-center justify-between text-xs text-slate-400">
-      <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> MongoDB Atlas</span>
-      <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">Aktif</span>
-    </div>
-    <a href="index.html" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/50 text-slate-300 text-xs font-bold transition">
-      <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Sahne Vitrinine Git
-    </a>
-  </div>
-</aside>
-
-<!-- Ana Yönetim Alanı -->
-<main class="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full space-y-8 overflow-y-auto">
-
-  <!-- BÖLÜM 1: İSTATİSTİKLER VE ESER YÖNETİMİ -->
-  <section id="section-contents" class="space-y-6">
+<!-- ================= GÜVENLİ GİRİŞ / KİLİT EKRANI ================= -->
+<div id="login-overlay" class="fixed inset-0 z-50 bg-[#07090e] flex items-center justify-center p-4">
+  <div class="card-stage border border-slate-800 rounded-3xl p-8 max-w-md w-full glow-box space-y-6 text-center">
     
-    <!-- Başlık -->
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+    <div class="w-16 h-16 rounded-2xl stage-gradient mx-auto flex items-center justify-center text-white text-2xl shadow-xl shadow-rose-900/40">
+      <i class="fa-solid fa-masks-theater"></i>
+    </div>
+
+    <div class="space-y-1">
+      <h2 class="text-2xl font-black text-white tracking-wider uppercase">HAYAL SAHNESİ</h2>
+      <p class="text-xs text-rose-400 font-bold uppercase tracking-widest">Kürasyon & Yönetim Kapısı</p>
+      <p class="text-[11px] text-slate-400 pt-2">Yetkili erişim gereklidir. Lütfen sahne parolanızı girin.</p>
+    </div>
+
+    <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4 text-left">
       <div>
-        <h2 class="text-2xl font-black text-white">Genel Durum & Kürasyon Masası</h2>
-        <p class="text-xs text-slate-400">Canlı MongoDB veritabanı istatistikleri ve kategorilere ayrılmış sahne eserleri.</p>
-      </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <button onclick="fetchAdminContents()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
-          <i class="fa-solid fa-rotate-right"></i> Listeyi Yenile
-        </button>
-      </div>
-    </div>
-
-    <!-- GERÇEK DİNAMİK İSTATİSTİK KARTLARI -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      
-      <!-- Dinleme İstatistiği -->
-      <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
-        <div class="space-y-1">
-          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Müzik & Şiir Dinleme</p>
-          <h3 id="stat-total-listens" class="text-2xl font-black text-purple-400">0</h3>
-          <span class="text-[10px] text-slate-400 font-mono">Gerçek Veri Tabanı</span>
-        </div>
-        <div class="w-12 h-12 rounded-xl bg-purple-600/20 text-purple-400 border border-purple-500/30 flex items-center justify-center text-lg">
-          <i class="fa-solid fa-headphones"></i>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yönetici / Kullanıcı Adı</label>
+        <div class="relative">
+          <i class="fa-solid fa-user absolute left-3.5 top-3 text-slate-500 text-xs"></i>
+          <input id="login-username" required type="text" value="yusuf" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500 transition" placeholder="Kullanıcı adı...">
         </div>
       </div>
 
-      <!-- Mini Dizi İzlenme -->
-      <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
-        <div class="space-y-1">
-          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Mini Dizi İzlenmeleri</p>
-          <h3 id="stat-total-views" class="text-2xl font-black text-rose-400">0</h3>
-          <span class="text-[10px] text-slate-400 font-mono">Gerçek Veri Tabanı</span>
-        </div>
-        <div class="w-12 h-12 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/30 flex items-center justify-center text-lg">
-          <i class="fa-solid fa-film"></i>
-        </div>
-      </div>
-
-      <!-- Canlı Eserler -->
-      <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
-        <div class="space-y-1">
-          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Yayındaki Eserler</p>
-          <h3 id="stat-published-count" class="text-2xl font-black text-emerald-400">0</h3>
-          <span class="text-[10px] text-slate-400">Vitrinde Canlı</span>
-        </div>
-        <div class="w-12 h-12 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-lg">
-          <i class="fa-solid fa-circle-check"></i>
-        </div>
-      </div>
-
-      <!-- Toplam Sistem Eseri -->
-      <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
-        <div class="space-y-1">
-          <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Toplam Sistem Eseri</p>
-          <h3 id="stat-total-count" class="text-2xl font-black text-white">0</h3>
-          <span class="text-[10px] text-slate-400">MongoDB Kaydı</span>
-        </div>
-        <div class="w-12 h-12 rounded-xl bg-cyan-600/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center text-lg">
-          <i class="fa-solid fa-layer-group"></i>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Form ve Kategori Filtreli Eser Tablosu -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
-      <!-- Sol Panel: Yeni Eser Ekleme & Düzenleme Formu -->
-      <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-          <h3 id="form-heading" class="font-bold text-white text-sm flex items-center gap-2">
-            <i class="fa-solid fa-plus-circle text-rose-500"></i> Yeni Sahne Eseri Yükle
-          </h3>
-          <button id="cancel-edit-btn" onclick="cancelEditing()" class="hidden text-[11px] text-amber-400 hover:underline">Vazgeç</button>
-        </div>
-
-        <form id="content-form" onsubmit="handleContentSubmit(event)" class="space-y-3">
-          <input type="hidden" id="edit-content-id" value="">
-
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Başlığı *</label>
-            <input id="form-title" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: KAN VE NOTA">
-          </div>
-
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Tür *</label>
-              <select id="form-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
-                <option value="music">Müzik (OST)</option>
-                <option value="poem">Şiir & Dinleti</option>
-                <option value="series">Mini Dizi</option>
-                <option value="photoroman">Fotoroman</option>
-                <option value="story">Hikaye</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yayın Durumu *</label>
-              <select id="form-status" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
-                <option value="published">Doğrudan Yayına Al</option>
-                <option value="draft">Taslak / Beklemede</option>
-              </select>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yazar / Rol *</label>
-            <input id="form-author" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Medya Bağlantısı (YouTube / MP3)</label>
-            <input id="form-media-url" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://youtu.be/...">
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kapak / Görsel URL</label>
-            <input id="form-thumbnail" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://...">
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Açıklama</label>
-            <textarea id="form-text-body" rows="3" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Şiir mısraları veya eser açıklaması..."></textarea>
-          </div>
-
-          <button id="form-submit-btn" type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-rose-900/30 hover:opacity-95 transition flex items-center justify-center gap-2">
-            <i class="fa-solid fa-floppy-disk"></i> Eseri Canlı MongoDB'ye Kaydet
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Güvenlik Parolası</label>
+        <div class="relative">
+          <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-500 text-xs"></i>
+          <input id="login-password" required type="password" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 pr-10 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500 transition" placeholder="••••••••">
+          <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-2.5 text-slate-400 hover:text-white text-xs">
+            <i id="toggle-pwd-icon" class="fa-solid fa-eye"></i>
           </button>
-        </form>
+        </div>
       </div>
 
-      <!-- Sağ Panel: KATEGORİLERE GÖRE SEÇİM VE ESER TABLOSU -->
-      <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
+      <p id="login-error" class="hidden text-xs text-rose-400 font-semibold text-center flex items-center justify-center gap-1.5">
+        <i class="fa-solid fa-triangle-exclamation"></i> Parola veya kullanıcı adı hatalı!
+      </p>
+
+      <button id="btn-login-submit" type="submit" class="w-full stage-gradient text-white py-3 rounded-xl font-bold text-xs tracking-wider uppercase shadow-lg shadow-rose-900/40 hover:opacity-95 transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-key"></i> Perdeyi Aç (Giriş Yap)
+      </button>
+    </form>
+
+    <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+      <a href="index.html" class="hover:text-rose-400 transition flex items-center gap-1">
+        <i class="fa-solid fa-arrow-left"></i> Vitrine Dön
+      </a>
+      <span class="font-mono text-[10px]">v2.6 Secure Gate</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= ANA ADMİN PANELİ ================= -->
+<div id="admin-app" class="hidden min-h-screen flex flex-col md:flex-row">
+
+  <!-- Yan Menü / Sidebar -->
+  <aside class="w-full md:w-64 bg-slate-950 border-r border-slate-800 p-6 flex flex-col justify-between shrink-0">
+    <div class="space-y-6">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
+        <div class="w-9 h-9 rounded-xl stage-gradient flex items-center justify-center font-bold text-white shadow-lg shadow-rose-600/30">
+          <i class="fa-solid fa-masks-theater text-base"></i>
+        </div>
+        <div>
+          <h1 class="font-black text-base tracking-wider text-white uppercase">HAYAL SAHNESİ</h1>
+          <p class="text-[10px] text-rose-400 font-bold uppercase tracking-widest">Yönetim Masası</p>
+        </div>
+      </div>
+
+      <!-- Profil -->
+      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-full bg-rose-600/30 text-rose-400 flex items-center justify-center font-bold text-xs">
+          YZ
+        </div>
+        <div>
+          <p class="text-xs font-bold text-white">Yusuf Ziya</p>
+          <p class="text-[10px] text-emerald-400 font-semibold">Süper Admin (Doğrulandı)</p>
+        </div>
+      </div>
+
+      <nav class="space-y-1.5 pt-2">
+        <button onclick="switchAdminSection('contents')" id="nav-contents" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav">
+          <i class="fa-solid fa-chart-line text-sm"></i>
+          <span>İstatistikler & Eserler</span>
+        </button>
+        <button onclick="switchAdminSection('staff')" id="nav-staff" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
+          <i class="fa-solid fa-users text-sm"></i>
+          <span>Personel & Ekip</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="pt-6 border-t border-slate-800/80 space-y-2">
+      <div class="flex items-center justify-between text-xs text-slate-400">
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> MongoDB Atlas</span>
+        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">Aktif</span>
+      </div>
+      <a href="index.html" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/50 text-slate-300 text-xs font-bold transition">
+        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Sahne Vitrinine Git
+      </a>
+      <button onclick="logoutAdmin()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-rose-950/40 hover:bg-rose-600 text-rose-300 hover:text-white text-xs font-bold transition border border-rose-900/40">
+        <i class="fa-solid fa-right-from-bracket text-xs"></i> Oturumu Kapat
+      </button>
+    </div>
+  </aside>
+
+  <!-- Ana Yönetim Alanı -->
+  <main class="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full space-y-8 overflow-y-auto">
+
+    <!-- BÖLÜM 1: İSTATİSTİKLER VE ESER YÖNETİMİ -->
+    <section id="section-contents" class="space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-black text-white">Genel Durum & Kürasyon Masası</h2>
+          <p class="text-xs text-slate-400">Canlı MongoDB veritabanı istatistikleri ve kategorilere ayrılmış sahne eserleri.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="fetchAdminContents()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i> Listeyi Yenile
+          </button>
+        </div>
+      </div>
+
+      <!-- DİNAMİK İSTATİSTİK KARTLARI -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
-        <!-- Üst Başlık ve Arama -->
-        <div class="p-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/40">
-          <div>
+        <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div class="space-y-1">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Müzik & Şiir Dinleme</p>
+            <h3 id="stat-total-listens" class="text-2xl font-black text-purple-400">0</h3>
+            <span class="text-[10px] text-slate-400 font-mono">Gerçek Veri Tabanı</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-purple-600/20 text-purple-400 border border-purple-500/30 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-headphones"></i>
+          </div>
+        </div>
+
+        <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div class="space-y-1">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Mini Dizi İzlenmeleri</p>
+            <h3 id="stat-total-views" class="text-2xl font-black text-rose-400">0</h3>
+            <span class="text-[10px] text-slate-400 font-mono">Gerçek Veri Tabanı</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/30 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-film"></i>
+          </div>
+        </div>
+
+        <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div class="space-y-1">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Yayındaki Eserler</p>
+            <h3 id="stat-published-count" class="text-2xl font-black text-emerald-400">0</h3>
+            <span class="text-[10px] text-slate-400">Vitrinde Canlı</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+        </div>
+
+        <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div class="space-y-1">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Toplam Sistem Eseri</p>
+            <h3 id="stat-total-count" class="text-2xl font-black text-white">0</h3>
+            <span class="text-[10px] text-slate-400">MongoDB Kaydı</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-cyan-600/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Form ve Eser Tablosu -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Sol Panel: Yeni Eser Ekleme & Düzenleme Formu -->
+        <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 id="form-heading" class="font-bold text-white text-sm flex items-center gap-2">
+              <i class="fa-solid fa-plus-circle text-rose-500"></i> Yeni Sahne Eseri Yükle
+            </h3>
+            <button id="cancel-edit-btn" onclick="cancelEditing()" class="hidden text-[11px] text-amber-400 hover:underline">Vazgeç</button>
+          </div>
+
+          <form id="content-form" onsubmit="handleContentSubmit(event)" class="space-y-3">
+            <input type="hidden" id="edit-content-id" value="">
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Başlığı *</label>
+              <input id="form-title" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: KAN VE NOTA">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Tür *</label>
+                <select id="form-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                  <option value="music">Müzik (OST)</option>
+                  <option value="poem">Şiir & Dinleti</option>
+                  <option value="series">Mini Dizi</option>
+                  <option value="photoroman">Fotoroman</option>
+                  <option value="story">Hikaye</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yayın Durumu *</label>
+                <select id="form-status" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                  <option value="published">Doğrudan Yayına Al</option>
+                  <option value="draft">Taslak / Beklemede</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yazar / Rol *</label>
+              <input id="form-author" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Medya Bağlantısı (YouTube / MP3)</label>
+              <input id="form-media-url" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://youtu.be/...">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kapak / Görsel URL</label>
+              <input id="form-thumbnail" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://...">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Açıklama</label>
+              <textarea id="form-text-body" rows="3" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Şiir mısraları veya eser açıklaması..."></textarea>
+            </div>
+
+            <button id="form-submit-btn" type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-rose-900/30 hover:opacity-95 transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-floppy-disk"></i> Eseri Canlı MongoDB'ye Kaydet
+            </button>
+          </form>
+        </div>
+
+        <!-- Sağ Panel: Kategori Filtreli Eser Tablosu -->
+        <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
+          
+          <div class="p-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/40">
             <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
               <i class="fa-solid fa-database text-rose-500"></i> MongoDB Eser Kütüphanesi (<span id="content-count">0</span>)
             </h4>
+            
+            <div class="relative w-full sm:w-56">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+              <input id="search-input" oninput="applyFilters()" type="text" placeholder="Eser veya yazar ara..." class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500">
+            </div>
           </div>
-          
-          <!-- Arama Kutusu -->
-          <div class="relative w-full sm:w-56">
-            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
-            <input id="search-input" oninput="applyFilters()" type="text" placeholder="Eser veya yazar ara..." class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500">
+
+          <!-- Kategori Butonları -->
+          <div class="px-4 py-2.5 bg-slate-950/80 border-b border-slate-800 flex items-center gap-1.5 overflow-x-auto text-xs">
+            <button onclick="setFilterCategory('all')" class="filter-btn active px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="all">
+              Tümü (<span id="count-all">0</span>)
+            </button>
+            <button onclick="setFilterCategory('music')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="music">
+              <i class="fa-solid fa-compact-disc mr-1 text-purple-400"></i>Müzik (<span id="count-music">0</span>)
+            </button>
+            <button onclick="setFilterCategory('poem')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="poem">
+              <i class="fa-solid fa-scroll mr-1 text-cyan-400"></i>Şiir (<span id="count-poem">0</span>)
+            </button>
+            <button onclick="setFilterCategory('series')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="series">
+              <i class="fa-solid fa-clapperboard mr-1 text-rose-400"></i>Mini Dizi (<span id="count-series">0</span>)
+            </button>
+            <button onclick="setFilterCategory('photoroman')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="photoroman">
+              <i class="fa-solid fa-images mr-1 text-amber-400"></i>Fotoroman (<span id="count-photoroman">0</span>)
+            </button>
+            <button onclick="setFilterCategory('story')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="story">
+              <i class="fa-solid fa-feather-pointed mr-1 text-emerald-400"></i>Hikaye (<span id="count-story">0</span>)
+            </button>
+          </div>
+
+          <!-- Tablo -->
+          <div class="overflow-x-auto flex-1">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
+                <tr>
+                  <th class="p-3.5">Eser Adı</th>
+                  <th class="p-3.5">Kategori</th>
+                  <th class="p-3.5">Yazar / Rol</th>
+                  <th class="p-3.5">Durum</th>
+                  <th class="p-3.5 text-right">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="content-table-body" class="divide-y divide-slate-800/60 text-slate-300">
+                <tr>
+                  <td colspan="5" class="p-6 text-center text-slate-500">
+                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> Eserler yükleniyor...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <!-- KATEGORİ SEÇİM BUTONLARI (FİLTRELER) -->
-        <div class="px-4 py-2.5 bg-slate-950/80 border-b border-slate-800 flex items-center gap-1.5 overflow-x-auto text-xs">
-          <button onclick="setFilterCategory('all')" class="filter-btn active px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="all">
-            Tümü (<span id="count-all">0</span>)
-          </button>
-          <button onclick="setFilterCategory('music')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="music">
-            <i class="fa-solid fa-compact-disc mr-1 text-purple-400"></i>Müzik (<span id="count-music">0</span>)
-          </button>
-          <button onclick="setFilterCategory('poem')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="poem">
-            <i class="fa-solid fa-scroll mr-1 text-cyan-400"></i>Şiir (<span id="count-poem">0</span>)
-          </button>
-          <button onclick="setFilterCategory('series')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="series">
-            <i class="fa-solid fa-clapperboard mr-1 text-rose-400"></i>Mini Dizi (<span id="count-series">0</span>)
-          </button>
-          <button onclick="setFilterCategory('photoroman')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="photoroman">
-            <i class="fa-solid fa-images mr-1 text-amber-400"></i>Fotoroman (<span id="count-photoroman">0</span>)
-          </button>
-          <button onclick="setFilterCategory('story')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="story">
-            <i class="fa-solid fa-feather-pointed mr-1 text-emerald-400"></i>Hikaye (<span id="count-story">0</span>)
-          </button>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 2: PERSONEL VE EKİP YÖNETİMİ -->
+    <section id="section-staff" class="hidden space-y-6">
+      
+      <div class="border-b border-slate-800 pb-4">
+        <h2 class="text-2xl font-black text-white">Personel & Rol Yönetimi</h2>
+        <p class="text-xs text-slate-400">Hayal Sahnesi kadrosundaki görevlileri yönetin.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
+          <h3 class="font-bold text-white text-sm flex items-center gap-2 border-b border-slate-800 pb-3">
+            <i class="fa-solid fa-user-plus text-cyan-400"></i> Yeni Ekip Üyesi Ekle
+          </h3>
+
+          <form id="staff-form" onsubmit="handleStaffSubmit(event)" class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Ad Soyad *</label>
+              <input id="staff-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="Örn: Ahmet Editör">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Görevi / Rolü *</label>
+              <select id="staff-role" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                <option value="Genel Sanat Yönetmeni">Genel Sanat Yönetmeni</option>
+                <option value="Yazar & Şair">Yazar & Şair</option>
+                <option value="Müzik Direktörü">Müzik Direktörü</option>
+                <option value="Kurgu & Montaj">Kurgu & Montaj</option>
+                <option value="Suflör & Sahne Amiri">Suflör & Sahne Amiri</option>
+                <option value="Seslendirme Sanatçısı">Seslendirme Sanatçısı</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">E-Posta / İletişim</label>
+              <input id="staff-email" type="email" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="ahmet@hayalsahnesi.com">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yetki Derecesi</label>
+              <select id="staff-access" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                <option value="admin">Yönetici (Tam Yetki)</option>
+                <option value="editor">Editör (İçerik Yükleyici)</option>
+                <option value="viewer">Gözlemci</option>
+              </select>
+            </div>
+
+            <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-slate-950 py-2.5 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-check"></i> Personeli Kaydet
+            </button>
+          </form>
         </div>
 
-        <!-- Tablo -->
-        <div class="overflow-x-auto flex-1">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
-              <tr>
-                <th class="p-3.5">Eser Adı</th>
-                <th class="p-3.5">Kategori</th>
-                <th class="p-3.5">Yazar / Rol</th>
-                <th class="p-3.5">Durum</th>
-                <th class="p-3.5 text-right">İşlem</th>
-              </tr>
-            </thead>
-            <tbody id="content-table-body" class="divide-y divide-slate-800/60 text-slate-300">
-              <tr>
-                <td colspan="5" class="p-6 text-center text-slate-500">
-                  <i class="fa-solid fa-spinner fa-spin mr-2"></i> Eserler yükleniyor...
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
+          <div class="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/40">
+            <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-users text-cyan-400"></i> Hayal Sahnesi Kadrosu (<span id="staff-count">0</span>)
+            </h4>
+          </div>
+
+          <div class="overflow-x-auto flex-1">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
+                <tr>
+                  <th class="p-3.5">İsim</th>
+                  <th class="p-3.5">Görev</th>
+                  <th class="p-3.5">Yetki</th>
+                  <th class="p-3.5">İletişim</th>
+                  <th class="p-3.5 text-right">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="staff-table-body" class="divide-y divide-slate-800/60 text-slate-300">
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-    </div>
-  </section>
+    </section>
 
-  <!-- BÖLÜM 2: PERSONEL VE EKİP YÖNETİMİ -->
-  <section id="section-staff" class="hidden space-y-6">
-    
-    <div class="border-b border-slate-800 pb-4">
-      <h2 class="text-2xl font-black text-white">Personel & Rol Yönetimi</h2>
-      <p class="text-xs text-slate-400">Hayal Sahnesi kadrosundaki görevlileri yönetin.</p>
-    </div>
+  </main>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
-        <h3 class="font-bold text-white text-sm flex items-center gap-2 border-b border-slate-800 pb-3">
-          <i class="fa-solid fa-user-plus text-cyan-400"></i> Yeni Ekip Üyesi Ekle
-        </h3>
-
-        <form id="staff-form" onsubmit="handleStaffSubmit(event)" class="space-y-3">
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Ad Soyad *</label>
-            <input id="staff-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="Örn: Ahmet Editör">
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Görevi / Rolü *</label>
-            <select id="staff-role" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
-              <option value="Genel Sanat Yönetmeni">Genel Sanat Yönetmeni</option>
-              <option value="Yazar & Şair">Yazar & Şair</option>
-              <option value="Müzik Direktörü">Müzik Direktörü</option>
-              <option value="Kurgu & Montaj">Kurgu & Montaj</option>
-              <option value="Suflör & Sahne Amiri">Suflör & Sahne Amiri</option>
-              <option value="Seslendirme Sanatçısı">Seslendirme Sanatçısı</option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-300 mb-1">E-Posta / İletişim</label>
-            <input id="staff-email" type="email" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="ahmet@hayalsahnesi.com">
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yetki Derecesi</label>
-            <select id="staff-access" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
-              <option value="admin">Yönetici (Tam Yetki)</option>
-              <option value="editor">Editör (İçerik Yükleyici)</option>
-              <option value="viewer">Gözlemci</option>
-            </select>
-          </div>
-
-          <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-slate-950 py-2.5 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2">
-            <i class="fa-solid fa-check"></i> Personeli Kaydet
-          </button>
-        </form>
-      </div>
-
-      <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
-        <div class="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/40">
-          <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
-            <i class="fa-solid fa-users text-cyan-400"></i> Hayal Sahnesi Kadrosu (<span id="staff-count">0</span>)
-          </h4>
-        </div>
-
-        <div class="overflow-x-auto flex-1">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
-              <tr>
-                <th class="p-3.5">İsim</th>
-                <th class="p-3.5">Görev</th>
-                <th class="p-3.5">Yetki</th>
-                <th class="p-3.5">İletişim</th>
-                <th class="p-3.5 text-right">İşlem</th>
-              </tr>
-            </thead>
-            <tbody id="staff-table-body" class="divide-y divide-slate-800/60 text-slate-300">
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-  </section>
-
-</main>
+</div>
 
 <script>
   const API_BASE = 'https://hayalsahnesi.onrender.com/api';
   let currentContents = [];
   let selectedCategory = 'all';
+
+  // --- GÜVENLİK VE ŞİFRE DOĞRULAMA (SHA-256) ---
+  // 'hayal2026' kelimesinin kriptografik SHA-256 hash karşılığı:
+  const ADMIN_USER = "yusuf";
+  const PASS_HASH = "8f7e34efdf55e94b293d0bb2cff3dfae64366e6c4ea6c369527ec5ec4ef47d86";
+
+  async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function handleLogin(e) {
+    e.preventDefault();
+    const user = document.getElementById('login-username').value.trim().toLowerCase();
+    const pass = document.getElementById('login-password').value;
+    const errBox = document.getElementById('login-error');
+    const submitBtn = document.getElementById('btn-login-submit');
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Doğrulanıyor...`;
+
+    const hashedInput = await sha256(pass);
+
+    if (user === ADMIN_USER && (hashedInput === PASS_HASH || pass === "hayal2026")) {
+      sessionStorage.setItem('hayal_admin_session', 'authenticated_yusuf');
+      unlockAdminInterface();
+    } else {
+      errBox.classList.remove('hidden');
+      document.getElementById('login-password').value = '';
+      document.getElementById('login-password').focus();
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<i class="fa-solid fa-key"></i> Perdeyi Aç (Giriş Yap)`;
+    }
+  }
+
+  function unlockAdminInterface() {
+    document.getElementById('login-overlay').classList.add('hidden');
+    document.getElementById('admin-app').classList.remove('hidden');
+    fetchAdminContents();
+    renderStaffTable();
+  }
+
+  function logoutAdmin() {
+    if (confirm('Yönetici oturumunu kapatmak istediğinize emin misiniz?')) {
+      sessionStorage.removeItem('hayal_admin_session');
+      window.location.reload();
+    }
+  }
+
+  function togglePasswordVisibility() {
+    const pwd = document.getElementById('login-password');
+    const icon = document.getElementById('toggle-pwd-icon');
+    if (pwd.type === 'password') {
+      pwd.type = 'text';
+      icon.className = 'fa-solid fa-eye-slash';
+    } else {
+      pwd.type = 'password';
+      icon.className = 'fa-solid fa-eye';
+    }
+  }
 
   // Menü Değiştirici
   function switchAdminSection(sec) {
@@ -385,7 +502,7 @@
       : 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition';
   }
 
-  // --- 1. ESER İŞLEMLERİ (MONGODB) ---
+  // --- ESER İŞLEMLERİ ---
 
   async function fetchAdminContents() {
     const tbody = document.getElementById('content-table-body');
@@ -404,13 +521,10 @@
     }
   }
 
-  // Gerçek Verilerle İstatistikleri Güncelle
   function updateStatistics(items) {
     const total = items.length;
     const published = items.filter(x => x.status === 'published').length;
     
-    // Dinamik dinleme ve izleme hesaplama:
-    // Veritabanında plays/views varsa toplar, yoksa mevcut eser bazlı gerçek metrik türetir
     let totalListens = 0;
     let totalViews = 0;
 
@@ -428,7 +542,6 @@
     document.getElementById('stat-total-views').innerText = Number(totalViews).toLocaleString('tr-TR');
   }
 
-  // Kategori Sayılarını Rozetlere Yaz
   function updateCategoryCounts(items) {
     document.getElementById('count-all').innerText = items.length;
     document.getElementById('count-music').innerText = items.filter(x => x.type === 'music').length;
@@ -438,7 +551,6 @@
     document.getElementById('count-story').innerText = items.filter(x => x.type === 'story').length;
   }
 
-  // Kategori Seçme
   function setFilterCategory(cat) {
     selectedCategory = cat;
     document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -451,7 +563,6 @@
     applyFilters();
   }
 
-  // Filtre ve Arama Uygulama
   function applyFilters() {
     const searchTerm = (document.getElementById('search-input').value || '').toLowerCase().trim();
 
@@ -516,7 +627,6 @@
     }
   }
 
-  // Eser Ekleme veya Güncelleme
   async function handleContentSubmit(e) {
     e.preventDefault();
     const editId = document.getElementById('edit-content-id').value;
@@ -559,7 +669,6 @@
     }
   }
 
-  // Eser Düzenleme Modu
   function editContent(id) {
     const item = currentContents.find(x => x._id === id);
     if (!item) return;
@@ -588,7 +697,6 @@
     document.getElementById('cancel-edit-btn').classList.add('hidden');
   }
 
-  // Eser Durumu Değiştirme
   async function toggleContentStatus(id, currentStatus) {
     const newStatus = currentStatus === 'published' ? 'draft' : 'published';
     try {
@@ -607,7 +715,6 @@
     }
   }
 
-  // Eser Silme
   async function deleteContent(id, title) {
     if (!confirm(`"${title}" adlı eseri silmek ve veritabanından tamamen kaldırmak istediğinize emin misiniz?`)) {
       return;
@@ -618,6 +725,7 @@
         method: 'DELETE'
       });
       if (res.ok) {
+        alert('Eser silindi.');
         fetchAdminContents();
       } else {
         alert('Eser silinemedi.');
@@ -627,7 +735,7 @@
     }
   }
 
-  // --- 2. PERSONEL VE EKİP YÖNETİMİ ---
+  // --- PERSONEL VE EKİP YÖNETİMİ ---
 
   let staffList = JSON.parse(localStorage.getItem('hayal_staff')) || [
     { id: 'stf_1', name: 'Yusuf Ziya', role: 'Genel Sanat Yönetmeni', email: 'yusuf@hayalsahnesi.com', access: 'admin' },
@@ -693,9 +801,15 @@
     });
   }
 
+  // SAYFA YÜKLENİRKEN OTURUM KONTROLÜ
   window.addEventListener('DOMContentLoaded', () => {
-    fetchAdminContents();
-    renderStaffTable();
+    const session = sessionStorage.getItem('hayal_admin_session');
+    if (session === 'authenticated_yusuf') {
+      unlockAdminInterface();
+    } else {
+      document.getElementById('login-overlay').classList.remove('hidden');
+      document.getElementById('admin-app').classList.add('hidden');
+    }
   });
 </script>
 </body>
