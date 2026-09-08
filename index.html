@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hayal Sahnesi | Şiir, Fotoroman, Mini Dizi, Hikaye & Müzik</title>
 <meta name="description" content="Hayal Sahnesi; fotoromanlar, mini diziler, sesli şiir dinletileri ve edebiyatın buluştuğu dijital sahne.">
-<meta property="og:title" content="Hayal Sahnesi - Perde Açılıyor">
-<meta property="og:description" content="Görsel anlatılar, orijinal sahne müzikleri ve derin öyküler tek bir sahnede.">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -36,7 +34,6 @@
     font-style: italic;
   }
 </style>
-<!-- YouTube Iframe API -->
 <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-rose-600 selection:text-white">
@@ -77,7 +74,7 @@
     </button>
   </nav>
 
-  <!-- Giriş / İletişim / Yönetim -->
+  <!-- Giriş / Eser Gönder -->
   <div class="flex items-center space-x-3">
     <a href="admin.html" class="hidden sm:flex text-slate-300 hover:text-white text-xs px-3.5 py-2 rounded-lg font-bold transition items-center gap-1.5 bg-slate-900 border border-slate-700 hover:border-rose-500">
       <i class="fa-solid fa-lock text-rose-400"></i> Yönetim Masası
@@ -124,65 +121,7 @@
         <span class="text-xs bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded-md">Sesli & Fon Müzikli</span>
       </div>
     </div>
-
-    <div id="poems-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="card-stage rounded-2xl p-6 relative group hover:border-cyan-500/40 transition flex flex-col justify-between">
-        <div class="space-y-3">
-          <div class="flex items-center justify-between text-xs text-cyan-400 font-semibold">
-            <span><i class="fa-solid fa-music mr-1"></i>Keman & Rüzgar</span>
-            <span>03:14</span>
-          </div>
-          <h4 class="text-lg font-bold text-white">Kül Rengi Tirad</h4>
-          <blockquote class="text-sm font-serif-italic text-slate-300 border-l-2 border-cyan-500/40 pl-3">
-            "Sahne boşalınca geriye kalan, söylenmemiş repliklerin yankısıdır geceye sinen..."
-          </blockquote>
-        </div>
-        <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between">
-          <span class="text-xs text-slate-400">Seslendiren: Y. K.</span>
-          <button onclick="handleMediaPlay('Kül Rengi Tirad', 'Şiir Dinletisi', '')" class="bg-cyan-600/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-headphones"></i> Dinle
-          </button>
-        </div>
-      </div>
-
-      <div class="card-stage rounded-2xl p-6 relative group hover:border-cyan-500/40 transition flex flex-col justify-between">
-        <div class="space-y-3">
-          <div class="flex items-center justify-between text-xs text-cyan-400 font-semibold">
-            <span><i class="fa-solid fa-music mr-1"></i>Hüzünlü Piyano</span>
-            <span>02:45</span>
-          </div>
-          <h4 class="text-lg font-bold text-white">Geceyarısı Yağmuru</h4>
-          <blockquote class="text-sm font-serif-italic text-slate-300 border-l-2 border-cyan-500/40 pl-3">
-            "Cama vuran her damla bir nota, uzaktaki kente yazılmış mektup gibi bu sükunet..."
-          </blockquote>
-        </div>
-        <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between">
-          <span class="text-xs text-slate-400">Yazar: E. Sarser</span>
-          <button onclick="handleMediaPlay('Geceyarısı Yağmuru', 'Piyano Eşliğinde Dinleti', '')" class="bg-cyan-600/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-headphones"></i> Dinle
-          </button>
-        </div>
-      </div>
-
-      <div class="card-stage rounded-2xl p-6 relative group hover:border-cyan-500/40 transition flex flex-col justify-between">
-        <div class="space-y-3">
-          <div class="flex items-center justify-between text-xs text-cyan-400 font-semibold">
-            <span><i class="fa-solid fa-music mr-1"></i>Şamanik Davul</span>
-            <span>04:02</span>
-          </div>
-          <h4 class="text-lg font-bold text-white">Dağın Çağrısı</h4>
-          <blockquote class="text-sm font-serif-italic text-slate-300 border-l-2 border-cyan-500/40 pl-3">
-            "Kurtların sustuğu o donmuş vadide, eski sözler uyanır duman yükseldikçe..."
-          </blockquote>
-        </div>
-        <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between">
-          <span class="text-xs text-slate-400">Kollektif Eser</span>
-          <button onclick="handleMediaPlay('Dağın Çağrısı', 'Mistik & Epik Dinleti', '')" class="bg-cyan-600/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-headphones"></i> Dinle
-          </button>
-        </div>
-      </div>
-    </div>
+    <div id="poems-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
   </section>
 
   <!-- Mini Diziler -->
@@ -194,53 +133,7 @@
         <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-md">Kısa Metraj Video</span>
       </div>
     </div>
-
-    <div id="series-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div class="card-stage rounded-2xl overflow-hidden group hover:border-rose-500/50 transition">
-        <div class="h-44 bg-slate-900 relative flex items-center justify-center cursor-pointer" onclick="openVideoPlayer('Üçüncü Gong Çalınca', 'Bölüm 1: Açılış')">
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10"></div>
-          <span class="absolute top-3 right-3 z-20 bg-rose-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded">4 Bölüm</span>
-          <div class="w-12 h-12 rounded-full bg-rose-600/80 flex items-center justify-center text-white z-20 group-hover:scale-110 transition shadow-lg">
-            <i class="fa-solid fa-play ml-1"></i>
-          </div>
-        </div>
-        <div class="p-5 space-y-2">
-          <span class="text-[11px] font-bold text-rose-400 uppercase tracking-wide">Polisiye • Dram</span>
-          <h4 class="font-bold text-white text-base">Üçüncü Gong Çalınca</h4>
-          <p class="text-xs text-slate-400">Sahne arkasında işlenen kusursuz bir cinayet ve gerilim dolu yüzleşmeler.</p>
-        </div>
-      </div>
-
-      <div class="card-stage rounded-2xl overflow-hidden group hover:border-rose-500/50 transition">
-        <div class="h-44 bg-slate-900 relative flex items-center justify-center cursor-pointer" onclick="openVideoPlayer('Kuzey Masalı', 'Bölüm 1: Sis')">
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10"></div>
-          <span class="absolute top-3 right-3 z-20 bg-rose-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded">6 Bölüm</span>
-          <div class="w-12 h-12 rounded-full bg-rose-600/80 flex items-center justify-center text-white z-20 group-hover:scale-110 transition shadow-lg">
-            <i class="fa-solid fa-play ml-1"></i>
-          </div>
-        </div>
-        <div class="p-5 space-y-2">
-          <span class="text-[11px] font-bold text-purple-400 uppercase tracking-wide">Mistik • Gerilim</span>
-          <h4 class="font-bold text-white text-base">Kuzey Masalı</h4>
-          <p class="text-xs text-slate-400">Şamanik efsanelerin modern bir kente uzanan ürpertici yankıları.</p>
-        </div>
-      </div>
-
-      <div class="card-stage rounded-2xl overflow-hidden group hover:border-rose-500/50 transition">
-        <div class="h-44 bg-slate-900 relative flex items-center justify-center cursor-pointer" onclick="openVideoPlayer('Kulis Entrikaları', 'Bölüm 1: Rol Dağıtımı')">
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10"></div>
-          <span class="absolute top-3 right-3 z-20 bg-rose-600/90 text-white text-[10px] font-bold px-2 py-0.5 rounded">3 Bölüm</span>
-          <div class="w-12 h-12 rounded-full bg-rose-600/80 flex items-center justify-center text-white z-20 group-hover:scale-110 transition shadow-lg">
-            <i class="fa-solid fa-play ml-1"></i>
-          </div>
-        </div>
-        <div class="p-5 space-y-2">
-          <span class="text-[11px] font-bold text-amber-400 uppercase tracking-wide">Kara Komedi</span>
-          <h4 class="font-bold text-white text-base">Kulis Entrikaları</h4>
-          <p class="text-xs text-slate-400">Başrolü kapmak için her türlü oyunu mübah sayan iki oyuncunun rekabeti.</p>
-        </div>
-      </div>
-    </div>
+    <div id="series-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
   </section>
 
   <!-- Fotoromanlar & Hikayeler -->
@@ -250,37 +143,7 @@
         <div class="w-2.5 h-6 bg-amber-500 rounded-sm"></div>
         <h3 class="text-xl font-extrabold text-white">Fotoromanlar</h3>
       </div>
-      <div id="photoroman-list" class="space-y-3">
-        <div class="card-stage p-4 rounded-xl flex items-center justify-between hover:border-amber-500/40 transition">
-          <div class="flex items-center space-x-4">
-            <div class="w-16 h-16 bg-slate-900 rounded-lg flex items-center justify-center text-amber-400 border border-slate-800">
-              <i class="fa-solid fa-camera-retro text-2xl"></i>
-            </div>
-            <div>
-              <h5 class="font-bold text-white text-sm">Gece Provası</h5>
-              <p class="text-xs text-slate-400">34 Kare • Sesli ve Balonlu Anlatı</p>
-            </div>
-          </div>
-          <button onclick="openReader('Gece Provası', 'Replikler unutulur, sırlar açığa çıkar...', '34')" class="bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 px-3.5 py-1.5 rounded-lg text-xs font-bold transition">
-            Oku
-          </button>
-        </div>
-
-        <div class="card-stage p-4 rounded-xl flex items-center justify-between hover:border-amber-500/40 transition">
-          <div class="flex items-center space-x-4">
-            <div class="w-16 h-16 bg-slate-900 rounded-lg flex items-center justify-center text-amber-400 border border-slate-800">
-              <i class="fa-regular fa-images text-2xl"></i>
-            </div>
-            <div>
-              <h5 class="font-bold text-white text-sm">Yağmur Altında Monolog</h5>
-              <p class="text-xs text-slate-400">22 Kare • Siyah & Beyaz Sinematik</p>
-            </div>
-          </div>
-          <button onclick="openReader('Yağmur Altında Monolog', 'Nostaljik sokaklarda kayıp bir aşk...', '22')" class="bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 px-3.5 py-1.5 rounded-lg text-xs font-bold transition">
-            Oku
-          </button>
-        </div>
-      </div>
+      <div id="photoroman-list" class="space-y-3"></div>
     </section>
 
     <section id="sec-stories" class="space-y-4">
@@ -288,65 +151,19 @@
         <div class="w-2.5 h-6 bg-emerald-500 rounded-sm"></div>
         <h3 class="text-xl font-extrabold text-white">Hikayeler</h3>
       </div>
-      <div id="stories-list" class="space-y-3">
-        <div class="card-stage p-4 rounded-xl hover:border-emerald-500/40 transition space-y-2">
-          <div class="flex items-center justify-between text-xs text-emerald-400 font-semibold">
-            <span>Gizem & Polis</span>
-            <span>7 dk okuma</span>
-          </div>
-          <h5 class="text-base font-bold text-white">Suflörün Son Nefesi</h5>
-          <p class="text-xs text-slate-400">Oyunun en can alıcı sahnesinde suflör kabininden gelen beklenmedik fısıltı...</p>
-          <button onclick="openStory('Suflörün Son Nefesi', 'Oyunun üçüncü perdesi başladığında salonda çıt çıkmıyordu. Başak rolündeki Selin tiradını atarken kabinden gelen fısıltı replik değildi: Kaç, perde kapanmayacak...')" class="text-xs font-bold text-emerald-400 hover:underline pt-1 inline-block">Metni Oku →</button>
-        </div>
-      </div>
+      <div id="stories-list" class="space-y-3"></div>
     </section>
   </div>
 
-  <!-- Müzikler (Canlı ve Statik) -->
+  <!-- Sahne Müzikleri -->
   <section id="sec-music" class="space-y-4">
     <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
       <div class="flex items-center space-x-2.5">
         <div class="w-2.5 h-6 bg-purple-500 rounded-sm"></div>
         <h3 class="text-xl font-extrabold text-white">Sahne Müzikleri (OST)</h3>
       </div>
-      <span class="text-xs text-purple-400 font-semibold bg-purple-500/10 border border-purple-500/20 px-2 py-0.5 rounded">Seçenekli Oynatıcı</span>
     </div>
-
-    <div id="music-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="card-stage p-4 rounded-xl flex items-center justify-between hover:border-purple-500/40 transition">
-        <div class="flex items-center space-x-3">
-          <button onclick="handleMediaPlay('Perde Açılış Prelüdü', 'Hayal Sahnesi OST', '')" class="w-10 h-10 rounded-full bg-purple-600/30 text-purple-400 flex items-center justify-center hover:scale-105 transition">
-            <i class="fa-solid fa-headphones text-sm"></i>
-          </button>
-          <div>
-            <p class="text-sm font-semibold text-white">Perde Açılış Prelüdü</p>
-            <p class="text-[11px] text-slate-400">03:12 • Enstrümantal</p>
-          </div>
-        </div>
-      </div>
-      <div class="card-stage p-4 rounded-xl flex items-center justify-between hover:border-purple-500/40 transition">
-        <div class="flex items-center space-x-3">
-          <button onclick="handleMediaPlay('Kuzey Ormanında Gece', 'Mistik Ambient', '')" class="w-10 h-10 rounded-full bg-purple-600/30 text-purple-400 flex items-center justify-center hover:scale-105 transition">
-            <i class="fa-solid fa-headphones text-sm"></i>
-          </button>
-          <div>
-            <p class="text-sm font-semibold text-white">Kuzey Ormanında Gece</p>
-            <p class="text-[11px] text-slate-400">04:45 • Ambient</p>
-          </div>
-        </div>
-      </div>
-      <div class="card-stage p-4 rounded-xl flex items-center justify-between hover:border-purple-500/40 transition">
-        <div class="flex items-center space-x-3">
-          <button onclick="handleMediaPlay('Yalnız Monolog (Piyano)', 'Solo Piyano Teması', '')" class="w-10 h-10 rounded-full bg-purple-600/30 text-purple-400 flex items-center justify-center hover:scale-105 transition">
-            <i class="fa-solid fa-headphones text-sm"></i>
-          </button>
-          <div>
-            <p class="text-sm font-semibold text-white">Yalnız Monolog</p>
-            <p class="text-[11px] text-slate-400">02:38 • Solo Piyano</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div id="music-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
   </section>
 
 </main>
@@ -365,24 +182,17 @@
 
   <div class="flex flex-col items-center gap-1">
     <div class="flex items-center space-x-4 text-slate-400">
-      <button class="hover:text-white transition"><i class="fa-solid fa-backward-step text-xs"></i></button>
       <button onclick="togglePlayState()" id="play-pause-btn" class="w-8 h-8 rounded-full bg-rose-600 text-white flex items-center justify-center hover:scale-105 transition shadow-md shadow-rose-600/30 font-bold">
         <i class="fa-solid fa-play text-xs"></i>
       </button>
-      <button class="hover:text-white transition"><i class="fa-solid fa-forward-step text-xs"></i></button>
-    </div>
-    <div class="w-44 sm:w-72 h-1 bg-slate-800 rounded-full overflow-hidden">
-      <div id="player-progress" class="bg-rose-500 h-full w-2/5 transition-all duration-300"></div>
     </div>
   </div>
 
   <div class="hidden sm:flex items-center space-x-3 text-slate-400 text-xs">
-    <i class="fa-solid fa-volume-high"></i>
     <span class="text-[11px] font-mono text-emerald-400">● Sahne Canlı</span>
   </div>
 </aside>
 
-<!-- Arka Plan Ses ve Gizli YouTube Oynatıcı -->
 <audio id="global-audio" class="hidden"></audio>
 <div id="hidden-yt-container" class="hidden pointer-events-none opacity-0 fixed -bottom-96 -right-96">
   <div id="yt-player"></div>
@@ -393,26 +203,21 @@
   <div class="flex justify-between items-center text-white pb-4 border-b border-slate-800">
     <div>
       <h3 id="reader-title" class="font-bold text-lg">Fotoroman</h3>
-      <p id="reader-info" class="text-xs text-slate-400">Kare 1 / 10</p>
+      <p id="reader-info" class="text-xs text-slate-400">Canlı Sahne</p>
     </div>
     <button onclick="closeModal('modal-reader')" class="text-slate-400 hover:text-white text-xl p-2"><i class="fa-solid fa-xmark"></i></button>
   </div>
   <div class="flex-1 flex flex-col items-center justify-center py-6 text-center max-w-2xl mx-auto space-y-4">
     <div class="w-full h-80 bg-slate-900 border border-slate-800 rounded-2xl flex items-center justify-center relative overflow-hidden">
-      <img id="reader-image" class="hidden w-full h-full object-cover" alt="Fotoroman Karesi">
-      <i id="reader-fallback-icon" class="fa-solid fa-camera text-5xl text-slate-700"></i>
+      <i class="fa-solid fa-camera text-5xl text-slate-700"></i>
       <div class="absolute bottom-4 left-4 right-4 bg-black/80 backdrop-blur-md p-3 rounded-xl border border-slate-700/60 text-xs text-slate-200">
         <p id="reader-dialog">"Gece henüz yeni başlamıştı, koridorun sonundaki kapı aralık duruyordu..."</p>
       </div>
     </div>
-    <div class="flex items-center gap-4">
-      <button class="card-stage px-4 py-2 rounded-lg text-xs font-bold text-white hover:bg-slate-800">Önceki Kare</button>
-      <button class="stage-gradient px-4 py-2 rounded-lg text-xs font-bold text-white">Sonraki Kare</button>
-    </div>
   </div>
 </div>
 
-<!-- MODAL: VİDEO / MİNİ DİZİ / YOUTUBE SİNEMA EKRANI -->
+<!-- MODAL: VİDEO OYNATICI -->
 <div id="modal-video" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex flex-col p-4 md:p-8">
   <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800">
     <div>
@@ -427,50 +232,60 @@
   </div>
 </div>
 
-<!-- MODAL: HİKAYE OKUMA -->
+<!-- MODAL: HİKAYE VE ESER METNİ OKUMA -->
 <div id="modal-story" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex flex-col p-4 md:p-8">
   <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800 max-w-3xl mx-auto w-full">
-    <h3 id="story-title" class="font-bold text-lg">Hikaye</h3>
+    <div>
+      <h3 id="story-title" class="font-bold text-lg">Eser Okuma</h3>
+      <p id="story-author" class="text-xs text-emerald-400 font-semibold"></p>
+    </div>
     <button onclick="closeModal('modal-story')" class="text-slate-400 hover:text-white text-xl p-2"><i class="fa-solid fa-xmark"></i></button>
   </div>
   <div class="flex-1 overflow-y-auto max-w-3xl mx-auto w-full py-6 space-y-4 text-slate-300 leading-relaxed font-serif text-base">
-    <p id="story-body" class="whitespace-pre-line">Hikaye metni yükleniyor...</p>
+    <p id="story-body" class="whitespace-pre-line leading-relaxed">Metin yükleniyor...</p>
   </div>
 </div>
 
-<!-- MODAL: İLETİŞİM / ESER GÖNDER -->
+<!-- MODAL: ESER GÖNDERME FORMU -->
 <div id="modal-contact" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
   <div class="card-stage border border-slate-800 rounded-3xl p-6 md:p-8 max-w-lg w-full space-y-4">
     <div class="flex justify-between items-center border-b border-slate-800 pb-3">
       <h4 class="font-extrabold text-white text-lg">Sahneye Eser Gönderin</h4>
       <button onclick="closeModal('modal-contact')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <p class="text-xs text-slate-400">Şiir, senaryo, fotoroman veya müzik çalışmanızı doğrudan veritabanına iletin.</p>
+    <p class="text-xs text-slate-400">Şiir, hikaye veya müzik eserinizi doğrudan yönetim masamıza iletin.</p>
+    
     <form onsubmit="handleContact(event)" class="space-y-3">
       <div>
-        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Adınız / Mahlasınız</label>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Adınız / Mahlasınız *</label>
         <input id="contact-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
       </div>
       <div>
-        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Başlığı</label>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Başlığı *</label>
         <input id="contact-title" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserin adı...">
       </div>
-      <div>
-        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Türü</label>
-        <select id="contact-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
-          <option value="poem">Şiir & Sesli Dinleti</option>
-          <option value="series">Mini Dizi</option>
-          <option value="photoroman">Fotoroman</option>
-          <option value="story">Hikaye</option>
-          <option value="music">Sahne Müziği (OST)</option>
-        </select>
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Türü *</label>
+          <select id="contact-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+            <option value="poem">Şiir & Dinleti</option>
+            <option value="story">Hikaye</option>
+            <option value="music">Müzik (OST)</option>
+            <option value="series">Mini Dizi</option>
+            <option value="photoroman">Fotoroman</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Medya Linki (Varsa)</label>
+          <input id="contact-media-url" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="YouTube / MP3 linki">
+        </div>
       </div>
       <div>
-        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Açıklama veya Medya Linki</label>
-        <textarea id="contact-desc" required rows="3" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eser mısraları, video veya ses bağlantınız..."></textarea>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Şiir Mısraları / Açıklama *</label>
+        <textarea id="contact-text-body" required rows="5" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserinizin tüm sözlerini, mısralarını veya hikaye içeriğini buraya yazınız..."></textarea>
       </div>
-      <button id="btn-contact-submit" type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-rose-900/30 hover:opacity-95 transition">
-        Gönderimi Tamamla
+      <button id="btn-contact-submit" type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-rose-900/30 hover:opacity-95 transition flex items-center justify-center gap-2">
+        <i class="fa-regular fa-paper-plane"></i> Eseri Sahneye Gönder
       </button>
     </form>
   </div>
@@ -483,53 +298,31 @@
   let activeSourceType = 'none';
   let isPlaying = false;
 
-  // YouTube API Hazırlığı
   function onYouTubeIframeAPIReady() {
     ytPlayer = new YT.Player('yt-player', {
       height: '200',
       width: '200',
       videoId: '',
-      playerVars: {
-        'playsinline': 1,
-        'controls': 0
-      },
-      events: {
-        'onStateChange': onPlayerStateChange
-      }
+      playerVars: { 'playsinline': 1, 'controls': 0 }
     });
   }
 
-  function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.PLAYING) {
-      setPlayerPlayingUI(true);
-    } else if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
-      setPlayerPlayingUI(false);
-    }
-  }
-
-  // Canlı Eserleri MongoDB'den Getir
   async function loadLiveContents() {
     try {
       const res = await fetch(`${API_BASE}/contents`);
       const json = await res.json();
       const items = Array.isArray(json) ? json : (json.data || []);
-
-      if (items && items.length > 0) {
-        distributeLiveContents(items);
-      }
+      distributeLiveContents(items);
     } catch (err) {
-      console.warn('Canlı API yüklenirken beklendi:', err);
+      console.warn('Canlı API yüklenirken hata oluştu:', err);
     }
   }
 
   function distributeLiveContents(items) {
+    // Müzikler
     const musics = items.filter(x => x.type === 'music');
-    const poems = items.filter(x => x.type === 'poem');
-
-    // Müzikleri Listele: HEM DİNLE (Alt Konsol) HEM İZLE (Video Perdesi)
     if (musics.length > 0) {
-      const musicGrid = document.getElementById('music-grid');
-      const liveCards = musics.map(m => `
+      document.getElementById('music-grid').innerHTML = musics.map(m => `
         <div class="card-stage p-5 rounded-2xl flex flex-col justify-between hover:border-purple-500/50 transition border border-purple-900/40 bg-purple-950/20 gap-4">
           <div class="flex items-center space-x-3.5">
             <div class="w-12 h-12 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center text-lg font-bold border border-purple-500/30">
@@ -537,206 +330,105 @@
             </div>
             <div>
               <h4 class="font-bold text-white text-base">${escapeHtml(m.title)}</h4>
-              <p class="text-xs text-purple-400 font-semibold">${escapeHtml(m.author || 'Yusuf Ziya')} • Canlı Eser</p>
+              <p class="text-xs text-purple-400 font-semibold">${escapeHtml(m.author || 'Yusuf Ziya')}</p>
             </div>
           </div>
-          
           <div class="flex items-center gap-2 pt-2 border-t border-purple-900/40">
-            <!-- Alt Çalarda Çal -->
             <button onclick="handleMediaPlay('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Yusuf Ziya')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 bg-purple-600/25 hover:bg-purple-600 text-purple-200 hover:text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
               <i class="fa-solid fa-headphones"></i> Dinle
             </button>
-            
-            <!-- Video Perdesini Aç -->
             <button onclick="openVideoPlayer('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Yusuf Ziya')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 stage-gradient text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-md shadow-rose-900/40 hover:opacity-90 transition">
               <i class="fa-solid fa-film"></i> İzle
             </button>
           </div>
         </div>
       `).join('');
-      musicGrid.innerHTML = liveCards + musicGrid.innerHTML;
     }
 
-    // Şiirleri Listele
+    // Şiirler
+    const poems = items.filter(x => x.type === 'poem');
     if (poems.length > 0) {
-      const poemsGrid = document.getElementById('poems-grid');
-      const livePoems = poems.map(p => `
+      document.getElementById('poems-grid').innerHTML = poems.map(p => `
         <div class="card-stage rounded-2xl p-6 relative group hover:border-cyan-500/40 transition flex flex-col justify-between border border-cyan-900/30">
           <div class="space-y-3">
             <div class="flex items-center justify-between text-xs text-cyan-400 font-semibold">
-              <span><i class="fa-solid fa-microphone-lines mr-1"></i>Canlı Dinleti</span>
-              <span class="text-slate-400">Yayında</span>
+              <span><i class="fa-solid fa-microphone-lines mr-1"></i>Şiir & Dinleti</span>
+              <span class="text-slate-400">Canlı</span>
             </div>
             <h4 class="text-lg font-bold text-white">${escapeHtml(p.title)}</h4>
-            <blockquote class="text-sm font-serif-italic text-slate-300 border-l-2 border-cyan-500/40 pl-3">
-              "${escapeHtml(p.description || p.textBody || 'Kelimeler perdeye dökülüyor...')}"
+            <blockquote class="text-sm font-serif-italic text-slate-300 border-l-2 border-cyan-500/40 pl-3 line-clamp-3">
+              "${escapeHtml(p.textBody || p.description || 'Kelimeler perdeye dökülüyor...')}"
             </blockquote>
           </div>
           <div class="pt-4 mt-4 border-t border-slate-800/80 flex items-center justify-between">
             <span class="text-xs text-slate-400">${escapeHtml(p.author || 'Yusuf Ziya')}</span>
             <div class="flex gap-2">
-              <button onclick="handleMediaPlay('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Yusuf Ziya')}', '${escapeHtml(p.mediaUrl || '')}')" class="bg-cyan-600/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5">
-                <i class="fa-solid fa-headphones"></i> Dinle
+              <button onclick="openStory('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Yusuf Ziya')}', \`${escapeForJs(p.textBody || p.description)}\`)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+                <i class="fa-solid fa-book-open mr-1"></i> Oku
+              </button>
+              <button onclick="handleMediaPlay('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Yusuf Ziya')}', '${escapeHtml(p.mediaUrl || '')}')" class="bg-cyan-600/20 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 px-3 py-1.5 rounded-lg text-xs font-bold transition">
+                <i class="fa-solid fa-headphones mr-1"></i> Dinle
               </button>
             </div>
           </div>
         </div>
       `).join('');
-      poemsGrid.innerHTML = livePoems + poemsGrid.innerHTML;
-    }
-  }
-
-  // 1. SEÇENEK: ALT SAHNE ÇALARI (Sadece Ses / Arka Plan)
-  function handleMediaPlay(title, author, mediaUrl) {
-    document.getElementById('player-title').innerText = title;
-    document.getElementById('player-subtitle').innerText = author + ' • Sahne Çalıyor';
-
-    if (globalAudio.src) globalAudio.pause();
-    if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
-
-    if (!mediaUrl) {
-      activeSourceType = 'none';
-      setPlayerPlayingUI(true);
-      return;
     }
 
-    if (mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be')) {
-      let videoId = getYouTubeId(mediaUrl);
-      if (videoId && ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
-        activeSourceType = 'youtube';
-        ytPlayer.loadVideoById(videoId);
-        ytPlayer.playVideo();
-        setPlayerPlayingUI(true);
-      } else {
-        window.open(mediaUrl, '_blank');
-      }
-    } else {
-      activeSourceType = 'audio';
-      globalAudio.src = mediaUrl;
-      globalAudio.play().then(() => {
-        setPlayerPlayingUI(true);
-      }).catch(err => console.warn('Ses oynatılamadı:', err));
-    }
-  }
-
-  // 2. SEÇENEK: SİNEMATİK VİDEO MODALI (Görsel ve Ses Birlikte)
-  function openVideoPlayer(title, author, mediaUrl) {
-    document.getElementById('video-title').innerText = title;
-    document.getElementById('video-ep').innerText = author || 'Özel Gösterim';
-
-    // Alt çaları durdur ki sesler çakışmasın
-    if (activeSourceType === 'audio') globalAudio.pause();
-    if (activeSourceType === 'youtube' && ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
-    setPlayerPlayingUI(false);
-
-    const container = document.getElementById('video-container');
-    
-    if (mediaUrl && (mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be'))) {
-      let videoId = getYouTubeId(mediaUrl);
-      container.innerHTML = `
-        <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      `;
-    } else {
-      container.innerHTML = `
-        <div class="text-center p-6 space-y-3">
-          <i class="fa-solid fa-clapperboard text-5xl text-rose-500/60"></i>
-          <p class="text-white font-bold text-sm">Bu eser için video akışı hazırlanıyor.</p>
-          <p class="text-xs text-slate-400">Dilerseniz alt konsoldan dinleyebilirsiniz.</p>
+    // Hikayeler
+    const stories = items.filter(x => x.type === 'story');
+    if (stories.length > 0) {
+      document.getElementById('stories-list').innerHTML = stories.map(s => `
+        <div class="card-stage p-4 rounded-xl hover:border-emerald-500/40 transition space-y-2">
+          <div class="flex items-center justify-between text-xs text-emerald-400 font-semibold">
+            <span>${escapeHtml(s.author || 'Yusuf Ziya')}</span>
+            <span>Hikaye</span>
+          </div>
+          <h5 class="text-base font-bold text-white">${escapeHtml(s.title)}</h5>
+          <p class="text-xs text-slate-400 line-clamp-2">${escapeHtml(s.textBody || s.description || '...')}</p>
+          <button onclick="openStory('${escapeHtml(s.title)}', '${escapeHtml(s.author || 'Yusuf Ziya')}', \`${escapeForJs(s.textBody || s.description)}\`)" class="text-xs font-bold text-emerald-400 hover:underline pt-1 inline-block">Metnin Tamamını Oku →</button>
         </div>
-      `;
+      `).join('');
     }
 
-    openModal('modal-video');
-  }
-
-  function getYouTubeId(url) {
-    if (url.includes('youtu.be/')) {
-      return url.split('youtu.be/')[1].split('?')[0];
-    } else if (url.includes('watch?v=')) {
-      return url.split('watch?v=')[1].split('&')[0];
+    // Mini Diziler
+    const series = items.filter(x => x.type === 'series');
+    if (series.length > 0) {
+      document.getElementById('series-grid').innerHTML = series.map(se => `
+        <div class="card-stage rounded-2xl overflow-hidden group hover:border-rose-500/50 transition">
+          <div class="h-44 bg-slate-900 relative flex items-center justify-center cursor-pointer" onclick="openVideoPlayer('${escapeHtml(se.title)}', '${escapeHtml(se.author || 'Yusuf Ziya')}', '${escapeHtml(se.mediaUrl || '')}')">
+            <div class="w-12 h-12 rounded-full bg-rose-600/80 flex items-center justify-center text-white z-20 group-hover:scale-110 transition shadow-lg">
+              <i class="fa-solid fa-play ml-1"></i>
+            </div>
+          </div>
+          <div class="p-5 space-y-2">
+            <span class="text-[11px] font-bold text-rose-400 uppercase tracking-wide">Mini Dizi</span>
+            <h4 class="font-bold text-white text-base">${escapeHtml(se.title)}</h4>
+            <p class="text-xs text-slate-400 line-clamp-2">${escapeHtml(se.textBody || se.description || '')}</p>
+          </div>
+        </div>
+      `).join('');
     }
-    return '';
-  }
 
-  function togglePlayState() {
-    if (isPlaying) {
-      if (activeSourceType === 'audio') globalAudio.pause();
-      if (activeSourceType === 'youtube' && ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
-      setPlayerPlayingUI(false);
-    } else {
-      if (activeSourceType === 'audio' && globalAudio.src) globalAudio.play().catch(()=>{});
-      if (activeSourceType === 'youtube' && ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
-      setPlayerPlayingUI(true);
-    }
-  }
-
-  function setPlayerPlayingUI(playing) {
-    isPlaying = playing;
-    const btn = document.getElementById('play-pause-btn');
-    const icon = document.getElementById('player-icon');
-    if (playing) {
-      btn.innerHTML = '<i class="fa-solid fa-pause text-xs"></i>';
-      icon.classList.add('animate-spin');
-    } else {
-      btn.innerHTML = '<i class="fa-solid fa-play text-xs"></i>';
-      icon.classList.remove('animate-spin');
-    }
-  }
-
-  // Modal Yönetimi
-  function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-  function closeModal(id) { 
-    document.getElementById(id).classList.add('hidden'); 
-    if (id === 'modal-video') {
-      const v = document.getElementById('video-container');
-      if (v) v.innerHTML = ''; // Video sesini anında durdur
-    }
-  }
-
-  function openReader(title, desc, frameCount, imgUrl) {
-    document.getElementById('reader-title').innerText = title;
-    document.getElementById('reader-info').innerText = frameCount ? (frameCount + ' Sahnelik Fotoroman') : 'Canlı Sahne';
-    document.getElementById('reader-dialog').innerText = desc || 'Kelimeler sahnenin karanlığına karışıyor...';
-    const rImg = document.getElementById('reader-image');
-    const rIcon = document.getElementById('reader-fallback-icon');
-    if (imgUrl) {
-      rImg.src = imgUrl;
-      rImg.classList.remove('hidden');
-      rIcon.classList.add('hidden');
-    } else {
-      rImg.classList.add('hidden');
-      rIcon.classList.remove('hidden');
-    }
-    openModal('modal-reader');
-  }
-
-  function openStory(title, content) {
-    document.getElementById('story-title').innerText = title;
-    document.getElementById('story-body').innerText = content;
-    openModal('modal-story');
-  }
-
-  function switchTab(category) {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.className = (btn.dataset.target === category) 
-        ? 'tab-btn active px-3.5 py-1.5 rounded-full text-xs font-semibold transition'
-        : 'tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold transition text-slate-400 hover:text-white';
-    });
-
-    const sections = {
-      poems: document.getElementById('sec-poems'),
-      series: document.getElementById('sec-series'),
-      photoroman: document.getElementById('sec-photoroman'),
-      stories: document.getElementById('sec-stories'),
-      music: document.getElementById('sec-music')
-    };
-
-    if (category === 'all') {
-      Object.values(sections).forEach(sec => sec.style.display = 'block');
-    } else {
-      Object.keys(sections).forEach(key => {
-        sections[key].style.display = (key === category) ? 'block' : 'none';
-      });
+    // Fotoromanlar
+    const photos = items.filter(x => x.type === 'photoroman');
+    if (photos.length > 0) {
+      document.getElementById('photoroman-list').innerHTML = photos.map(ph => `
+        <div class="card-stage p-4 rounded-xl flex items-center justify-between hover:border-amber-500/40 transition">
+          <div class="flex items-center space-x-4">
+            <div class="w-16 h-16 bg-slate-900 rounded-lg flex items-center justify-center text-amber-400 border border-slate-800">
+              <i class="fa-solid fa-camera-retro text-2xl"></i>
+            </div>
+            <div>
+              <h5 class="font-bold text-white text-sm">${escapeHtml(ph.title)}</h5>
+              <p class="text-xs text-slate-400">${escapeHtml(ph.author || 'Yusuf Ziya')} • Görsel Anlatı</p>
+            </div>
+          </div>
+          <button onclick="openReader('${escapeHtml(ph.title)}', '${escapeHtml(ph.textBody || ph.description || '')}', 'Canlı')" class="bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 px-3.5 py-1.5 rounded-lg text-xs font-bold transition">
+            Oku
+          </button>
+        </div>
+      `).join('');
     }
   }
 
@@ -744,13 +436,17 @@
     e.preventDefault();
     const submitBtn = document.getElementById('btn-contact-submit');
     submitBtn.disabled = true;
-    submitBtn.innerText = "İletiliyor...";
+    submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> İletiliyor...`;
+
+    const textVal = document.getElementById('contact-text-body').value.trim();
 
     const payload = {
       title: document.getElementById('contact-title').value.trim(),
       type: document.getElementById('contact-type').value,
-      description: document.getElementById('contact-desc').value.trim(),
       author: document.getElementById('contact-name').value.trim(),
+      mediaUrl: document.getElementById('contact-media-url').value.trim(),
+      textBody: textVal,
+      description: textVal,
       status: 'draft'
     };
 
@@ -760,19 +456,118 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      const data = await res.json();
-      if (data.success || res.ok) {
-        alert('Eseriniz Hayal Sahnesi kürasyon masasına iletildi!');
+
+      if (res.ok) {
+        alert('Eseriniz ve tüm metni başarıyla kürasyon masamıza iletildi! Yönetici onayından sonra sahnede parlayacak.');
         closeModal('modal-contact');
         e.target.reset();
       } else {
-        alert('Gönderim sırasında bir hata oluştu.');
+        alert('Gönderim sırasında sunucu hatası oluştu.');
       }
     } catch (err) {
       alert('Sunucuya bağlanılamadı.');
     } finally {
       submitBtn.disabled = false;
-      submitBtn.innerText = "Gönderimi Tamamla";
+      submitBtn.innerHTML = `<i class="fa-regular fa-paper-plane"></i> Eseri Sahneye Gönder`;
+    }
+  }
+
+  function handleMediaPlay(title, author, mediaUrl) {
+    document.getElementById('player-title').innerText = title;
+    document.getElementById('player-subtitle').innerText = author + ' • Sahne Çalıyor';
+
+    if (globalAudio.src) globalAudio.pause();
+    if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
+
+    if (!mediaUrl) return;
+
+    if (mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be')) {
+      let videoId = getYouTubeId(mediaUrl);
+      if (videoId && ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
+        activeSourceType = 'youtube';
+        ytPlayer.loadVideoById(videoId);
+        ytPlayer.playVideo();
+      } else {
+        window.open(mediaUrl, '_blank');
+      }
+    } else {
+      activeSourceType = 'audio';
+      globalAudio.src = mediaUrl;
+      globalAudio.play().catch(()=>{});
+    }
+  }
+
+  function openVideoPlayer(title, author, mediaUrl) {
+    document.getElementById('video-title').innerText = title;
+    document.getElementById('video-ep').innerText = author || 'Özel Gösterim';
+
+    const container = document.getElementById('video-container');
+    if (mediaUrl && (mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be'))) {
+      let videoId = getYouTubeId(mediaUrl);
+      container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    } else {
+      container.innerHTML = `<div class="p-6 text-center text-slate-400">Bu esere ait video bulunmuyor.</div>`;
+    }
+    openModal('modal-video');
+  }
+
+  function openReader(title, desc, frameCount) {
+    document.getElementById('reader-title').innerText = title;
+    document.getElementById('reader-info').innerText = frameCount;
+    document.getElementById('reader-dialog').innerText = desc || 'Kelimeler sahnenin karanlığına karışıyor...';
+    openModal('modal-reader');
+  }
+
+  function openStory(title, author, content) {
+    document.getElementById('story-title').innerText = title;
+    document.getElementById('story-author').innerText = 'Yazar: ' + author;
+    document.getElementById('story-body').innerText = content || 'Eser içeriği bulunamadı.';
+    openModal('modal-story');
+  }
+
+  function getYouTubeId(url) {
+    if (url.includes('youtu.be/')) return url.split('youtu.be/')[1].split('?')[0];
+    if (url.includes('watch?v=')) return url.split('watch?v=')[1].split('&')[0];
+    return '';
+  }
+
+  function togglePlayState() {
+    if (isPlaying) {
+      if (activeSourceType === 'audio') globalAudio.pause();
+      if (activeSourceType === 'youtube' && ytPlayer) ytPlayer.pauseVideo();
+      isPlaying = false;
+    } else {
+      if (activeSourceType === 'audio' && globalAudio.src) globalAudio.play();
+      if (activeSourceType === 'youtube' && ytPlayer) ytPlayer.playVideo();
+      isPlaying = true;
+    }
+  }
+
+  function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+  function closeModal(id) { 
+    document.getElementById(id).classList.add('hidden'); 
+    if (id === 'modal-video') document.getElementById('video-container').innerHTML = '';
+  }
+
+  function switchTab(category) {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.className = (btn.dataset.target === category) 
+        ? 'tab-btn active px-3.5 py-1.5 rounded-full text-xs font-semibold transition'
+        : 'tab-btn px-3.5 py-1.5 rounded-full text-xs font-semibold transition text-slate-400 hover:text-white';
+    });
+    const sections = {
+      poems: document.getElementById('sec-poems'),
+      series: document.getElementById('sec-series'),
+      photoroman: document.getElementById('sec-photoroman'),
+      stories: document.getElementById('sec-stories'),
+      music: document.getElementById('sec-music')
+    };
+    if (category === 'all') {
+      Object.values(sections).forEach(sec => sec.style.display = 'block');
+    } else {
+      Object.keys(sections).forEach(key => {
+        sections[key].style.display = (key === category) ? 'block' : 'none';
+      });
     }
   }
 
@@ -781,6 +576,11 @@
     return String(str).replace(/[&<>"']/g, function(m) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
     });
+  }
+
+  function escapeForJs(str) {
+    if (!str) return '';
+    return String(str).replace(/[`\\]/g, '\\$&');
   }
 
   window.addEventListener('DOMContentLoaded', () => {
