@@ -83,7 +83,7 @@
       <a href="index.html" class="hover:text-rose-400 transition flex items-center gap-1">
         <i class="fa-solid fa-arrow-left"></i> Vitrine Dön
       </a>
-      <span class="font-mono text-[10px]">v3.0 Final Auth</span>
+      <span class="font-mono text-[10px]">v3.2 Photoroman Engine</span>
     </div>
   </div>
 </div>
@@ -229,11 +229,11 @@
             <div class="grid grid-cols-2 gap-2">
               <div>
                 <label class="block text-[11px] font-semibold text-slate-300 mb-1">Tür *</label>
-                <select id="form-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                <select id="form-type" onchange="toggleFormFieldsByType()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
                   <option value="music">Müzik (OST)</option>
                   <option value="poem">Şiir & Dinleti</option>
                   <option value="series">Mini Dizi</option>
-                  <option value="photoroman">Fotoroman</option>
+                  <option value="photoroman">Fotoroman (Görsel Roman)</option>
                   <option value="story">Hikaye</option>
                 </select>
               </div>
@@ -251,18 +251,51 @@
               <input id="form-author" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
             </div>
 
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Medya Bağlantısı (YouTube / MP3)</label>
-              <input id="form-media-url" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://youtu.be/...">
+            <!-- Standart Medya ve Kapak Alanları -->
+            <div id="standard-media-fields" class="space-y-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Medya Bağlantısı (YouTube / MP3)</label>
+                <input id="form-media-url" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://youtu.be/...">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kapak / Görsel URL</label>
+                <input id="form-thumbnail" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://...">
+              </div>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- ÖZEL FOTOROMAN ALANI (SAYFA SAYFA & LOOP MÜZİK) -->
+            <!-- ============================================== -->
+            <div id="photoroman-editor-box" class="hidden space-y-3 p-3.5 bg-amber-950/20 border border-amber-900/40 rounded-2xl">
+              <div class="flex items-center justify-between border-b border-amber-900/40 pb-2">
+                <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                  <i class="fa-solid fa-camera-retro"></i> Fotoroman Kare & Sahne Editörü
+                </span>
+                <span class="text-[10px] text-amber-300/80 font-mono">Loop Müzik & Sayfalar</span>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-semibold text-amber-200 mb-1">Fotoroman Atmosfer Fon Müziği (Loop MP3)</label>
+                <input id="form-photo-music" type="url" class="w-full bg-slate-900 border border-amber-900/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="https://ornek.com/muzik.mp3">
+                <p class="text-[10px] text-slate-400 mt-1">Okuyucu açıldığında bu müzik arka planda kesintisiz (loop) döner.</p>
+              </div>
+
+              <!-- Karelerin Listelendiği Dinamik Alan -->
+              <div class="space-y-2 pt-1">
+                <label class="block text-[11px] font-semibold text-amber-200">Fotoroman Kareleri / Sayfalar</label>
+                <div id="photo-frames-container" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
+                  <!-- Dinamik olarak JS ile dolar -->
+                </div>
+
+                <button type="button" onclick="addPhotoFrameRow()" class="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-500/30">
+                  <i class="fa-solid fa-plus"></i> + Yeni Kare / Sayfa Ekle
+                </button>
+              </div>
             </div>
 
             <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kapak / Görsel URL</label>
-              <input id="form-thumbnail" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://...">
-            </div>
-
-            <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Şiir Mısraları / Açıklama</label>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Şiir Mısraları / Genel Açıklama</label>
               <textarea id="form-text-body" rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserin tüm sözleri, açıklaması ya da sahne notu..."></textarea>
             </div>
 
@@ -437,6 +470,7 @@
           Medyayı Aç <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
         </a>
       </div>
+
       <!-- Yazar İletişim & Hukuki Sorumluluk / Telif Onay Kartı -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-slate-900/90 rounded-2xl border border-slate-800 text-xs">
         <div>
@@ -454,30 +488,29 @@
       </div>
 
       <div>
-        <h5 class="text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wide">Eser Metni / Şiir Mısraları:</h5>
+        <h5 class="text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wide">Eser Metni / Şiir Mısraları / Kare Detayları:</h5>
         <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800/80 font-serif text-slate-200 text-sm whitespace-pre-line leading-relaxed max-h-72 overflow-y-auto" id="inspect-body">
           Metin bulunamadı.
         </div>
       </div>
     </div>
 
-       <!-- Alt Butonlar: Kapat, Düzenle ve Yayına Al -->
+    <!-- Alt Butonlar -->
     <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
       <button onclick="closeInspector()" type="button" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold transition">
         Kapat
       </button>
-            <div class="flex items-center gap-2">
-        
-        <!-- Yeni Eklenen Düzenleme Butonu -->
+      <div class="flex items-center gap-2">
         <button onclick="editFromInspector()" type="button" class="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-500/30 text-xs font-bold transition flex items-center gap-1.5">
           <i class="fa-solid fa-pen-to-square"></i> Düzenle
         </button>
-        <!-- Yayına Alma Butonu -->
         <button id="inspect-publish-btn" onclick="publishFromInspector()" type="button" class="px-5 py-2 rounded-xl stage-gradient text-white text-xs font-bold shadow-lg shadow-rose-900/40 hover:opacity-95 transition flex items-center gap-1.5">
           <i class="fa-solid fa-check"></i> Doğrudan Yayına Al
         </button>
       </div>
     </div>
+  </div>
+</div>
 
 <script>
   const API_BASE = 'https://hayalsahnesi.onrender.com/api';
@@ -544,6 +577,7 @@
     }
 
     document.getElementById('form-author').value = user.name;
+    toggleFormFieldsByType();
     fetchAdminContents();
     if (user.access === 'admin') renderStaffTable();
   }
@@ -578,6 +612,82 @@
     document.getElementById('nav-staff').className = (sec === 'staff')
       ? 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav'
       : 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition';
+  }
+
+  // ==========================================
+  // DİNAMİK FOTOROMAN KARE / SAYFA YÖNETİMİ
+  // ==========================================
+  function toggleFormFieldsByType() {
+    const type = document.getElementById('form-type').value;
+    const isPhoto = (type === 'photoroman');
+    const photoBox = document.getElementById('photoroman-editor-box');
+    const stdMedia = document.getElementById('standard-media-fields');
+
+    if (isPhoto) {
+      photoBox.classList.remove('hidden');
+      stdMedia.classList.add('hidden');
+      const container = document.getElementById('photo-frames-container');
+      if (container.children.length === 0) {
+        addPhotoFrameRow('', '');
+      }
+    } else {
+      photoBox.classList.add('hidden');
+      stdMedia.classList.remove('hidden');
+    }
+  }
+
+  function addPhotoFrameRow(imgUrl = '', dialogText = '') {
+    const container = document.getElementById('photo-frames-container');
+    const frameIndex = container.children.length + 1;
+
+    const row = document.createElement('div');
+    row.className = 'p-2.5 bg-slate-900/90 rounded-xl border border-slate-800 space-y-2 relative group';
+    row.innerHTML = `
+      <div class="flex items-center justify-between text-[11px] text-amber-400 font-bold">
+        <span><i class="fa-solid fa-image"></i> Kare / Sayfa <span class="frame-num">${frameIndex}</span></span>
+        <button type="button" onclick="removePhotoFrameRow(this)" class="text-rose-400 hover:text-white text-xs p-1" title="Bu Kareyi Sil">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      </div>
+      <div>
+        <input type="url" class="frame-img-url w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="Görsel / Kare URL (https://...)" value="${escapeHtml(imgUrl)}">
+      </div>
+      <div>
+        <textarea rows="1" class="frame-dialog w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-amber-500" placeholder="Bu karedeki replik, diyalog ya da sahne notu...">${escapeHtml(dialogText)}</textarea>
+      </div>
+    `;
+    container.appendChild(row);
+    reNumberFrames();
+  }
+
+  function removePhotoFrameRow(btn) {
+    const container = document.getElementById('photo-frames-container');
+    if (container.children.length <= 1) {
+      alert('En az bir fotoroman karesi bulunmalıdır.');
+      return;
+    }
+    btn.closest('div.group').remove();
+    reNumberFrames();
+  }
+
+  function reNumberFrames() {
+    const rows = document.querySelectorAll('#photo-frames-container .frame-num');
+    rows.forEach((span, idx) => {
+      span.innerText = idx + 1;
+    });
+  }
+
+  function getPhotoromanFramesData() {
+    const rows = document.querySelectorAll('#photo-frames-container > div');
+    const frames = [];
+    rows.forEach(r => {
+      const url = r.querySelector('.frame-img-url').value.trim();
+      const txt = r.querySelector('.frame-dialog').value.trim();
+      if (url) {
+        frames.push({ img: url, text: txt });
+      }
+    });
+    return frames;
   }
 
   // --- MONGODB ESER İŞLEMLERİ ---
@@ -710,7 +820,7 @@
     }
   }
 
-    // --- İNCELEME MODALI FONKSİYONLARI ---
+  // --- İNCELEME MODALI FONKSİYONLARI ---
   function inspectContent(id) {
     const item = currentContents.find(x => x._id === id);
     if (!item) return;
@@ -720,11 +830,9 @@
     document.getElementById('inspect-author').innerText = 'Gönderen / Yazar: ' + (item.author || 'Bilinmiyor');
     document.getElementById('inspect-type').innerText = item.type || 'ESER';
     
-    // İletişim Bilgileri (E-posta ve Telefon)
     document.getElementById('inspect-email').innerText = item.email || 'Belirtilmedi';
     document.getElementById('inspect-phone').innerText = item.phone || 'Belirtilmedi';
 
-    // FSEK / Telif ve Hukuki Sorumluluk Rozeti Kontrolü
     const legalBadge = document.getElementById('inspect-legal');
     const isLegal = item.legalConsent?.accepted || item.legalAccepted;
 
@@ -736,14 +844,20 @@
       legalBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-400"></i> Onay Alınmadı';
     }
 
-    const bodyText = item.textBody || item.description || 'Bu eser için herhangi bir metin girilmemiş.';
+    let bodyText = item.textBody || item.description || 'Bu eser için herhangi bir metin girilmemiş.';
+    if (item.type === 'photoroman' && item.images && Array.isArray(item.images)) {
+      bodyText = `Fotoroman Kareleri (${item.images.length} Sayfa):\n` + 
+        item.images.map((f, i) => `[Kare ${i + 1}] Görsel: ${f.img || f.url || f} \nReplik: "${f.text || f.caption || '-'}"`).join('\n\n') +
+        `\n\nAtmosfer Fon Müziği: ${item.musicUrl || item.mediaUrl || 'Varsayılan'}\n\nGenel Açıklama:\n` + bodyText;
+    }
     document.getElementById('inspect-body').innerText = bodyText;
 
     const mediaBox = document.getElementById('inspect-media-container');
     const mediaLink = document.getElementById('inspect-media-link');
-    if (item.mediaUrl) {
+    const finalUrl = item.mediaUrl || item.musicUrl;
+    if (finalUrl) {
       mediaBox.classList.remove('hidden');
-      mediaLink.href = item.mediaUrl;
+      mediaLink.href = finalUrl;
     } else {
       mediaBox.classList.add('hidden');
     }
@@ -759,12 +873,10 @@
 
     document.getElementById('modal-inspector').classList.remove('hidden');
   }
-  // --- İNCELEME MODALI BUTON İŞLEMLERİ (KAPAT, DÜZENLE, YAYINLA) ---
+
   function closeInspector() {
     const modal = document.getElementById('modal-inspector');
-    if (modal) {
-      modal.classList.add('hidden');
-    }
+    if (modal) modal.classList.add('hidden');
     inspectingItem = null;
   }
 
@@ -780,7 +892,6 @@
     await toggleContentStatus(inspectingItem._id, inspectingItem.status);
     closeInspector();
   }
-
   // --- ESER CRUD İŞLEMLERİ ---
   async function handleContentSubmit(e) {
     e.preventDefault();
@@ -790,14 +901,32 @@
     btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> İşleniyor...`;
 
     const textVal = document.getElementById('form-text-body').value.trim();
+    const typeVal = document.getElementById('form-type').value;
+
+    let mediaUrlVal = document.getElementById('form-media-url').value.trim();
+    let thumbnailVal = document.getElementById('form-thumbnail').value.trim();
+    let imagesPayload = [];
+    let musicUrlPayload = '';
+
+    // Fotoroman özel alanlarını topla
+    if (typeVal === 'photoroman') {
+      musicUrlPayload = document.getElementById('form-photo-music').value.trim();
+      imagesPayload = getPhotoromanFramesData();
+      if (!mediaUrlVal) mediaUrlVal = musicUrlPayload;
+      if (!thumbnailVal && imagesPayload.length > 0) {
+        thumbnailVal = imagesPayload[0].img;
+      }
+    }
 
     const payload = {
       title: document.getElementById('form-title').value.trim(),
-      type: document.getElementById('form-type').value,
+      type: typeVal,
       status: document.getElementById('form-status').value,
       author: document.getElementById('form-author').value.trim(),
-      mediaUrl: document.getElementById('form-media-url').value.trim(),
-      thumbnail: document.getElementById('form-thumbnail').value.trim(),
+      mediaUrl: mediaUrlVal,
+      musicUrl: musicUrlPayload,
+      thumbnail: thumbnailVal,
+      images: imagesPayload,
       textBody: textVal,
       description: textVal
     };
@@ -840,6 +969,21 @@
     document.getElementById('form-thumbnail').value = item.thumbnail || '';
     document.getElementById('form-text-body').value = item.textBody || item.description || '';
 
+    // Fotoroman alanlarını doldur
+    toggleFormFieldsByType();
+    if (item.type === 'photoroman') {
+      document.getElementById('form-photo-music').value = item.musicUrl || item.mediaUrl || '';
+      const container = document.getElementById('photo-frames-container');
+      container.innerHTML = '';
+      if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+        item.images.forEach(f => {
+          addPhotoFrameRow(f.img || f.url || f, f.text || f.caption || '');
+        });
+      } else {
+        addPhotoFrameRow(item.thumbnail || '', item.textBody || '');
+      }
+    }
+
     document.getElementById('form-heading').innerHTML = `<i class="fa-solid fa-pen text-amber-400"></i> Eseri Güncelle`;
     document.getElementById('form-submit-btn').innerHTML = `<i class="fa-solid fa-check"></i> Değişiklikleri Kaydet`;
     document.getElementById('cancel-edit-btn').classList.remove('hidden');
@@ -850,6 +994,9 @@
   function cancelEditing() {
     document.getElementById('content-form').reset();
     document.getElementById('edit-content-id').value = '';
+    const container = document.getElementById('photo-frames-container');
+    if (container) container.innerHTML = '';
+    toggleFormFieldsByType();
     if (currentUser) document.getElementById('form-author').value = currentUser.name;
     document.getElementById('form-heading').innerHTML = `<i class="fa-solid fa-plus-circle text-rose-500"></i> Yeni Sahne Eseri Yükle`;
     document.getElementById('form-submit-btn').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Eseri Canlı MongoDB'ye Kaydet`;
@@ -987,3 +1134,4 @@
 </script>
 </body>
 </html>
+  
