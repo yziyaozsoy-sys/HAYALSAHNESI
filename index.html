@@ -561,7 +561,7 @@
   function playRandomMusicList() {
     let musics = [];
 
-    // 1. Önce global değişkenlerden dene
+    // 1. Önce global değişkenlerden müzikleri al
     const pool = (typeof allContents !== 'undefined' ? allContents : 
                  (typeof currentContents !== 'undefined' ? currentContents : 
                  (typeof contents !== 'undefined' ? contents : [])));
@@ -589,7 +589,13 @@
       return;
     }
 
-      // 1. Şarkıyı Sitenin Kendi İçinde (Gizli YouTube veya Audio) Başlat
+    // Karıştır ve ilk parçayı başlat
+    musicPlaylist = shuffleArray([...musics]);
+    currentShuffleIndex = 0;
+    playCurrentShuffleTrack();
+  }
+
+  // 1. Şarkıyı Sitenin Kendi İçinde (Gizli YouTube veya Audio) Başlat
   function playCurrentShuffleTrack() {
     if (!musicPlaylist || musicPlaylist.length === 0) return;
     const track = musicPlaylist[currentShuffleIndex];
@@ -598,40 +604,31 @@
     const playerTitle = document.getElementById('player-title') || document.querySelector('.player-title');
     const playerArtist = document.getElementById('player-artist') || document.querySelector('.player-artist');
     if (playerTitle) playerTitle.innerText = track.title || 'Müzik';
-    if (playerArtist) playerArtist.innerText = `${track.author || 'Müzisyen'} • (${currentShuffleIndex + 1}/${musicPlaylist.length})`;
+    if (playerArtist) playerArtist.innerText = (track.author || 'Müzisyen') + ' • (' + (currentShuffleIndex + 1) + '/' + musicPlaylist.length + ')';
 
     const audio = document.getElementById('global-audio');
     const url = track.mediaUrl || '';
     const isYT = url.includes('youtube.com') || url.includes('youtu.be');
 
     if (isYT) {
-      // Normal ses elementini durdur
       if (audio) {
         audio.pause();
         audio.src = '';
       }
-
-      // YouTube Video ID Çıkar
-      let videoId = '';
-      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-      if (match) videoId = match[1];
-
-      // Arka plandaki YouTube IFrame API oynatıcısını çalıştır
+      let videoId = getYouTubeId(url);
       if (videoId) {
         if (window.ytPlayer && typeof window.ytPlayer.loadVideoById === 'function') {
           window.ytPlayer.loadVideoById(videoId);
           window.ytPlayer.playVideo();
         } else {
-          // Eğer ytPlayer objesi henüz oluşmadıysa doğrudan iframe enjekte et
           const ytContainer = document.getElementById('hidden-yt-container') || document.getElementById('yt-player');
           if (ytContainer) {
             ytContainer.classList.remove('hidden');
-            ytContainer.innerHTML = `<iframe id="active-bg-yt" width="200" height="200" src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1" frameborder="0" allow="autoplay"></iframe>`;
+            ytContainer.innerHTML = '<iframe id="active-bg-yt" width="200" height="200" src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&enablejsapi=1" frameborder="0" allow="autoplay"></iframe>';
           }
         }
       }
     } else {
-      // Doğrudan ses dosyası (MP3 vb.) ise
       const ytFrame = document.getElementById('active-bg-yt');
       if (ytFrame) ytFrame.src = '';
       if (window.ytPlayer && typeof window.ytPlayer.stopVideo === 'function') {
@@ -640,7 +637,7 @@
 
       if (audio && url) {
         audio.src = url;
-        audio.play().catch(e => console.log('Oynatma hatası:', e));
+        audio.play().catch(function(e) { console.log('Oynatma hatası:', e); });
         audio.onended = function() {
           playNextShuffleTrack();
         };
@@ -648,13 +645,7 @@
     }
 
     // Play İkonunu Pause (Durdur) İkonuna Çevir
-    const playPauseBtn = document.getElementById('play-pause-btn');
-    if (playPauseBtn) {
-      const icon = playPauseBtn.querySelector('i');
-      if (icon) {
-        icon.className = 'fa-solid fa-pause text-xs';
-      }
-    }
+    updateShuffleBtnIcon(true);
   }
 
   // 2. Sıradaki Parçaya Geç
@@ -674,6 +665,20 @@
     playCurrentShuffleTrack();
   }
 
+  // Play/Pause İkon Güncelleyici
+  function updateShuffleBtnIcon(isPlaying) {
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    if (!playPauseBtn) return;
+    const icon = playPauseBtn.querySelector('i');
+    if (!icon) return;
+
+    if (isPlaying) {
+      icon.className = 'fa-solid fa-pause text-xs';
+    } else {
+      icon.className = 'fa-solid fa-play text-xs';
+    }
+  }
+
   function openVideoPlayer(title, author, mediaUrl) {
     document.getElementById('video-title').innerText = title;
     document.getElementById('video-ep').innerText = author || 'Özel Gösterim';
@@ -681,9 +686,9 @@
     const container = document.getElementById('video-container');
     if (mediaUrl && (mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be'))) {
       let videoId = getYouTubeId(mediaUrl);
-      container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      container.innerHTML = '<iframe src="https://www.youtube.com/embed/' + videoId + '?autoplay=1" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
     } else {
-      container.innerHTML = `<div class="p-6 text-center text-slate-400">Bu esere ait video bulunmuyor.</div>`;
+      container.innerHTML = '<div class="p-6 text-center text-slate-400">Bu esere ait video bulunmuyor.</div>';
     }
     openModal('modal-video');
   }
@@ -703,20 +708,35 @@
   }
 
   function getYouTubeId(url) {
+    if (!url) return '';
     if (url.includes('youtu.be/')) return url.split('youtu.be/')[1].split('?')[0];
     if (url.includes('watch?v=')) return url.split('watch?v=')[1].split('&')[0];
     return '';
   }
 
   function togglePlayState() {
-    if (isPlaying) {
-      if (activeSourceType === 'audio') globalAudio.pause();
-      if (activeSourceType === 'youtube' && ytPlayer) ytPlayer.pauseVideo();
-      isPlaying = false;
-    } else {
-      if (activeSourceType === 'audio' && globalAudio.src) globalAudio.play();
-      if (activeSourceType === 'youtube' && ytPlayer) ytPlayer.playVideo();
-      isPlaying = true;
+    if (typeof isPlaying !== 'undefined') {
+      if (isPlaying) {
+        if (typeof activeSourceType !== 'undefined' && activeSourceType === 'audio' && typeof globalAudio !== 'undefined') globalAudio.pause();
+        if (typeof activeSourceType !== 'undefined' && activeSourceType === 'youtube' && typeof ytPlayer !== 'undefined' && ytPlayer) ytPlayer.pauseVideo();
+        
+        // Iframe oynatıcı varsa durdurmak için
+        const activeYt = document.getElementById('active-bg-yt');
+        if (activeYt) activeYt.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+
+        isPlaying = false;
+        updateShuffleBtnIcon(false);
+      } else {
+        if (typeof activeSourceType !== 'undefined' && activeSourceType === 'audio' && typeof globalAudio !== 'undefined' && globalAudio.src) globalAudio.play();
+        if (typeof activeSourceType !== 'undefined' && activeSourceType === 'youtube' && typeof ytPlayer !== 'undefined' && ytPlayer) ytPlayer.playVideo();
+        
+        // Iframe oynatıcı varsa devam ettirmek için
+        const activeYt = document.getElementById('active-bg-yt');
+        if (activeYt) activeYt.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+
+        isPlaying = true;
+        updateShuffleBtnIcon(true);
+      }
     }
   }
 
