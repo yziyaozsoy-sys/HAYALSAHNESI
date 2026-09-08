@@ -184,11 +184,21 @@
       <p id="player-subtitle" class="text-[10px] text-slate-400">Hayal Sahnesi Ses Sistemi</p>
     </div>
   </div>
-
   <div class="flex flex-col items-center gap-1">
-    <div class="flex items-center space-x-4 text-slate-400">
-      <button onclick="togglePlayState()" id="play-pause-btn" class="w-8 h-8 rounded-full bg-rose-600 text-white flex items-center justify-center hover:scale-105 transition shadow-md shadow-rose-600/30 font-bold">
+    <div class="flex items-center space-x-3 text-slate-400">
+      <!-- Önceki Parça Butonu -->
+      <button type="button" onclick="playPrevShuffleTrack()" title="Önceki Parça" class="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition">
+        <i class="fa-solid fa-backward-step text-xs"></i>
+      </button>
+
+      <!-- Play / Pause Butonu (Senin Orijinal Butonun) -->
+      <button onclick="togglePlayState()" id="play-pause-btn" type="button" class="w-9 h-9 rounded-full bg-rose-600 text-white flex items-center justify-center hover:scale-105 transition shadow-md shadow-rose-600/30 font-bold">
         <i class="fa-solid fa-play text-xs"></i>
+      </button>
+
+      <!-- Sonraki Parça Butonu -->
+      <button type="button" onclick="playNextShuffleTrack()" title="Sonraki Parça" class="w-7 h-7 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition">
+        <i class="fa-solid fa-forward-step text-xs"></i>
       </button>
     </div>
   </div>
@@ -585,47 +595,49 @@
     playCurrentShuffleTrack();
   }
 
-   function playCurrentShuffleTrack() {
-    if (musicPlaylist.length === 0) return;
+     // 1. Şarkıyı Çal ve Bilgileri Güncelle
+  function playCurrentShuffleTrack() {
+    if (!musicPlaylist || musicPlaylist.length === 0) return;
     const track = musicPlaylist[currentShuffleIndex];
 
-    // 1. Eğer sitede doğrudan 'Dinle' butonunun çağırdığı hazır bir fonksiyon varsa onu çalıştır
-    if (typeof playAudio === 'function') {
-      playAudio(track.title, track.author, track.mediaUrl);
-    } else if (typeof playTrack === 'function') {
-      playTrack(track.title, track.author, track.mediaUrl);
-    } else if (typeof startAudioPlayer === 'function') {
-      startAudioPlayer(track.title, track.author, track.mediaUrl);
-    } else {
-      // 2. Alt çubuktaki ses elemanlarını ve başlıkları bulup güncelle
-      const playerTitle = document.getElementById('player-title') || document.querySelector('.player-title');
-      const playerArtist = document.getElementById('player-artist') || document.querySelector('.player-artist');
-      const audioElement = document.getElementById('audio-element') || document.getElementById('main-audio') || document.querySelector('audio');
+    const audio = document.getElementById('global-audio');
+    const playerTitle = document.getElementById('player-title') || document.querySelector('.player-title');
+    const playerArtist = document.getElementById('player-artist') || document.querySelector('.player-artist');
 
-      if (playerTitle) playerTitle.innerText = track.title;
-      if (playerArtist) playerArtist.innerText = `${track.author || 'Müzisyen'} • (${currentShuffleIndex + 1}/${musicPlaylist.length})`;
+    if (playerTitle) playerTitle.innerText = track.title;
+    if (playerArtist) playerArtist.innerText = `${track.author || 'Müzisyen'} • (${currentShuffleIndex + 1}/${musicPlaylist.length})`;
 
-      if (audioElement && track.mediaUrl) {
-        audioElement.src = track.mediaUrl;
-        audioElement.play().catch(e => console.log('Otomatik oynatma izni bekleniyor:', e));
+    if (audio && track.mediaUrl) {
+      audio.src = track.mediaUrl;
+      audio.play().then(() => {
+        // Alt bardaki kırmızı play ikonunu Pause simgesine çevir
+        const btnIcon = document.querySelector('#play-pause-btn i');
+        if (btnIcon) {
+          btnIcon.className = 'fa-solid fa-pause text-xs';
+        }
+      }).catch(e => console.log('Oynatma başlatılamadı:', e));
 
-        // Şarkı bitince sıradaki rastgele parçaya geç
-        audioElement.onended = function() {
-          playNextShuffleTrack();
-        };
-      }
+      // Parça bittiğinde otomatik bir sonraki parçaya geç
+      audio.onended = function() {
+        playNextShuffleTrack();
+      };
     }
-
-    // 3. Alt çubuktaki Play butonunun ikonunu Pause (durdur) yap
-    const playIcons = document.querySelectorAll('#play-btn i, #btn-play i, .btn-play i, #play-icon, #player-play-btn i');
-    playIcons.forEach(icon => {
-      icon.className = 'fa-solid fa-pause';
-    });
   }
 
+  // 2. Sıradaki Parçaya Geç
   function playNextShuffleTrack() {
-    if (musicPlaylist.length === 0) return;
+    if (!musicPlaylist || musicPlaylist.length === 0) {
+      if (typeof playRandomMusicList === 'function') playRandomMusicList();
+      return;
+    }
     currentShuffleIndex = (currentShuffleIndex + 1) % musicPlaylist.length;
+    playCurrentShuffleTrack();
+  }
+
+  // 3. Önceki Parçaya Geç
+  function playPrevShuffleTrack() {
+    if (!musicPlaylist || musicPlaylist.length === 0) return;
+    currentShuffleIndex = (currentShuffleIndex - 1 + musicPlaylist.length) % musicPlaylist.length;
     playCurrentShuffleTrack();
   }
 
