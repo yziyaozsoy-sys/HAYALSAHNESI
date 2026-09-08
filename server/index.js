@@ -8,7 +8,10 @@ require('dotenv').config();
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+
+// Görsel ve loop fon müziği (Base64) MongoDB'ye sığabilsin diye limit 50mb yapıldı
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // MongoDB Bağlantısı (Render Environment'tan çeker)
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -21,7 +24,7 @@ if (MONGODB_URI) {
   console.warn('⚠️ MONGODB_URI ortam değişkeni tanımlanmadı (.env veya Render kontrol edin)');
 }
 
-// --- ŞEMA TANIMI (İLETİŞİM BİLGİLERİ VE YASAL TELİF ONAYI DAHİL) ---
+// --- ŞEMA TANIMI (FOTOROMAN KARELERİ VE LOOP MÜZİK DAHİL) ---
 const contentSchema = new mongoose.Schema({
   title: { type: String, required: true },
   type: { type: String, required: true }, // music, poem, series, photoroman, story
@@ -30,7 +33,12 @@ const contentSchema = new mongoose.Schema({
   phone: { type: String, default: '' },       // İletişim telefon
   status: { type: String, default: 'draft' }, // published, draft
   mediaUrl: { type: String, default: '' },
+  musicUrl: { type: String, default: '' },    // Fotoroman Arka Plan Loop Fon Müziği
   thumbnail: { type: String, default: '' },
+  images: [{                                  // Fotoroman Kareleri / Sayfaları
+    img: { type: String, default: '' },       // Görsel (URL veya Base64)
+    text: { type: String, default: '' }       // Karedeki Diyalog / Replik
+  }],
   textBody: { type: String, default: '' },    // Şiir mısraları, hikaye içeriği
   description: { type: String, default: '' }, // Açıklama veya özet
   plays: { type: Number, default: 0 },
@@ -43,7 +51,7 @@ const contentSchema = new mongoose.Schema({
   },
   createdAt: { type: Date, default: Date.now }
 }, { 
-  strict: false // Esnek şema: Hiçbir özel alan Mongoose tarafından filtrelenmez!
+  strict: false // Esnek şema
 });
 
 const Content = mongoose.model('Content', contentSchema);
@@ -70,7 +78,7 @@ app.get('/api/admin/contents', async (req, res) => {
   }
 });
 
-// 3. Eser Ekleme (Hem Admin Hem Dışarıdan Gönderimler İçin)
+// 3. Eser Ekleme (Fotoroman Kareleri ve Loop Fon Müziği MongoDB'ye Kaydedilir)
 app.post('/api/contents', async (req, res) => {
   try {
     const { 
@@ -81,7 +89,9 @@ app.post('/api/contents', async (req, res) => {
       phone, 
       status, 
       mediaUrl, 
+      musicUrl,
       thumbnail, 
+      images,
       textBody, 
       description,
       legalAccepted 
@@ -92,7 +102,7 @@ app.post('/api/contents', async (req, res) => {
     // İstemcinin IP adresini yakalayalım (Yasal delil kaydı için)
     const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
 
-    // Eğer dışarıdan gelen bir başvuruysa yasal onay kontrolü
+    // Dışarıdan başvuru yapılmışsa yasal onay kontrolü
     const isConsentGiven = Boolean(legalAccepted);
 
     const newContent = new Content({
@@ -101,9 +111,11 @@ app.post('/api/contents', async (req, res) => {
       author: author || 'Anonim Yazar',
       email: email || '',
       phone: phone || '',
-      status: status || 'draft', // Dışarıdan gelenler varsayılan taslak (onay bekleyen) olarak düşer
+      status: status || 'draft',
       mediaUrl: mediaUrl || '',
+      musicUrl: musicUrl || '',
       thumbnail: thumbnail || '',
+      images: Array.isArray(images) ? images : [],
       textBody: contentText,
       description: contentText,
       legalConsent: {
@@ -114,7 +126,7 @@ app.post('/api/contents', async (req, res) => {
     });
 
     const saved = await newContent.save();
-    console.log('✅ Yeni Eser Kaydedildi:', saved.title, '| Yazar:', saved.author);
+    console.log('✅ Yeni Eser Kaydedildi:', saved.title, '| Tür:', saved.type);
     res.status(201).json({ success: true, data: saved });
   } catch (err) {
     console.error('Kayıt Hatası:', err);

@@ -83,7 +83,7 @@
       <a href="index.html" class="hover:text-rose-400 transition flex items-center gap-1">
         <i class="fa-solid fa-arrow-left"></i> Vitrine Dön
       </a>
-      <span class="font-mono text-[10px]">v3.2 Photoroman Engine</span>
+      <span class="font-mono text-[10px]">v3.2 MongoDB Photoroman Engine</span>
     </div>
   </div>
 </div>
@@ -131,7 +131,7 @@
     <div class="pt-6 border-t border-slate-800/80 space-y-2">
       <div class="flex items-center justify-between text-xs text-slate-400">
         <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> MongoDB Atlas</span>
-        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">Aktif</span>
+        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">50MB Aktif</span>
       </div>
       <a href="index.html" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/50 text-slate-300 text-xs font-bold transition">
         <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Sahne Vitrinine Git
@@ -151,7 +151,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
           <h2 class="text-2xl font-black text-white">Eser Havuzu & Kürasyon</h2>
-          <p class="text-xs text-slate-400">Gelen başvuruları inceleyin, tam metinlerini okuyun ve sahneye kabul edin.</p>
+          <p class="text-xs text-slate-400">Gelen başvuruları inceleyin, fotoroman karelerini oluşturun ve sahneye kabul edin.</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
           <button onclick="fetchAdminContents()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
@@ -260,36 +260,44 @@
 
               <div>
                 <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kapak / Görsel URL</label>
-                <input id="form-thumbnail" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://...">
+                <input id="form-thumbnail" type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://...">
               </div>
             </div>
 
             <!-- ============================================== -->
-            <!-- ÖZEL FOTOROMAN ALANI (SAYFA SAYFA & LOOP MÜZİK) -->
+            <!-- ÖZEL FOTOROMAN ALANI (DOSYA YÜKLEME & MONGO DEPOLAMA) -->
             <!-- ============================================== -->
-            <div id="photoroman-editor-box" class="hidden space-y-3 p-3.5 bg-amber-950/20 border border-amber-900/40 rounded-2xl">
+            <div id="photoroman-editor-box" class="hidden space-y-3 p-4 bg-amber-950/20 border border-amber-900/40 rounded-2xl">
               <div class="flex items-center justify-between border-b border-amber-900/40 pb-2">
                 <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-                  <i class="fa-solid fa-camera-retro"></i> Fotoroman Kare & Sahne Editörü
+                  <i class="fa-solid fa-camera-retro"></i> Fotoroman Kare & Loop Müzik Masası
                 </span>
-                <span class="text-[10px] text-amber-300/80 font-mono">Loop Müzik & Sayfalar</span>
+                <span class="text-[10px] text-emerald-400 font-mono"><i class="fa-solid fa-database"></i> MongoDB Depolama</span>
               </div>
 
-              <div>
-                <label class="block text-[11px] font-semibold text-amber-200 mb-1">Fotoroman Atmosfer Fon Müziği (Loop MP3)</label>
-                <input id="form-photo-music" type="url" class="w-full bg-slate-900 border border-amber-900/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="https://ornek.com/muzik.mp3">
-                <p class="text-[10px] text-slate-400 mt-1">Okuyucu açıldığında bu müzik arka planda kesintisiz (loop) döner.</p>
+              <!-- Loop Fon Müziği -->
+              <div class="space-y-1.5">
+                <label class="block text-[11px] font-semibold text-amber-200">Fotoroman Atmosfer Fon Müziği (Loop MP3)</label>
+                <div class="space-y-1">
+                  <input type="file" id="form-photo-music-file" accept="audio/*" onchange="convertAudioToBase64(this)" class="w-full text-[11px] text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500/20 file:text-amber-300 hover:file:bg-amber-500/30 cursor-pointer">
+                  <input id="form-photo-music" type="text" class="w-full bg-slate-900 border border-amber-900/40 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="Veya Müzik URL / Base64">
+                </div>
+                <audio id="admin-audio-preview" controls class="hidden w-full h-8 mt-1"></audio>
               </div>
 
               <!-- Karelerin Listelendiği Dinamik Alan -->
-              <div class="space-y-2 pt-1">
-                <label class="block text-[11px] font-semibold text-amber-200">Fotoroman Kareleri / Sayfalar</label>
-                <div id="photo-frames-container" class="space-y-2.5 max-h-64 overflow-y-auto pr-1">
-                  <!-- Dinamik olarak JS ile dolar -->
+              <div class="space-y-2 pt-2 border-t border-amber-900/30">
+                <div class="flex items-center justify-between">
+                  <label class="text-[11px] font-semibold text-amber-200">Sayfa Sayfa Görsel Kareler</label>
+                  <span class="text-[10px] text-slate-400">Dosya Yükle veya URL</span>
+                </div>
+                
+                <div id="photo-frames-container" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+                  <!-- Dinamik Kare Kutuları -->
                 </div>
 
                 <button type="button" onclick="addPhotoFrameRow()" class="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-500/30">
-                  <i class="fa-solid fa-plus"></i> + Yeni Kare / Sayfa Ekle
+                  <i class="fa-solid fa-plus"></i> + Yeni Fotoroman Karesi / Sayfası Ekle
                 </button>
               </div>
             </div>
@@ -511,7 +519,6 @@
     </div>
   </div>
 </div>
-
 <script>
   const API_BASE = 'https://hayalsahnesi.onrender.com/api';
   let currentContents = [];
@@ -615,7 +622,7 @@
   }
 
   // ==========================================
-  // DİNAMİK FOTOROMAN KARE / SAYFA YÖNETİMİ
+  // FOTOROMAN DOSYA YÜKLEME & MONGO VERİ MOTORU
   // ==========================================
   function toggleFormFieldsByType() {
     const type = document.getElementById('form-type').value;
@@ -636,12 +643,53 @@
     }
   }
 
+  function convertAudioToBase64(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      alert('Seçtiğiniz ses dosyası 8MB sınırından büyük. Lütfen daha kısa bir fon müziği seçin veya doğrudan URL bağlantısı yapıştırın.');
+      input.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64Data = e.target.result;
+      document.getElementById('form-photo-music').value = base64Data;
+      const preview = document.getElementById('admin-audio-preview');
+      preview.src = base64Data;
+      preview.classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function convertImageToBase64(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const row = input.closest('div.group');
+    const urlInput = row.querySelector('.frame-img-url');
+    const previewImg = row.querySelector('.frame-preview-img');
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64Img = e.target.result;
+      urlInput.value = base64Img;
+      if (previewImg) {
+        previewImg.src = base64Img;
+        previewImg.classList.remove('hidden');
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
   function addPhotoFrameRow(imgUrl = '', dialogText = '') {
     const container = document.getElementById('photo-frames-container');
     const frameIndex = container.children.length + 1;
 
     const row = document.createElement('div');
-    row.className = 'p-2.5 bg-slate-900/90 rounded-xl border border-slate-800 space-y-2 relative group';
+    row.className = 'p-3 bg-slate-900/95 rounded-xl border border-slate-800 space-y-2 relative group';
     row.innerHTML = `
       <div class="flex items-center justify-between text-[11px] text-amber-400 font-bold">
         <span><i class="fa-solid fa-image"></i> Kare / Sayfa <span class="frame-num">${frameIndex}</span></span>
@@ -649,9 +697,18 @@
           <i class="fa-solid fa-trash-can"></i>
         </button>
       </div>
-      <div>
-        <input type="url" class="frame-img-url w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="Görsel / Kare URL (https://...)" value="${escapeHtml(imgUrl)}">
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div>
+          <input type="file" accept="image/*" onchange="convertImageToBase64(this)" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-300 hover:file:bg-amber-500/30 cursor-pointer">
+        </div>
+        <div>
+          <input type="text" class="frame-img-url w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="Veya Görsel URL" value="${escapeHtml(imgUrl)}">
+        </div>
       </div>
+
+      <img src="${imgUrl ? escapeHtml(imgUrl) : ''}" class="frame-preview-img ${imgUrl ? '' : 'hidden'} w-24 h-16 object-cover rounded-lg border border-slate-800">
+
       <div>
         <textarea rows="1" class="frame-dialog w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-amber-500" placeholder="Bu karedeki replik, diyalog ya da sahne notu...">${escapeHtml(dialogText)}</textarea>
       </div>
@@ -847,15 +904,15 @@
     let bodyText = item.textBody || item.description || 'Bu eser için herhangi bir metin girilmemiş.';
     if (item.type === 'photoroman' && item.images && Array.isArray(item.images)) {
       bodyText = `Fotoroman Kareleri (${item.images.length} Sayfa):\n` + 
-        item.images.map((f, i) => `[Kare ${i + 1}] Görsel: ${f.img || f.url || f} \nReplik: "${f.text || f.caption || '-'}"`).join('\n\n') +
-        `\n\nAtmosfer Fon Müziği: ${item.musicUrl || item.mediaUrl || 'Varsayılan'}\n\nGenel Açıklama:\n` + bodyText;
+        item.images.map((f, i) => `[Kare ${i + 1}] Görsel: ${f.img ? (f.img.startsWith('data:') ? 'Base64 Medya Dosyası' : f.img) : 'Boş'} \nReplik: "${f.text || '-'}"`).join('\n\n') +
+        `\n\nAtmosfer Fon Müziği: ${item.musicUrl ? (item.musicUrl.startsWith('data:') ? 'Base64 Ses Dosyası' : item.musicUrl) : 'Varsayılan'}\n\nGenel Açıklama:\n` + bodyText;
     }
     document.getElementById('inspect-body').innerText = bodyText;
 
     const mediaBox = document.getElementById('inspect-media-container');
     const mediaLink = document.getElementById('inspect-media-link');
     const finalUrl = item.mediaUrl || item.musicUrl;
-    if (finalUrl) {
+    if (finalUrl && !finalUrl.startsWith('data:')) {
       mediaBox.classList.remove('hidden');
       mediaLink.href = finalUrl;
     } else {
@@ -892,13 +949,14 @@
     await toggleContentStatus(inspectingItem._id, inspectingItem.status);
     closeInspector();
   }
+
   // --- ESER CRUD İŞLEMLERİ ---
   async function handleContentSubmit(e) {
     e.preventDefault();
     const editId = document.getElementById('edit-content-id').value;
     const btn = document.getElementById('form-submit-btn');
     btn.disabled = true;
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> İşleniyor...`;
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> MongoDB'ye İşleniyor...`;
 
     const textVal = document.getElementById('form-text-body').value.trim();
     const typeVal = document.getElementById('form-type').value;
@@ -946,7 +1004,7 @@
         cancelEditing();
         fetchAdminContents();
       } else {
-        alert('Kayıt sırasında sunucu hatası oluştu.');
+        alert('Kayıt sırasında sunucu hatası oluştu. Lütfen dosya boyutlarını kontrol edin.');
       }
     } catch (err) {
       alert('Sunucuya ulaşılamadı.');
@@ -972,7 +1030,14 @@
     // Fotoroman alanlarını doldur
     toggleFormFieldsByType();
     if (item.type === 'photoroman') {
-      document.getElementById('form-photo-music').value = item.musicUrl || item.mediaUrl || '';
+      const musicVal = item.musicUrl || item.mediaUrl || '';
+      document.getElementById('form-photo-music').value = musicVal;
+      if (musicVal) {
+        const preview = document.getElementById('admin-audio-preview');
+        preview.src = musicVal;
+        preview.classList.remove('hidden');
+      }
+
       const container = document.getElementById('photo-frames-container');
       container.innerHTML = '';
       if (item.images && Array.isArray(item.images) && item.images.length > 0) {
@@ -996,6 +1061,12 @@
     document.getElementById('edit-content-id').value = '';
     const container = document.getElementById('photo-frames-container');
     if (container) container.innerHTML = '';
+    const preview = document.getElementById('admin-audio-preview');
+    if (preview) {
+      preview.pause();
+      preview.src = '';
+      preview.classList.add('hidden');
+    }
     toggleFormFieldsByType();
     if (currentUser) document.getElementById('form-author').value = currentUser.name;
     document.getElementById('form-heading').innerHTML = `<i class="fa-solid fa-plus-circle text-rose-500"></i> Yeni Sahne Eseri Yükle`;
@@ -1134,4 +1205,3 @@
 </script>
 </body>
 </html>
-  
