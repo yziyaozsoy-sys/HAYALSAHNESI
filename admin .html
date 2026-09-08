@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hayal Sahnesi | Kürasyon & Yönetim Masası</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  body {
+    background-color: #07090e;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .stage-gradient {
+    background: linear-gradient(135deg, #e11d48 0%, #7c3aed 100%);
+  }
+  .card-stage {
+    background: rgba(15, 20, 31, 0.85);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .active-nav {
+    background: linear-gradient(135deg, #e11d48 0%, #9333ea 100%);
+    color: white !important;
+  }
+</style>
+</head>
+<body class="min-h-screen flex flex-col md:flex-row selection:bg-rose-600 selection:text-white">
+
+<!-- Yan Menü / Sidebar -->
+<aside class="w-full md:w-64 bg-slate-950 border-r border-slate-800 p-6 flex flex-col justify-between shrink-0">
+  <div class="space-y-6">
+    <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
+      <div class="w-9 h-9 rounded-xl stage-gradient flex items-center justify-center font-bold text-white shadow-lg shadow-rose-600/30">
+        <i class="fa-solid fa-masks-theater text-base"></i>
+      </div>
+      <div>
+        <h1 class="font-black text-base tracking-wider text-white uppercase">HAYAL SAHNESİ</h1>
+        <p class="text-[10px] text-rose-400 font-bold uppercase tracking-widest">Yönetim Masası</p>
+      </div>
+    </div>
+
+    <nav class="space-y-1.5 pt-4">
+      <button onclick="switchAdminSection('contents')" id="nav-contents" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav">
+        <i class="fa-solid fa-layer-group text-sm"></i>
+        <span>Eser Yönetimi</span>
+      </button>
+      <button onclick="switchAdminSection('staff')" id="nav-staff" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
+        <i class="fa-solid fa-user-gear text-sm"></i>
+        <span>Personel & Ekip</span>
+      </button>
+    </nav>
+  </div>
+
+  <div class="pt-6 border-t border-slate-800/80 space-y-2">
+    <div class="flex items-center justify-between text-xs text-slate-400">
+      <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> MongoDB Atlas</span>
+      <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded border border-slate-800">Bağlı</span>
+    </div>
+    <a href="index.html" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/50 text-slate-300 text-xs font-bold transition">
+      <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Sahneye Dön
+    </a>
+  </div>
+</aside>
+
+<!-- Ana Yönetim Alanı -->
+<main class="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full space-y-8 overflow-y-auto">
+
+  <!-- BÖLÜM 1: ESER YÖNETİMİ -->
+  <section id="section-contents" class="space-y-6">
+    
+    <!-- Başlık ve Durum -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div>
+        <h2 class="text-2xl font-black text-white">Eser Havuzu & Kürasyon</h2>
+        <p class="text-xs text-slate-400">Yayındaki veya taslaktaki eserleri düzenleyin, durumunu değiştirin veya yayından kaldırın.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="fetchAdminContents()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
+          <i class="fa-solid fa-rotate-right"></i> Listeyi Yenile
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Sol Panel: Yeni Eser Ekleme & Düzenleme Formu -->
+      <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h3 id="form-heading" class="font-bold text-white text-sm flex items-center gap-2">
+            <i class="fa-solid fa-plus-circle text-rose-500"></i> Yeni Eser Ekle
+          </h3>
+          <button id="cancel-edit-btn" onclick="cancelEditing()" class="hidden text-[11px] text-amber-400 hover:underline">Vazgeç</button>
+        </div>
+
+        <form id="content-form" onsubmit="handleContentSubmit(event)" class="space-y-3">
+          <input type="hidden" id="edit-content-id" value="">
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Başlığı *</label>
+            <input id="form-title" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: KAN VE NOTA">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Tür *</label>
+              <select id="form-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                <option value="music">Müzik (OST)</option>
+                <option value="poem">Şiir & Dinleti</option>
+                <option value="series">Mini Dizi</option>
+                <option value="photoroman">Fotoroman</option>
+                <option value="story">Hikaye</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yayın Durumu *</label>
+              <select id="form-status" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                <option value="published">Yayında</option>
+                <option value="draft">Taslak</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yazar / Sanatçı *</label>
+            <input id="form-author" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Medya Bağlantısı (YouTube / MP3 / Video)</label>
+            <input id="form-media-url" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://youtu.be/...">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kapak / Görsel URL</label>
+            <input id="form-thumbnail" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://...">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Açıklama</label>
+            <textarea id="form-text-body" rows="3" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Şiir mısraları, sahne notu ya da açıklama..."></textarea>
+          </div>
+
+          <button id="form-submit-btn" type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-rose-900/30 hover:opacity-95 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i> Eseri Kaydet
+          </button>
+        </form>
+      </div>
+
+      <!-- Sağ Panel: Mevcut Eserler Tablosu / Listesi -->
+      <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
+        <div class="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/40">
+          <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-database text-rose-500"></i> Veritabanındaki Eserler (<span id="content-count">0</span>)
+          </h4>
+        </div>
+
+        <div class="overflow-x-auto flex-1">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
+              <tr>
+                <th class="p-3.5">Eser</th>
+                <th class="p-3.5">Tür</th>
+                <th class="p-3.5">Yazar</th>
+                <th class="p-3.5">Durum</th>
+                <th class="p-3.5 text-right">İşlemler</th>
+              </tr>
+            </thead>
+            <tbody id="content-table-body" class="divide-y divide-slate-800/60 text-slate-300">
+              <tr>
+                <td colspan="5" class="p-6 text-center text-slate-500">
+                  <i class="fa-solid fa-spinner fa-spin mr-2"></i> Eserler yükleniyor...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BÖLÜM 2: PERSONEL VE EKİP YÖNETİMİ -->
+  <section id="section-staff" class="hidden space-y-6">
+    
+    <div class="border-b border-slate-800 pb-4">
+      <h2 class="text-2xl font-black text-white">Personel & Sahne Ekibi</h2>
+      <p class="text-xs text-slate-400">Hayal Sahnesi bünyesindeki sanatçıları, editörleri ve teknik ekibi yönetin.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Personel Ekleme Formu -->
+      <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
+        <h3 class="font-bold text-white text-sm flex items-center gap-2 border-b border-slate-800 pb-3">
+          <i class="fa-solid fa-user-plus text-cyan-400"></i> Yeni Personel / Görevli Ekle
+        </h3>
+
+        <form id="staff-form" onsubmit="handleStaffSubmit(event)" class="space-y-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Ad Soyad *</label>
+            <input id="staff-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="Örn: Yusuf Ziya">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Görevi / Rolü *</label>
+            <select id="staff-role" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+              <option value="Genel Sanat Yönetmeni">Genel Sanat Yönetmeni</option>
+              <option value="Yazar & Şair">Yazar & Şair</option>
+              <option value="Müzik Direktörü">Müzik Direktörü</option>
+              <option value="Kurgu & Montaj">Kurgu & Montaj</option>
+              <option value="Suflör & Sahne Amiri">Suflör & Sahne Amiri</option>
+              <option value="Seslendirme Sanatçısı">Seslendirme Sanatçısı</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">E-Posta / İletişim</label>
+            <input id="staff-email" type="email" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="ornek@hayalsahnesi.com">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yetki Derecesi</label>
+            <select id="staff-access" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+              <option value="admin">Yönetici (Tam Yetki)</option>
+              <option value="editor">Editör (İçerik Girişi)</option>
+              <option value="viewer">Gözlemci</option>
+            </select>
+          </div>
+
+          <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-slate-950 py-2.5 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check"></i> Personeli Kaydet
+          </button>
+        </form>
+      </div>
+
+      <!-- Personel Listesi -->
+      <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
+        <div class="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/40">
+          <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-users text-cyan-400"></i> Sahne Ekibi Kadrosu (<span id="staff-count">0</span>)
+          </h4>
+        </div>
+
+        <div class="overflow-x-auto flex-1">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
+              <tr>
+                <th class="p-3.5">İsim</th>
+                <th class="p-3.5">Görev</th>
+                <th class="p-3.5">Yetki</th>
+                <th class="p-3.5">İletişim</th>
+                <th class="p-3.5 text-right">İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="staff-table-body" class="divide-y divide-slate-800/60 text-slate-300">
+              <!-- Personeller dinamik yüklenecek -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+</main>
+
+<script>
+  const API_BASE = 'https://hayalsahnesi.onrender.com/api';
+  let currentContents = [];
+
+  // Menü Değiştirici
+  function switchAdminSection(sec) {
+    document.getElementById('section-contents').classList.toggle('hidden', sec !== 'contents');
+    document.getElementById('section-staff').classList.toggle('hidden', sec !== 'staff');
+
+    document.getElementById('nav-contents').className = (sec === 'contents') 
+      ? 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav'
+      : 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition';
+
+    document.getElementById('nav-staff').className = (sec === 'staff')
+      ? 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav'
+      : 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition';
+  }
+
+  // --- 1. ESER İŞLEMLERİ ---
+
+  // İçerikleri API'den Çek
+  async function fetchAdminContents() {
+    const tbody = document.getElementById('content-table-body');
+    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Eserler yükleniyor...</td></tr>`;
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/contents`);
+      const json = await res.json();
+      currentContents = Array.isArray(json) ? json : (json.data || []);
+      renderContentTable(currentContents);
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-rose-400"><i class="fa-solid fa-circle-exclamation mr-2"></i> Sunucuya bağlanırken hata oluştu.</td></tr>`;
+    }
+  }
+
+  function renderContentTable(items) {
+    const tbody = document.getElementById('content-table-body');
+    document.getElementById('content-count').innerText = items.length;
+
+    if (!items || items.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">Henüz eklenmiş bir eser bulunmuyor.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = items.map(c => `
+      <tr class="hover:bg-slate-900/40 transition">
+        <td class="p-3.5">
+          <span class="font-bold text-white block text-sm">${escapeHtml(c.title)}</span>
+          <span class="text-[10px] text-slate-500 font-mono">${c._id}</span>
+        </td>
+        <td class="p-3.5">
+          <span class="px-2 py-0.5 rounded text-[11px] font-semibold uppercase bg-slate-800 text-slate-300">
+            ${escapeHtml(c.type)}
+          </span>
+        </td>
+        <td class="p-3.5 text-slate-300">${escapeHtml(c.author || 'Belirtilmemiş')}</td>
+        <td class="p-3.5">
+          <button onclick="toggleContentStatus('${c._id}', '${c.status}')" class="px-2.5 py-1 rounded-full text-[10px] font-bold transition flex items-center gap-1.5 ${c.status === 'published' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">
+            <i class="fa-solid ${c.status === 'published' ? 'fa-check' : 'fa-clock'}"></i>
+            ${c.status === 'published' ? 'Yayında' : 'Taslak'}
+          </button>
+        </td>
+        <td class="p-3.5 text-right space-x-1.5">
+          <button onclick="editContent('${c._id}')" title="Düzenle" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          <button onclick="deleteContent('${c._id}', '${escapeHtml(c.title)}')" title="Kaldır / Sil" class="px-2.5 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-600 text-rose-300 hover:text-white transition border border-rose-900/40">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  // Eser Ekleme veya Güncelleme
+  async function handleContentSubmit(e) {
+    e.preventDefault();
+    const editId = document.getElementById('edit-content-id').value;
+    const btn = document.getElementById('form-submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> İşleniyor...`;
+
+    const payload = {
+      title: document.getElementById('form-title').value.trim(),
+      type: document.getElementById('form-type').value,
+      status: document.getElementById('form-status').value,
+      author: document.getElementById('form-author').value.trim(),
+      mediaUrl: document.getElementById('form-media-url').value.trim(),
+      thumbnail: document.getElementById('form-thumbnail').value.trim(),
+      textBody: document.getElementById('form-text-body').value.trim()
+    };
+
+    try {
+      const url = editId ? `${API_BASE}/contents/${editId}` : `${API_BASE}/contents`;
+      const method = editId ? 'PATCH' : 'POST';
+
+      const res = await fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        alert(editId ? 'Eser başarıyla güncellendi!' : 'Yeni eser başarıyla sahneye eklendi!');
+        cancelEditing();
+        fetchAdminContents();
+      } else {
+        alert('Kayıt sırasında sunucu hatası oluştu.');
+      }
+    } catch (err) {
+      alert('Sunucuya ulaşılamadı.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Eseri Kaydet`;
+    }
+  }
+
+  // Eser Düzenleme Moduna Al
+  function editContent(id) {
+    const item = currentContents.find(x => x._id === id);
+    if (!item) return;
+
+    document.getElementById('edit-content-id').value = item._id;
+    document.getElementById('form-title').value = item.title || '';
+    document.getElementById('form-type').value = item.type || 'music';
+    document.getElementById('form-status').value = item.status || 'published';
+    document.getElementById('form-author').value = item.author || '';
+    document.getElementById('form-media-url').value = item.mediaUrl || '';
+    document.getElementById('form-thumbnail').value = item.thumbnail || '';
+    document.getElementById('form-text-body').value = item.textBody || item.description || '';
+
+    document.getElementById('form-heading').innerHTML = `<i class="fa-solid fa-pen text-amber-400"></i> Eseri Güncelle`;
+    document.getElementById('form-submit-btn').innerHTML = `<i class="fa-solid fa-check"></i> Değişiklikleri Kaydet`;
+    document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function cancelEditing() {
+    document.getElementById('content-form').reset();
+    document.getElementById('edit-content-id').value = '';
+    document.getElementById('form-heading').innerHTML = `<i class="fa-solid fa-plus-circle text-rose-500"></i> Yeni Eser Ekle`;
+    document.getElementById('form-submit-btn').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Eseri Kaydet`;
+    document.getElementById('cancel-edit-btn').classList.add('hidden');
+  }
+
+  // Eser Durumu Değiştirme (Taslak / Yayında)
+  async function toggleContentStatus(id, currentStatus) {
+    const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+    try {
+      const res = await fetch(`${API_BASE}/contents/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        fetchAdminContents();
+      } else {
+        alert('Durum güncellenemedi.');
+      }
+    } catch (err) {
+      alert('Sunucu hatası oluştu.');
+    }
+  }
+
+  // Eser Silme / Kaldırma
+  async function deleteContent(id, title) {
+    if (!confirm(`"${title}" adlı eseri silmek ve sahneden tamamen kaldırmak istediğinize emin misiniz?`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/contents/${id}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        alert('Eser sahneden kaldırıldı.');
+        fetchAdminContents();
+      } else {
+        alert('Eser silinemedi.');
+      }
+    } catch (err) {
+      alert('Bağlantı hatası.');
+    }
+  }
+
+  // --- 2. PERSONEL VE EKİP YÖNETİMİ ---
+
+  let staffList = JSON.parse(localStorage.getItem('hayal_staff')) || [
+    { id: 'stf_1', name: 'Yusuf Ziya', role: 'Genel Sanat Yönetmeni', email: 'yusuf@hayalsahnesi.com', access: 'admin' },
+    { id: 'stf_2', name: 'Ezequiel Sarser', role: 'Yazar & Şair', email: 'sarser@hayalsahnesi.com', access: 'editor' }
+  ];
+
+  function renderStaffTable() {
+    const tbody = document.getElementById('staff-table-body');
+    document.getElementById('staff-count').innerText = staffList.length;
+
+    tbody.innerHTML = staffList.map(s => `
+      <tr class="hover:bg-slate-900/40 transition">
+        <td class="p-3.5 font-bold text-white flex items-center gap-2">
+          <div class="w-7 h-7 rounded-full bg-cyan-600/30 text-cyan-300 flex items-center justify-center font-bold text-[10px]">
+            ${s.name.substring(0, 2).toUpperCase()}
+          </div>
+          ${escapeHtml(s.name)}
+        </td>
+        <td class="p-3.5 text-cyan-400 font-semibold">${escapeHtml(s.role)}</td>
+        <td class="p-3.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${s.access === 'admin' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-slate-800 text-slate-300'}">
+            ${s.access === 'admin' ? 'Yönetici' : 'Editör'}
+          </span>
+        </td>
+        <td class="p-3.5 text-slate-400">${escapeHtml(s.email || '-')}</td>
+        <td class="p-3.5 text-right">
+          <button onclick="deleteStaff('${s.id}')" class="px-2.5 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-600 text-rose-300 hover:text-white transition border border-rose-900/40">
+            <i class="fa-solid fa-user-minus"></i>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function handleStaffSubmit(e) {
+    e.preventDefault();
+    const newStaff = {
+      id: 'stf_' + Date.now(),
+      name: document.getElementById('staff-name').value.trim(),
+      role: document.getElementById('staff-role').value,
+      email: document.getElementById('staff-email').value.trim(),
+      access: document.getElementById('staff-access').value
+    };
+
+    staffList.push(newStaff);
+    localStorage.setItem('hayal_staff', JSON.stringify(staffList));
+    e.target.reset();
+    renderStaffTable();
+    alert('Yeni personel ekibe dahil edildi!');
+  }
+
+  function deleteStaff(id) {
+    if (!confirm('Bu görevliyi ekipten çıkarmak istediğinize emin misiniz?')) return;
+    staffList = staffList.filter(s => s.id !== id);
+    localStorage.setItem('hayal_staff', JSON.stringify(staffList));
+    renderStaffTable();
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, function(m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    fetchAdminContents();
+    renderStaffTable();
+  });
+</script>
+</body>
+</html>
