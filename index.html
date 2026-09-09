@@ -590,28 +590,66 @@
     }
   }
 
-  function handleMediaPlay(title, author, mediaUrl) {
-    document.getElementById('player-title').innerText = title;
-    document.getElementById('player-subtitle').innerText = author + ' • Sahne Çalıyor';
+   // --- YOUTUBE ID ÇIKARICI (TÜM BAĞLANTI TÜRLERİNİ YAKALAR) ---
+  function getYouTubeId(url) {
+    if (!url) return '';
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : '';
+  }
 
-    if (globalAudio.src) globalAudio.pause();
-    if (ytPlayer && typeof ytPlayer.stopVideo === 'function') ytPlayer.stopVideo();
+  // --- ALT SAHNE ÇALARI (YOUTUBE SAYFASINI AÇMAZ, ARKA PLANDA ÇALAR) ---
+  function handleMediaPlay(title, author, mediaUrl) {
+    const playerTitle = document.getElementById('player-title');
+    const playerArtist = document.getElementById('player-subtitle');
+    if (playerTitle) playerTitle.innerText = title;
+    if (playerArtist) playerArtist.innerText = (author || 'Yusuf Ziya') + ' • Sahne Çalıyor';
+
+    if (globalAudio) {
+      globalAudio.pause();
+      globalAudio.src = '';
+    }
+    if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
+      try { ytPlayer.stopVideo(); } catch(e) {}
+    }
+    const oldActiveYt = document.getElementById('active-bg-yt');
+    if (oldActiveYt) oldActiveYt.remove();
 
     if (!mediaUrl) return;
 
-    if (mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be')) {
-      let videoId = getYouTubeId(mediaUrl);
-      if (videoId && ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
-        activeSourceType = 'youtube';
+    const videoId = getYouTubeId(mediaUrl);
+
+    if (videoId) {
+      activeSourceType = 'youtube';
+      
+      if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
         ytPlayer.loadVideoById(videoId);
         ytPlayer.playVideo();
       } else {
-        window.open(mediaUrl, '_blank');
+        let hiddenContainer = document.getElementById('hidden-yt-container');
+        if (!hiddenContainer) {
+          hiddenContainer = document.createElement('div');
+          hiddenContainer.id = 'hidden-yt-container';
+          hiddenContainer.className = 'hidden pointer-events-none opacity-0 fixed -bottom-96 -right-96';
+          document.body.appendChild(hiddenContainer);
+        }
+        hiddenContainer.innerHTML = `<iframe id="active-bg-yt" width="200" height="200" src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1" frameborder="0" allow="autoplay"></iframe>`;
       }
+
+      isPlaying = true;
+      updateShuffleBtnIcon(true);
     } else {
       activeSourceType = 'audio';
-      globalAudio.src = mediaUrl;
-      globalAudio.play().catch(()=>{});
+      if (globalAudio) {
+        globalAudio.src = mediaUrl;
+        globalAudio.play().catch(e => console.log('Ses hatası:', e));
+        isPlaying = true;
+        updateShuffleBtnIcon(true);
+        globalAudio.onended = function() {
+          isPlaying = false;
+          updateShuffleBtnIcon(false);
+        };
+      }
     }
   }
 
