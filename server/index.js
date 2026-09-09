@@ -18,7 +18,11 @@ const MONGODB_URI = process.env.MONGODB_URI;
 
 if (MONGODB_URI) {
   mongoose.connect(MONGODB_URI)
-    .then(() => console.log('✅ MongoDB Hayal Sahnesi veritabanına bağlandı.'))
+    .then(async () => {
+      console.log('✅ MongoDB Hayal Sahnesi veritabanına bağlandı.');
+      // İlk açılışta ana yönetici hesabını garantiye al
+      await seedAdminUser();
+    })
     .catch((err) => console.error('❌ MongoDB bağlantı hatası:', err));
 } else {
   console.warn('⚠️ MONGODB_URI ortam değişkeni tanımlanmadı (.env veya Render kontrol edin)');
@@ -58,14 +62,69 @@ const Content = mongoose.model('Content', contentSchema);
 
 // --- PERSONEL / KULLANICI ŞEMASI ---
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
+  username: { type: String, required: true, unique: true, lowercase: true, trim: true },
   name: { type: String, default: '' },
   password: { type: String, required: true },
-  role: { type: String, default: 'editor' }, // admin, editor
+  role: { type: String, default: 'İçerik Editörü' },
+  access: { type: String, default: 'editor' }, // admin, editor
   createdAt: { type: Date, default: Date.now }
 });
 
 const User = mongoose.model('User', userSchema);
+
+// Ana Yöneticiyi Otomatik Oluşturma (İlk Kurulum Garantisi)
+async function seedAdminUser() {
+  try {
+    const adminExists = await User.findOne({ username: 'yusuf' });
+    if (!adminExists) {
+      await User.create({
+        username: 'yusuf',
+        name: 'Yusuf Ziya',
+        password: 'hayal2026',
+        role: 'Genel Sanat Yönetmeni',
+        access: 'admin'
+      });
+      console.log('👑 Ana Yönetici (yusuf) MongoDB bulutunda hazırlandı.');
+    }
+  } catch (err) {
+    console.error('Admin oluşturma hatası:', err.message);
+  }
+}
+
+// ==========================================
+// BULUT GİRİŞ / AUTH API ENDPOINT'İ
+// ==========================================
+
+// Editörlerin her bilgisayardan giriş yapmasını sağlayan bulut kapısı
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ success: false, message: 'Kullanıcı adı ve parola zorunludur.' });
+    }
+
+    const cleanUsername = username.toLowerCase().trim();
+    const user = await User.findOne({ username: cleanUsername });
+
+    if (!user || user.password !== password.trim()) {
+      return res.status(401).json({ success: false, message: 'Kullanıcı adı veya şifre hatalı!' });
+    }
+
+    res.json({
+      success: true,
+      message: 'Giriş başarılı.',
+      user: {
+        _id: user._id,
+        name: user.name,
+        username: user.username,
+        role: user.role,
+        access: user.access
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Giriş sunucu hatası: ' + err.message });
+  }
+});
 
 // ==========================================
 // İÇERİK (CONTENT) API ENDPOINT'LERİ
@@ -184,7 +243,8 @@ app.delete('/api/contents/:id', async (req, res) => {
 // 7. Tüm Personelleri Listele
 app.get('/api/users', async (req, res) => {
   try {
-    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    // Şifreleri de admin panelinde görüntülemek ve düzenleyebilmek için çekiyoruz
+    const users = await User.find().sort({ createdAt: -1 });
     res.json({ success: true, users });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Personeller getirilemedi: ' + err.message });
@@ -194,22 +254,24 @@ app.get('/api/users', async (req, res) => {
 // 8. Yeni Personel Ekle
 app.post('/api/users', async (req, res) => {
   try {
-    const { username, name, password, role } = req.body;
+    const { username, name, password, role, access } = req.body;
 
     if (!username || !password) {
       return res.status(400).json({ success: false, message: 'Kullanıcı adı ve şifre zorunludur.' });
     }
 
-    const existingUser = await User.findOne({ username: username.trim() });
+    const cleanUsername = username.toLowerCase().trim();
+    const existingUser = await User.findOne({ username: cleanUsername });
     if (existingUser) {
       return res.status(400).json({ success: false, message: 'Bu kullanıcı adı zaten kullanılıyor.' });
     }
 
     const newUser = new User({
-      username: username.trim(),
+      username: cleanUsername,
       name: name ? name.trim() : '',
       password: password.trim(),
-      role: role || 'editor'
+      role: role || 'İçerik Editörü',
+      access: access || 'editor'
     });
 
     await newUser.save();
@@ -223,19 +285,27 @@ app.post('/api/users', async (req, res) => {
 app.put('/api/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { username, name, role, password } = req.body;
+    const { username, name, role, access, password } = req.body;
 
     const updateData = {};
-    if (username) updateData.username = username.trim();
+    if (username) {
+      const cleanUsername = username.toLowerCase().trim();
+      const duplicate = await User.findOne({ username: cleanUsername, _id: { $ne: id } });
+      if (duplicate) {
+        return res.status(400).json({ success: false, message: 'Bu kullanıcı adı başka biri tarafından kullanılıyor.' });
+      }
+      updateData.username = cleanUsername;
+    }
     if (name !== undefined) updateData.name = name.trim();
     if (role) updateData.role = role;
+    if (access) updateData.access = access;
 
-    // Şifre boş bırakılmamışsa yeni şifreyi güncelle, boş bırakılmışsa eski şifre kalsın
+    // Şifre kutusu doluysa yeni şifreyi ata
     if (password && password.trim() !== '') {
       updateData.password = password.trim();
     }
 
-    const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).select('-password');
+    const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true });
     if (!updatedUser) {
       return res.status(404).json({ success: false, message: 'Personel bulunamadı.' });
     }
@@ -250,6 +320,11 @@ app.put('/api/users/:id', async (req, res) => {
 app.delete('/api/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    const target = await User.findById(id);
+    if (target && target.username === 'yusuf') {
+      return res.status(403).json({ success: false, message: 'Ana yönetici (yusuf) hesabı silinemez.' });
+    }
+
     await User.findByIdAndDelete(id);
     res.json({ success: true, message: 'Personel başarıyla silindi.' });
   } catch (err) {
