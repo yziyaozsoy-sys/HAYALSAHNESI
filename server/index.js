@@ -24,7 +24,7 @@ if (MONGODB_URI) {
   console.warn('⚠️ MONGODB_URI ortam değişkeni tanımlanmadı (.env veya Render kontrol edin)');
 }
 
-// --- ŞEMA TANIMI (FOTOROMAN KARELERİ VE LOOP MÜZİK DAHİL) ---
+// --- İÇERİK ŞEMASI (FOTOROMAN KARELERİ VE LOOP MÜZİK DAHİL) ---
 const contentSchema = new mongoose.Schema({
   title: { type: String, required: true },
   type: { type: String, required: true }, // music, poem, series, photoroman, story
@@ -56,7 +56,20 @@ const contentSchema = new mongoose.Schema({
 
 const Content = mongoose.model('Content', contentSchema);
 
-// --- API ENDPOINT'LERİ ---
+// --- PERSONEL / KULLANICI ŞEMASI ---
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  name: { type: String, default: '' },
+  password: { type: String, required: true },
+  role: { type: String, default: 'editor' }, // admin, editor
+  createdAt: { type: Date, default: Date.now }
+});
+
+const User = mongoose.model('User', userSchema);
+
+// ==========================================
+// İÇERİK (CONTENT) API ENDPOINT'LERİ
+// ==========================================
 
 // 1. Vitrin: Sadece yayındaki (published) eserleri getir
 app.get('/api/contents', async (req, res) => {
@@ -98,11 +111,7 @@ app.post('/api/contents', async (req, res) => {
     } = req.body;
 
     const contentText = textBody || description || '';
-
-    // İstemcinin IP adresini yakalayalım (Yasal delil kaydı için)
     const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
-
-    // Dışarıdan başvuru yapılmışsa yasal onay kontrolü
     const isConsentGiven = Boolean(legalAccepted);
 
     const newContent = new Content({
@@ -165,6 +174,86 @@ app.delete('/api/contents/:id', async (req, res) => {
     res.json({ success: true, message: 'Eser başarıyla silindi' });
   } catch (err) {
     res.status(400).json({ error: 'Silme işlemi başarısız', details: err.message });
+  }
+});
+
+// ==========================================
+// PERSONEL / KULLANICI (USER) API ENDPOINT'LERİ
+// ==========================================
+
+// 7. Tüm Personelleri Listele
+app.get('/api/users', async (req, res) => {
+  try {
+    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    res.json({ success: true, users });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Personeller getirilemedi: ' + err.message });
+  }
+});
+
+// 8. Yeni Personel Ekle
+app.post('/api/users', async (req, res) => {
+  try {
+    const { username, name, password, role } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ success: false, message: 'Kullanıcı adı ve şifre zorunludur.' });
+    }
+
+    const existingUser = await User.findOne({ username: username.trim() });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: 'Bu kullanıcı adı zaten kullanılıyor.' });
+    }
+
+    const newUser = new User({
+      username: username.trim(),
+      name: name ? name.trim() : '',
+      password: password.trim(),
+      role: role || 'editor'
+    });
+
+    await newUser.save();
+    res.status(201).json({ success: true, message: 'Personel başarıyla eklendi.', user: newUser });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Personel eklenemedi: ' + err.message });
+  }
+});
+
+// 9. Personel Bilgilerini ve Şifresini Düzenle / Güncelle (PUT)
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { username, name, role, password } = req.body;
+
+    const updateData = {};
+    if (username) updateData.username = username.trim();
+    if (name !== undefined) updateData.name = name.trim();
+    if (role) updateData.role = role;
+
+    // Şifre boş bırakılmamışsa yeni şifreyi güncelle, boş bırakılmışsa eski şifre kalsın
+    if (password && password.trim() !== '') {
+      updateData.password = password.trim();
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).select('-password');
+    if (!updatedUser) {
+      return res.status(404).json({ success: false, message: 'Personel bulunamadı.' });
+    }
+
+    res.json({ success: true, message: 'Personel bilgileri ve şifre başarıyla güncellendi.', user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Güncelleme hatası: ' + err.message });
+  }
+});
+
+// 10. Personel Sil
+app.delete('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await User.findByIdAndDelete(id);
+    res.json({ success: true, message: 'Personel başarıyla silindi.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Personel silinemedi: ' + err.message });
   }
 });
 

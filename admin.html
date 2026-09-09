@@ -264,9 +264,7 @@
               </div>
             </div>
 
-            <!-- ============================================== -->
-            <!-- ÖZEL FOTOROMAN ALANI (DOSYA YÜKLEME & MONGO DEPOLAMA) -->
-            <!-- ============================================== -->
+            <!-- ÖZEL FOTOROMAN ALANI -->
             <div id="photoroman-editor-box" class="hidden space-y-3 p-4 bg-amber-950/20 border border-amber-900/40 rounded-2xl">
               <div class="flex items-center justify-between border-b border-amber-900/40 pb-2">
                 <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
@@ -372,7 +370,6 @@
         </div>
       </div>
     </section>
-
     <!-- BÖLÜM 2: PERSONEL VE EDİTÖR YÖNETİMİ -->
     <section id="section-staff" class="hidden space-y-6">
       <div class="border-b border-slate-800 pb-4">
@@ -455,6 +452,70 @@
 
   </main>
 
+</div>
+
+<!-- ================= MODAL: PERSONEL DÜZENLEME & ŞİFRE DEĞİŞTİRME ================= -->
+<div id="modal-edit-staff" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="card-stage border border-slate-800 rounded-3xl p-6 md:p-8 max-w-md w-full space-y-4 relative shadow-2xl">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="text-base font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-user-pen text-amber-400"></i> Editör Düzenle & Şifre Değiştir
+      </h3>
+      <button onclick="closeEditStaffModal()" class="text-slate-400 hover:text-white text-xl p-1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form id="form-edit-staff" onsubmit="handleEditStaffSubmit(event)" class="space-y-3">
+      <input type="hidden" id="edit-staff-id">
+
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Ad Soyad *</label>
+        <input id="edit-staff-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kullanıcı Adı *</label>
+        <input id="edit-staff-username" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Görevi / Rolü</label>
+          <select id="edit-staff-role" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+            <option value="İçerik Editörü">İçerik Editörü</option>
+            <option value="Müzik Direktörü">Müzik Direktörü</option>
+            <option value="Şiir & Edebiyat Editörü">Şiir & Edebiyat Editörü</option>
+            <option value="Kurgu & Montaj">Kurgu & Montaj</option>
+            <option value="Sahne Amiri">Sahne Amiri</option>
+            <option value="Genel Sanat Yönetmeni">Genel Sanat Yönetmeni</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yetki Seviyesi</label>
+          <select id="edit-staff-access" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+            <option value="editor">Editör</option>
+            <option value="admin">Yönetici (Admin)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+        <label class="block text-[11px] font-semibold text-amber-300 mb-1">Yeni Şifre Belirle (İsteğe Bağlı)</label>
+        <input id="edit-staff-password" type="text" placeholder="Değiştirmek istemiyorsanız boş bırakın" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
+        <span class="text-[10px] text-slate-400 mt-1 block">Şifre aynı kalacaksa bu kutuyu boş bırakabilirsiniz.</span>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+        <button type="button" onclick="closeEditStaffModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold transition">
+          İptal
+        </button>
+        <button type="submit" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-check"></i> Değişiklikleri Kaydet
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- ================= MODAL: GELEN ESERİ İNCELEME & OKUMA ================= -->
@@ -544,7 +605,7 @@
     let foundAccount = staffList.find(s => s.username.toLowerCase() === userVal && s.password === passVal);
 
     if (!foundAccount && userVal === 'yusuf' && passVal === 'hayal2026') {
-      foundAccount = { id: 'stf_1', name: 'Yusuf Ziya', username: 'yusuf', role: 'Genel Sanat Yönetmeni', access: 'admin' };
+      foundAccount = { id: 'stf_1', name: 'Yusuf Ziya', username: 'yusuf', password: 'hayal2026', role: 'Genel Sanat Yönetmeni', access: 'admin' };
     }
 
     if (foundAccount) {
@@ -621,9 +682,7 @@
       : 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition';
   }
 
-  // ==========================================
-  // FOTOROMAN DOSYA YÜKLEME & MONGO VERİ MOTORU
-  // ==========================================
+  // --- FOTOROMAN DOSYA VE VERİ MOTORU ---
   function toggleFormFieldsByType() {
     const type = document.getElementById('form-type').value;
     const isPhoto = (type === 'photoroman');
@@ -648,7 +707,7 @@
     if (!file) return;
 
     if (file.size > 8 * 1024 * 1024) {
-      alert('Seçtiğiniz ses dosyası 8MB sınırından büyük. Lütfen daha kısa bir fon müziği seçin veya doğrudan URL bağlantısı yapıştırın.');
+      alert('Seçtiğiniz ses dosyası 8MB sınırından büyük. Lütfen daha kısa bir dosya seçin.');
       input.value = '';
       return;
     }
@@ -850,10 +909,7 @@
           </button>
         </td>
         <td class="p-3.5 text-right space-x-1.5">
-          <button onclick="inspectContent('${c._id}')" title="Metni Oku & İncele" class="px-2.5 py-1 rounded-lg bg-cyan-950/40 hover:bg-cyan-600 text-cyan-300 hover:text-white transition border border-cyan-800/40">
-            <i class="fa-solid fa-eye"></i>
-          </button>
-          <button onclick="editContent('${c._id}')" title="Düzenle" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+                    <button onclick="editContent('${c._id}')" title="Düzenle" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
           ${isAdmin ? `
@@ -1138,15 +1194,85 @@
           </span>
         </td>
         <td class="p-3.5 text-slate-400 font-mono text-[11px]">${escapeHtml(s.password)}</td>
-        <td class="p-3.5 text-right">
+        <td class="p-3.5 text-right space-x-1.5">
+          <button onclick="openEditStaffModal('${s.id}')" title="Düzenle & Şifre Değiştir" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 transition border border-amber-500/30">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
           ${s.username !== 'yusuf' ? `
             <button onclick="deleteStaff('${s.id}')" title="Hesabı Kaldır" class="px-2.5 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-600 text-rose-300 hover:text-white transition border border-rose-900/40">
               <i class="fa-solid fa-user-minus"></i>
             </button>
-          ` : '<span class="text-[10px] text-slate-600 font-mono">Kilitli</span>'}
+          ` : '<span class="text-[10px] text-slate-600 font-mono ml-2">Ana Hesap</span>'}
         </td>
       </tr>
     `).join('');
+  }
+
+  // --- PERSONEL DÜZENLEME MODALINI AÇ ---
+  function openEditStaffModal(id) {
+    const staff = staffList.find(s => s.id === id);
+    if (!staff) {
+      alert('Personel bulunamadı!');
+      return;
+    }
+
+    document.getElementById('edit-staff-id').value = staff.id;
+    document.getElementById('edit-staff-name').value = staff.name || '';
+    document.getElementById('edit-staff-username').value = staff.username || '';
+    if (document.getElementById('edit-staff-role')) document.getElementById('edit-staff-role').value = staff.role || 'İçerik Editörü';
+    if (document.getElementById('edit-staff-access')) document.getElementById('edit-staff-access').value = staff.access || 'editor';
+    document.getElementById('edit-staff-password').value = ''; // Şifre kutusu her açılışta boş kalsın
+
+    document.getElementById('modal-edit-staff').classList.remove('hidden');
+  }
+
+  // --- DÜZENLEME MODALINI KAPAT ---
+  function closeEditStaffModal() {
+    const modal = document.getElementById('modal-edit-staff');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  // --- DÜZENLEMEYİ VE ŞİFREYİ KAYDET ---
+  function handleEditStaffSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('edit-staff-id').value;
+    const staffIndex = staffList.findIndex(s => s.id === id);
+
+    if (staffIndex === -1) {
+      alert('Güncellenecek personel bulunamadı!');
+      return;
+    }
+
+    const newUsername = document.getElementById('edit-staff-username').value.trim().toLowerCase();
+
+    // Kullanıcı adı çakışması kontrolü
+    const isDuplicate = staffList.some(s => s.id !== id && s.username.toLowerCase() === newUsername);
+    if (isDuplicate) {
+      alert('Bu kullanıcı adı başka bir personele ait! Lütfen farklı bir kullanıcı adı seçin.');
+      return;
+    }
+
+    // Bilgileri güncelle
+    staffList[staffIndex].name = document.getElementById('edit-staff-name').value.trim();
+    staffList[staffIndex].username = newUsername;
+    if (document.getElementById('edit-staff-role')) {
+      staffList[staffIndex].role = document.getElementById('edit-staff-role').value;
+    }
+    if (document.getElementById('edit-staff-access')) {
+      staffList[staffIndex].access = document.getElementById('edit-staff-access').value;
+    }
+
+    // Şifre kutusu doluysa şifreyi güncelle, boşsa eski şifre korunsun
+    const newPassword = document.getElementById('edit-staff-password').value.trim();
+    if (newPassword) {
+      staffList[staffIndex].password = newPassword;
+    }
+
+    // localStorage'a kaydet, modalı kapa ve tabloyu yenile
+    localStorage.setItem('hayal_staff_v2', JSON.stringify(staffList));
+    closeEditStaffModal();
+    renderStaffTable();
+    alert('Personel bilgileri ve şifre başarıyla güncellendi!');
   }
 
   function handleStaffSubmit(e) {
@@ -1205,3 +1331,4 @@
 </script>
 </body>
 </html>
+
