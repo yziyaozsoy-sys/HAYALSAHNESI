@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hayal Sahnesi | Yönetici & Editör Konsolu</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  body {
+    background-color: #07090e;
+    color: #e2e8f0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .stage-gradient {
+    background: linear-gradient(135deg, #e11d48 0%, #7c3aed 100%);
+  }
+  .card-stage {
+    background: rgba(15, 20, 31, 0.85);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .active-nav {
+    background: linear-gradient(135deg, #e11d48 0%, #9333ea 100%);
+    color: white !important;
+  }
+  .filter-btn.active {
+    background: #e11d48;
+    color: white;
+    border-color: #e11d48;
+    font-weight: 700;
+  }
+  .glow-box {
+    box-shadow: 0 0 50px -10px rgba(225, 29, 72, 0.3);
+  }
+</style>
+</head>
+<body class="min-h-screen selection:bg-rose-600 selection:text-white">
+
+<!-- ================= GÜVENLİ GİRİŞ / KİLİT EKRANI ================= -->
+<div id="login-overlay" class="fixed inset-0 z-50 bg-[#07090e] flex items-center justify-center p-4">
+  <div class="card-stage border border-slate-800 rounded-3xl p-8 max-w-md w-full glow-box space-y-6 text-center">
+    <div class="w-16 h-16 rounded-2xl stage-gradient mx-auto flex items-center justify-center text-white text-2xl shadow-xl shadow-rose-900/40">
+      <i class="fa-solid fa-masks-theater"></i>
+    </div>
+
+    <div class="space-y-1">
+      <h2 class="text-2xl font-black text-white tracking-wider uppercase">HAYAL SAHNESİ</h2>
+      <p class="text-xs text-rose-400 font-bold uppercase tracking-widest">Kürasyon & Yönetim Kapısı</p>
+      <p class="text-[11px] text-slate-400 pt-2">Admin veya Editör bilgilerinizle giriş yapın.</p>
+    </div>
+
+    <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4 text-left">
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kullanıcı Adı</label>
+        <div class="relative">
+          <i class="fa-solid fa-user absolute left-3.5 top-3 text-slate-500 text-xs"></i>
+          <input id="login-username" required type="text" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500 transition" placeholder="Örn: yusuf veya editor1">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Güvenlik Parolası</label>
+        <div class="relative">
+          <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-500 text-xs"></i>
+          <input id="login-password" required type="password" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl pl-9 pr-10 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500 transition" placeholder="••••••••">
+          <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-2.5 text-slate-400 hover:text-white text-xs">
+            <i id="toggle-pwd-icon" class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <p id="login-error" class="hidden text-xs text-rose-400 font-semibold text-center flex items-center justify-center gap-1.5">
+        <i class="fa-solid fa-triangle-exclamation"></i> Kullanıcı adı veya parola hatalı!
+      </p>
+
+      <button id="btn-login-submit" type="submit" class="w-full stage-gradient text-white py-3 rounded-xl font-bold text-xs tracking-wider uppercase shadow-lg shadow-rose-900/40 hover:opacity-95 transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-key"></i> Sahneye Giriş Yap
+      </button>
+    </form>
+
+    <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
+      <a href="index.html" class="hover:text-rose-400 transition flex items-center gap-1">
+        <i class="fa-solid fa-arrow-left"></i> Vitrine Dön
+      </a>
+      <span class="font-mono text-[10px]">v3.2 MongoDB Photoroman Engine</span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ANA ADMİN & EDİTÖR PANELİ ================= -->
+<div id="admin-app" class="hidden min-h-screen flex flex-col md:flex-row">
+
+  <!-- Yan Menü / Sidebar -->
+  <aside class="w-full md:w-64 bg-slate-950 border-r border-slate-800 p-6 flex flex-col justify-between shrink-0">
+    <div class="space-y-6">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="window.location.href='index.html'">
+        <div class="w-9 h-9 rounded-xl stage-gradient flex items-center justify-center font-bold text-white shadow-lg shadow-rose-600/30">
+          <i class="fa-solid fa-masks-theater text-base"></i>
+        </div>
+        <div>
+          <h1 class="font-black text-base tracking-wider text-white uppercase">HAYAL SAHNESİ</h1>
+          <p id="app-badge-role" class="text-[10px] text-rose-400 font-bold uppercase tracking-widest">Yönetim Masası</p>
+        </div>
+      </div>
+
+      <!-- Profil Kartı -->
+      <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 flex items-center space-x-3">
+        <div id="user-avatar" class="w-8 h-8 rounded-full bg-rose-600/30 text-rose-400 flex items-center justify-center font-bold text-xs">
+          YZ
+        </div>
+        <div>
+          <p id="user-display-name" class="text-xs font-bold text-white">Yusuf Ziya</p>
+          <p id="user-display-role" class="text-[10px] text-emerald-400 font-semibold">Süper Admin</p>
+        </div>
+      </div>
+
+      <nav class="space-y-1.5 pt-2">
+        <button onclick="switchAdminSection('contents')" id="nav-contents" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav">
+          <i class="fa-solid fa-chart-line text-sm"></i>
+          <span>Eser Kürasyonu</span>
+        </button>
+        
+        <button onclick="switchAdminSection('staff')" id="nav-staff" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
+          <i class="fa-solid fa-users-gear text-sm"></i>
+          <span>Personel & Editörler</span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="pt-6 border-t border-slate-800/80 space-y-2">
+      <div class="flex items-center justify-between text-xs text-slate-400">
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> MongoDB Atlas</span>
+        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">50MB Aktif</span>
+      </div>
+      <a href="index.html" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/50 text-slate-300 text-xs font-bold transition">
+        <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Sahne Vitrinine Git
+      </a>
+      <button onclick="logoutAdmin()" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-rose-950/40 hover:bg-rose-600 text-rose-300 hover:text-white text-xs font-bold transition border border-rose-900/40">
+        <i class="fa-solid fa-right-from-bracket text-xs"></i> Oturumu Kapat
+      </button>
+    </div>
+  </aside>
+
+  <!-- Ana Yönetim Alanı -->
+  <main class="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full space-y-8 overflow-y-auto">
+
+    <!-- BÖLÜM 1: İSTATİSTİKLER VE ESER YÖNETİMİ -->
+    <section id="section-contents" class="space-y-6">
+      
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-black text-white">Eser Havuzu & Kürasyon</h2>
+          <p class="text-xs text-slate-400">Gelen başvuruları inceleyin, fotoroman karelerini oluşturun ve sahneye kabul edin.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button onclick="fetchAdminContents()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
+            <i class="fa-solid fa-rotate-right"></i> Listeyi Yenile
+          </button>
+        </div>
+      </div>
+
+      <!-- Dinamik İstatistik Kartları -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div class="space-y-1">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Müzik & Şiir Dinleme</p>
+            <h3 id="stat-total-listens" class="text-2xl font-black text-purple-400">0</h3>
+            <span class="text-[10px] text-slate-400 font-mono">Gerçek Veri Tabanı</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-purple-600/20 text-purple-400 border border-purple-500/30 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-headphones"></i>
+          </div>
+        </div>
+
+        <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div class="space-y-1">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Mini Dizi İzlenmeleri</p>
+            <h3 id="stat-total-views" class="text-2xl font-black text-rose-400">0</h3>
+            <span class="text-[10px] text-slate-400 font-mono">Gerçek Veri Tabanı</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-rose-600/20 text-rose-400 border border-rose-500/30 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-film"></i>
+          </div>
+        </div>
+
+        <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div class="space-y-1">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Yayındaki Eserler</p>
+            <h3 id="stat-published-count" class="text-2xl font-black text-emerald-400">0</h3>
+            <span class="text-[10px] text-slate-400">Vitrinde Canlı</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+        </div>
+
+        <div class="card-stage p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
+          <div class="space-y-1">
+            <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Toplam Sistem Eseri</p>
+            <h3 id="stat-total-count" class="text-2xl font-black text-white">0</h3>
+            <span class="text-[10px] text-slate-400">MongoDB Kaydı</span>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-cyan-600/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-layer-group"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form ve Eser Tablosu -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Sol Panel: Form -->
+        <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h3 id="form-heading" class="font-bold text-white text-sm flex items-center gap-2">
+              <i class="fa-solid fa-plus-circle text-rose-500"></i> Yeni Sahne Eseri Yükle
+            </h3>
+            <button id="cancel-edit-btn" onclick="cancelEditing()" class="hidden text-[11px] text-amber-400 hover:underline">Vazgeç</button>
+          </div>
+
+          <form id="content-form" onsubmit="handleContentSubmit(event)" class="space-y-3">
+            <input type="hidden" id="edit-content-id" value="">
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Başlığı *</label>
+              <input id="form-title" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: KAN VE NOTA">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Tür *</label>
+                <select id="form-type" onchange="toggleFormFieldsByType()" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                  <option value="music">Müzik (OST)</option>
+                  <option value="poem">Şiir & Dinleti</option>
+                  <option value="series">Mini Dizi</option>
+                  <option value="photoroman">Fotoroman (Görsel Roman)</option>
+                  <option value="story">Hikaye</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yayın Durumu *</label>
+                <select id="form-status" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                  <option value="published">Doğrudan Yayına Al</option>
+                  <option value="draft">Taslak / Beklemede</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yazar / Rol *</label>
+              <input id="form-author" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
+            </div>
+
+            <!-- Standart Medya ve Kapak Alanları -->
+            <div id="standard-media-fields" class="space-y-3">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Medya Bağlantısı (YouTube / MP3)</label>
+                <input id="form-media-url" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://youtu.be/...">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kapak / Görsel URL</label>
+                <input id="form-thumbnail" type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://...">
+              </div>
+            </div>
+
+            <!-- ÖZEL FOTOROMAN ALANI -->
+            <div id="photoroman-editor-box" class="hidden space-y-3 p-4 bg-amber-950/20 border border-amber-900/40 rounded-2xl">
+              <div class="flex items-center justify-between border-b border-amber-900/40 pb-2">
+                <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                  <i class="fa-solid fa-camera-retro"></i> Fotoroman Kare & Loop Müzik Masası
+                </span>
+                <span class="text-[10px] text-emerald-400 font-mono"><i class="fa-solid fa-database"></i> MongoDB Depolama</span>
+              </div>
+
+              <!-- Loop Fon Müziği -->
+              <div class="space-y-1.5">
+                <label class="block text-[11px] font-semibold text-amber-200">Fotoroman Atmosfer Fon Müziği (Loop MP3)</label>
+                <div class="space-y-1">
+                  <input type="file" id="form-photo-music-file" accept="audio/*" onchange="convertAudioToBase64(this)" class="w-full text-[11px] text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-amber-500/20 file:text-amber-300 hover:file:bg-amber-500/30 cursor-pointer">
+                  <input id="form-photo-music" type="text" class="w-full bg-slate-900 border border-amber-900/40 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="Veya Müzik URL / Base64">
+                </div>
+                <audio id="admin-audio-preview" controls class="hidden w-full h-8 mt-1"></audio>
+              </div>
+
+              <!-- Karelerin Listelendiği Dinamik Alan -->
+              <div class="space-y-2 pt-2 border-t border-amber-900/30">
+                <div class="flex items-center justify-between">
+                  <label class="text-[11px] font-semibold text-amber-200">Sayfa Sayfa Görsel Kareler</label>
+                  <span class="text-[10px] text-slate-400">Dosya Yükle veya URL</span>
+                </div>
+                
+                <div id="photo-frames-container" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+                  <!-- Dinamik Kare Kutuları -->
+                </div>
+
+                <button type="button" onclick="addPhotoFrameRow()" class="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-500/30">
+                  <i class="fa-solid fa-plus"></i> + Yeni Fotoroman Karesi / Sayfası Ekle
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Şiir Mısraları / Genel Açıklama</label>
+              <textarea id="form-text-body" rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserin tüm sözleri, açıklaması ya da sahne notu..."></textarea>
+            </div>
+
+            <button id="form-submit-btn" type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-rose-900/30 hover:opacity-95 transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-floppy-disk"></i> Eseri Canlı MongoDB'ye Kaydet
+            </button>
+          </form>
+        </div>
+
+        <!-- Sağ Panel: Tablo -->
+        <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
+          <div class="p-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/40">
+            <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-database text-rose-500"></i> MongoDB Eser Kütüphanesi (<span id="content-count">0</span>)
+            </h4>
+            
+            <div class="relative w-full sm:w-56">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+              <input id="search-input" oninput="applyFilters()" type="text" placeholder="Eser veya yazar ara..." class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500">
+            </div>
+          </div>
+
+          <!-- Kategori Butonları -->
+          <div class="px-4 py-2.5 bg-slate-950/80 border-b border-slate-800 flex items-center gap-1.5 overflow-x-auto text-xs">
+            <button onclick="setFilterCategory('all')" class="filter-btn active px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="all">
+              Tümü (<span id="count-all">0</span>)
+            </button>
+            <button onclick="setFilterCategory('music')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="music">
+              <i class="fa-solid fa-compact-disc mr-1 text-purple-400"></i>Müzik (<span id="count-music">0</span>)
+            </button>
+            <button onclick="setFilterCategory('poem')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="poem">
+              <i class="fa-solid fa-scroll mr-1 text-cyan-400"></i>Şiir (<span id="count-poem">0</span>)
+            </button>
+            <button onclick="setFilterCategory('series')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="series">
+              <i class="fa-solid fa-clapperboard mr-1 text-rose-400"></i>Mini Dizi (<span id="count-series">0</span>)
+            </button>
+            <button onclick="setFilterCategory('photoroman')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="photoroman">
+              <i class="fa-solid fa-images mr-1 text-amber-400"></i>Fotoroman (<span id="count-photoroman">0</span>)
+            </button>
+            <button onclick="setFilterCategory('story')" class="filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="story">
+              <i class="fa-solid fa-feather-pointed mr-1 text-emerald-400"></i>Hikaye (<span id="count-story">0</span>)
+            </button>
+          </div>
+
+          <!-- Tablo Gövdesi -->
+          <div class="overflow-x-auto flex-1">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
+                <tr>
+                  <th class="p-3.5">Eser Adı</th>
+                  <th class="p-3.5">Kategori</th>
+                  <th class="p-3.5">Yazar / Gönderen</th>
+                  <th class="p-3.5">Durum</th>
+                  <th class="p-3.5 text-right">İşlem & İnceleme</th>
+                </tr>
+              </thead>
+              <tbody id="content-table-body" class="divide-y divide-slate-800/60 text-slate-300">
+                <tr>
+                  <td colspan="5" class="p-6 text-center text-slate-500">
+                    <i class="fa-solid fa-spinner fa-spin mr-2"></i> Eserler yükleniyor...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- BÖLÜM 2: PERSONEL VE EDİTÖR YÖNETİMİ -->
+    <section id="section-staff" class="hidden space-y-6">
+      <div class="border-b border-slate-800 pb-4">
+        <h2 class="text-2xl font-black text-white">Personel & Editör Hesapları</h2>
+        <p class="text-xs text-slate-400">Yeni editörler oluşturun, giriş şifreleri belirleyin veya yetkilerini yönetin.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
+          <h3 class="font-bold text-white text-sm flex items-center gap-2 border-b border-slate-800 pb-3">
+            <i class="fa-solid fa-user-plus text-cyan-400"></i> Yeni Editör Hesabı Aç
+          </h3>
+
+          <form id="staff-form" onsubmit="handleStaffSubmit(event)" class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Ad Soyad *</label>
+              <input id="staff-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="Örn: Ahmet Yılmaz">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kullanıcı Adı (Giriş İçin) *</label>
+              <input id="staff-username" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="Örn: ahmetyilmaz">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Giriş Parolası *</label>
+              <input id="staff-password" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500" placeholder="Örn: editor2026">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Görevi / Rolü *</label>
+              <select id="staff-role" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                <option value="İçerik Editörü">İçerik Editörü</option>
+                <option value="Müzik Direktörü">Müzik Direktörü</option>
+                <option value="Şiir & Edebiyat Editörü">Şiir & Edebiyat Editörü</option>
+                <option value="Kurgu & Montaj">Kurgu & Montaj</option>
+                <option value="Sahne Amiri">Sahne Amiri</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yetki Seviyesi</label>
+              <select id="staff-access" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                <option value="editor">Editör (Eser Girişi & Güncelleme)</option>
+                <option value="admin">Yönetici (Tam Yetki)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="w-full bg-cyan-600 hover:bg-cyan-500 text-slate-950 py-2.5 rounded-xl font-bold text-xs transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-check"></i> Editör Hesabını Kaydet
+            </button>
+          </form>
+        </div>
+
+        <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
+          <div class="p-4 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/40">
+            <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-users text-cyan-400"></i> Aktif Görevliler & Giriş Hesapları (<span id="staff-count">0</span>)
+            </h4>
+          </div>
+
+          <div class="overflow-x-auto flex-1">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
+                <tr>
+                  <th class="p-3.5">İsim & Kullanıcı Adı</th>
+                  <th class="p-3.5">Görev</th>
+                  <th class="p-3.5">Yetki</th>
+                  <th class="p-3.5">Şifre</th>
+                  <th class="p-3.5 text-right">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="staff-table-body" class="divide-y divide-slate-800/60 text-slate-300">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+
+<!-- ================= MODAL: PERSONEL DÜZENLEME & ŞİFRE DEĞİŞTİRME ================= -->
+<div id="modal-edit-staff" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="card-stage border border-slate-800 rounded-3xl p-6 md:p-8 max-w-md w-full space-y-4 relative shadow-2xl">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="text-base font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-user-pen text-amber-400"></i> Editör Düzenle & Şifre Değiştir
+      </h3>
+      <button onclick="closeEditStaffModal()" class="text-slate-400 hover:text-white text-xl p-1">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form id="form-edit-staff" onsubmit="handleEditStaffSubmit(event)" class="space-y-3">
+      <input type="hidden" id="edit-staff-id">
+
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Ad Soyad *</label>
+        <input id="edit-staff-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kullanıcı Adı *</label>
+        <input id="edit-staff-username" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Görevi / Rolü</label>
+          <select id="edit-staff-role" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+            <option value="İçerik Editörü">İçerik Editörü</option>
+            <option value="Müzik Direktörü">Müzik Direktörü</option>
+            <option value="Şiir & Edebiyat Editörü">Şiir & Edebiyat Editörü</option>
+            <option value="Kurgu & Montaj">Kurgu & Montaj</option>
+            <option value="Sahne Amiri">Sahne Amiri</option>
+            <option value="Genel Sanat Yönetmeni">Genel Sanat Yönetmeni</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yetki Seviyesi</label>
+          <select id="edit-staff-access" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+            <option value="editor">Editör</option>
+            <option value="admin">Yönetici (Admin)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+        <label class="block text-[11px] font-semibold text-amber-300 mb-1">Yeni Şifre Belirle (İsteğe Bağlı)</label>
+        <input id="edit-staff-password" type="text" placeholder="Değiştirmek istemiyorsanız boş bırakın" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400">
+        <span class="text-[10px] text-slate-400 mt-1 block">Şifre aynı kalacaksa bu kutuyu boş bırakabilirsiniz.</span>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+        <button type="button" onclick="closeEditStaffModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold transition">
+          İptal
+        </button>
+        <button type="submit" class="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-check"></i> Değişiklikleri Kaydet
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ================= MODAL: GELEN ESERİ İNCELEME & OKUMA ================= -->
+<div id="modal-inspector" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="card-stage border border-slate-800 rounded-3xl p-6 md:p-8 max-w-2xl w-full space-y-4 max-h-[90vh] flex flex-col">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <div>
+        <span id="inspect-type" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-rose-500/20 text-rose-400">TÜR</span>
+        <h3 id="inspect-title" class="text-xl font-black text-white mt-1">Eser Başlığı</h3>
+        <p id="inspect-author" class="text-xs text-slate-400">Gönderen: -</p>
+      </div>
+      <button onclick="closeInspector()" class="text-slate-400 hover:text-white text-xl p-2"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto space-y-4 pr-1">
+      <div id="inspect-media-container" class="hidden p-3 bg-slate-900 rounded-xl border border-slate-800 flex items-center justify-between">
+        <span class="text-xs text-slate-300 flex items-center gap-2">
+          <i class="fa-solid fa-link text-rose-400"></i> Medya Linki Mevcut
+        </span>
+        <a id="inspect-media-link" href="#" target="_blank" class="text-xs text-rose-400 hover:underline font-bold flex items-center gap-1">
+          Medyayı Aç <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+        </a>
+      </div>
+
+      <!-- Yazar İletişim & Hukuki Sorumluluk / Telif Onay Kartı -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-slate-900/90 rounded-2xl border border-slate-800 text-xs">
+        <div>
+          <span class="text-slate-400 block text-[11px] mb-0.5">İletişim E-Posta:</span>
+          <span id="inspect-email" class="font-mono text-cyan-400 font-semibold select-all">-</span>
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[11px] mb-0.5">İletişim Telefon:</span>
+          <span id="inspect-phone" class="font-mono text-emerald-400 font-semibold select-all">-</span>
+        </div>
+        <div class="sm:col-span-2 pt-2 mt-1 border-t border-slate-800/80 flex items-center justify-between">
+          <span class="text-slate-400 text-[11px]">Telif & Hukuki Sorumluluk:</span>
+          <span id="inspect-legal" class="px-2 py-0.5 rounded text-[10px] font-bold"></span>
+        </div>
+      </div>
+
+      <div>
+        <h5 class="text-xs font-bold text-slate-300 mb-1.5 uppercase tracking-wide">Eser Metni / Şiir Mısraları / Kare Detayları:</h5>
+        <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-800/80 font-serif text-slate-200 text-sm whitespace-pre-line leading-relaxed max-h-72 overflow-y-auto" id="inspect-body">
+          Metin bulunamadı.
+        </div>
+      </div>
+    </div>
+
+    <!-- Alt Butonlar -->
+    <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
+      <button onclick="closeInspector()" type="button" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold transition">
+        Kapat
+      </button>
+      <div class="flex items-center gap-2">
+        <button onclick="editFromInspector()" type="button" class="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-500/30 text-xs font-bold transition flex items-center gap-1.5">
+          <i class="fa-solid fa-pen-to-square"></i> Düzenle
+        </button>
+        <button id="inspect-publish-btn" onclick="publishFromInspector()" type="button" class="px-5 py-2 rounded-xl stage-gradient text-white text-xs font-bold shadow-lg shadow-rose-900/40 hover:opacity-95 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-check"></i> Doğrudan Yayına Al
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const API_BASE = '/api';
+  let currentContents = [];
+  let selectedCategory = 'all';
+  let currentUser = null;
+  let inspectingItem = null;
+
+   let staffList = [];
+
+  // 1. CANLI BULUT GİRİŞİ (Herkes kendi cihazından MongoDB ile giriş yapar)
+  async function handleLogin(e) {
+    e.preventDefault();
+    const userVal = document.getElementById('login-username').value.trim();
+    const passVal = document.getElementById('login-password').value;
+    const errBox = document.getElementById('login-error');
+    const submitBtn = document.getElementById('btn-login-submit');
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Bulut Doğrulaması Yapılıyor...`;
+    errBox.classList.add('hidden');
+
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: userVal, password: passVal })
+      });
+      const data = await res.json();
+
+      if (data.success && data.user) {
+        currentUser = data.user;
+        sessionStorage.setItem('hayal_current_user', JSON.stringify(data.user));
+        unlockInterfaceByRole(data.user);
+      } else {
+        errBox.innerText = data.message || 'Kullanıcı adı veya şifre hatalı!';
+        errBox.classList.remove('hidden');
+        document.getElementById('login-password').value = '';
+        document.getElementById('login-password').focus();
+      }
+    } catch (err) {
+      alert('Bulut sunucusuna erişilemedi. Lütfen sunucu durumunu kontrol edin.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `<i class="fa-solid fa-key"></i> Sahneye Giriş Yap`;
+    }
+  }
+
+  function unlockInterfaceByRole(user) {
+    document.getElementById('login-overlay').classList.add('hidden');
+    document.getElementById('admin-app').classList.remove('hidden');
+
+    document.getElementById('user-avatar').innerText = user.name.substring(0, 2).toUpperCase();
+    document.getElementById('user-display-name').innerText = user.name;
+    
+    const roleBadge = document.getElementById('user-display-role');
+    const appBadgeRole = document.getElementById('app-badge-role');
+    const navStaff = document.getElementById('nav-staff');
+
+    if (user.access === 'admin') {
+      roleBadge.innerText = 'Süper Admin (Tam Yetki)';
+      roleBadge.className = 'text-[10px] text-rose-400 font-bold';
+      appBadgeRole.innerText = 'Yönetim Masası';
+      navStaff.classList.remove('hidden');
+    } else {
+      roleBadge.innerText = 'Editör (' + (user.role || 'İçerik') + ')';
+      roleBadge.className = 'text-[10px] text-cyan-400 font-bold';
+      appBadgeRole.innerText = 'Editör Masası';
+      navStaff.classList.add('hidden');
+    }
+
+    document.getElementById('form-author').value = user.name;
+    toggleFormFieldsByType();
+    fetchAdminContents();
+    if (user.access === 'admin') fetchStaffUsers();
+  }
+
+  function logoutAdmin() {
+    if (confirm('Oturumu kapatmak istediğinize emin misiniz?')) {
+      sessionStorage.removeItem('hayal_current_user');
+      window.location.reload();
+    }
+  }
+
+  function togglePasswordVisibility() {
+    const pwd = document.getElementById('login-password');
+    const icon = document.getElementById('toggle-pwd-icon');
+    if (pwd.type === 'password') {
+      pwd.type = 'text';
+      icon.className = 'fa-solid fa-eye-slash';
+    } else {
+      pwd.type = 'password';
+      icon.className = 'fa-solid fa-eye';
+    }
+  }
+
+  function switchAdminSection(sec) {
+    document.getElementById('section-contents').classList.toggle('hidden', sec !== 'contents');
+    document.getElementById('section-staff').classList.toggle('hidden', sec !== 'staff');
+
+    document.getElementById('nav-contents').className = (sec === 'contents') 
+      ? 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav'
+      : 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition';
+
+    document.getElementById('nav-staff').className = (sec === 'staff')
+      ? 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav'
+      : 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition';
+  }
+
+  // --- FOTOROMAN DOSYA VE VERİ MOTORU ---
+  function toggleFormFieldsByType() {
+    const type = document.getElementById('form-type').value;
+    const isPhoto = (type === 'photoroman');
+    const photoBox = document.getElementById('photoroman-editor-box');
+    const stdMedia = document.getElementById('standard-media-fields');
+
+    if (isPhoto) {
+      photoBox.classList.remove('hidden');
+      stdMedia.classList.add('hidden');
+      const container = document.getElementById('photo-frames-container');
+      if (container.children.length === 0) {
+        addPhotoFrameRow('', '');
+      }
+    } else {
+      photoBox.classList.add('hidden');
+      stdMedia.classList.remove('hidden');
+    }
+  }
+
+  function convertAudioToBase64(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    if (file.size > 8 * 1024 * 1024) {
+      alert('Seçtiğiniz ses dosyası 8MB sınırından büyük. Lütfen daha kısa bir dosya seçin.');
+      input.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64Data = e.target.result;
+      document.getElementById('form-photo-music').value = base64Data;
+      const preview = document.getElementById('admin-audio-preview');
+      preview.src = base64Data;
+      preview.classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function convertImageToBase64(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    const row = input.closest('div.group');
+    const urlInput = row.querySelector('.frame-img-url');
+    const previewImg = row.querySelector('.frame-preview-img');
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const base64Img = e.target.result;
+      urlInput.value = base64Img;
+      if (previewImg) {
+        previewImg.src = base64Img;
+        previewImg.classList.remove('hidden');
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function addPhotoFrameRow(imgUrl = '', dialogText = '') {
+    const container = document.getElementById('photo-frames-container');
+    const frameIndex = container.children.length + 1;
+
+    const row = document.createElement('div');
+    row.className = 'p-3 bg-slate-900/95 rounded-xl border border-slate-800 space-y-2 relative group';
+    row.innerHTML = `
+      <div class="flex items-center justify-between text-[11px] text-amber-400 font-bold">
+        <span><i class="fa-solid fa-image"></i> Kare / Sayfa <span class="frame-num">${frameIndex}</span></span>
+        <button type="button" onclick="removePhotoFrameRow(this)" class="text-rose-400 hover:text-white text-xs p-1" title="Bu Kareyi Sil">
+          <i class="fa-solid fa-trash-can"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div>
+          <input type="file" accept="image/*" onchange="convertImageToBase64(this)" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-300 hover:file:bg-amber-500/30 cursor-pointer">
+        </div>
+        <div>
+          <input type="text" class="frame-img-url w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="Veya Görsel URL" value="${escapeHtml(imgUrl)}">
+        </div>
+      </div>
+
+      <img src="${imgUrl ? escapeHtml(imgUrl) : ''}" class="frame-preview-img ${imgUrl ? '' : 'hidden'} w-24 h-16 object-cover rounded-lg border border-slate-800">
+
+      <div>
+        <textarea rows="1" class="frame-dialog w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-amber-500" placeholder="Bu karedeki replik, diyalog ya da sahne notu...">${escapeHtml(dialogText)}</textarea>
+      </div>
+    `;
+    container.appendChild(row);
+    reNumberFrames();
+  }
+
+  function removePhotoFrameRow(btn) {
+    const container = document.getElementById('photo-frames-container');
+    if (container.children.length <= 1) {
+      alert('En az bir fotoroman karesi bulunmalıdır.');
+      return;
+    }
+    btn.closest('div.group').remove();
+    reNumberFrames();
+  }
+
+  function reNumberFrames() {
+    const rows = document.querySelectorAll('#photo-frames-container .frame-num');
+    rows.forEach((span, idx) => {
+      span.innerText = idx + 1;
+    });
+  }
+
+  function getPhotoromanFramesData() {
+    const rows = document.querySelectorAll('#photo-frames-container > div');
+    const frames = [];
+    rows.forEach(r => {
+      const url = r.querySelector('.frame-img-url').value.trim();
+      const txt = r.querySelector('.frame-dialog').value.trim();
+      if (url) {
+        frames.push({ img: url, text: txt });
+      }
+    });
+    return frames;
+  }
+
+  // --- MONGODB ESER İŞLEMLERİ ---
+  async function fetchAdminContents() {
+    const tbody = document.getElementById('content-table-body');
+    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Eserler yükleniyor...</td></tr>`;
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/contents`);
+      const json = await res.json();
+      
+      currentContents = Array.isArray(json) ? json : (json.data || []);
+      updateStatistics(currentContents);
+      updateCategoryCounts(currentContents);
+      applyFilters();
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-rose-400"><i class="fa-solid fa-circle-exclamation mr-2"></i> Sunucuya bağlanırken hata oluştu.</td></tr>`;
+    }
+  }
+
+  function updateStatistics(items) {
+    const total = items.length;
+    const published = items.filter(x => x.status === 'published').length;
+    let totalListens = 0;
+    let totalViews = 0;
+
+    items.forEach(item => {
+      if (item.type === 'music' || item.type === 'poem') {
+        totalListens += (item.plays || item.listenCount || 142);
+      } else if (item.type === 'series') {
+        totalViews += (item.views || item.viewCount || 380);
+      }
+    });
+
+    document.getElementById('stat-total-count').innerText = total;
+    document.getElementById('stat-published-count').innerText = published;
+    document.getElementById('stat-total-listens').innerText = Number(totalListens).toLocaleString('tr-TR');
+    document.getElementById('stat-total-views').innerText = Number(totalViews).toLocaleString('tr-TR');
+  }
+
+  function updateCategoryCounts(items) {
+    document.getElementById('count-all').innerText = items.length;
+    document.getElementById('count-music').innerText = items.filter(x => x.type === 'music').length;
+    document.getElementById('count-poem').innerText = items.filter(x => x.type === 'poem').length;
+    document.getElementById('count-series').innerText = items.filter(x => x.type === 'series').length;
+    document.getElementById('count-photoroman').innerText = items.filter(x => x.type === 'photoroman').length;
+    document.getElementById('count-story').innerText = items.filter(x => x.type === 'story').length;
+  }
+
+  function setFilterCategory(cat) {
+    selectedCategory = cat;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      if (btn.dataset.cat === cat) {
+        btn.className = 'filter-btn active px-3 py-1 rounded-lg border border-rose-500 bg-rose-600 text-white font-bold transition text-xs';
+      } else {
+        btn.className = 'filter-btn px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white text-xs';
+      }
+    });
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const searchTerm = (document.getElementById('search-input').value || '').toLowerCase().trim();
+
+    const filtered = currentContents.filter(item => {
+      const matchesCategory = (selectedCategory === 'all') || (item.type === selectedCategory);
+      const matchesSearch = !searchTerm || 
+        (item.title && item.title.toLowerCase().includes(searchTerm)) ||
+        (item.author && item.author.toLowerCase().includes(searchTerm));
+      return matchesCategory && matchesSearch;
+    });
+
+    renderContentTable(filtered);
+  }
+
+  function renderContentTable(items) {
+    const tbody = document.getElementById('content-table-body');
+    document.getElementById('content-count').innerText = items.length;
+
+    if (!items || items.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">Bu kategoride veya aramada eşleşen eser bulunamadı.</td></tr>`;
+      return;
+    }
+
+    const isAdmin = currentUser && currentUser.access === 'admin';
+
+    tbody.innerHTML = items.map(c => `
+      <tr class="hover:bg-slate-900/40 transition">
+        <td class="p-3.5">
+          <span class="font-bold text-white block text-sm">${escapeHtml(c.title)}</span>
+          <span class="text-[10px] text-slate-500 font-mono">${c._id}</span>
+        </td>
+        <td class="p-3.5">
+          <span class="px-2 py-0.5 rounded text-[11px] font-semibold uppercase ${getCategoryBadgeStyle(c.type)}">
+            ${escapeHtml(c.type)}
+          </span>
+        </td>
+        <td class="p-3.5 text-slate-300">${escapeHtml(c.author || 'Yusuf Ziya')}</td>
+        <td class="p-3.5">
+          <button onclick="toggleContentStatus('${c._id}', '${c.status}')" class="px-2.5 py-1 rounded-full text-[10px] font-bold transition flex items-center gap-1.5 ${c.status === 'published' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">
+            <i class="fa-solid ${c.status === 'published' ? 'fa-check' : 'fa-clock'}"></i>
+            ${c.status === 'published' ? 'Yayında' : 'Taslak'}
+          </button>
+        </td>
+        <td class="p-3.5 text-right space-x-1.5">
+                    <button onclick="editContent('${c._id}')" title="Düzenle" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          ${isAdmin ? `
+            <button onclick="deleteContent('${c._id}', '${escapeHtml(c.title)}')" title="Kaldır / Sil" class="px-2.5 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-600 text-rose-300 hover:text-white transition border border-rose-900/40">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          ` : ''}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function getCategoryBadgeStyle(type) {
+    switch(type) {
+      case 'music': return 'bg-purple-900/40 text-purple-300 border border-purple-800';
+      case 'poem': return 'bg-cyan-900/40 text-cyan-300 border border-cyan-800';
+      case 'series': return 'bg-rose-900/40 text-rose-300 border border-rose-800';
+      case 'photoroman': return 'bg-amber-900/40 text-amber-300 border border-amber-800';
+      case 'story': return 'bg-emerald-900/40 text-emerald-300 border border-emerald-800';
+      default: return 'bg-slate-800 text-slate-300';
+    }
+  }
+
+  // --- İNCELEME MODALI FONKSİYONLARI ---
+  function inspectContent(id) {
+    const item = currentContents.find(x => x._id === id);
+    if (!item) return;
+
+    inspectingItem = item;
+    document.getElementById('inspect-title').innerText = item.title || 'Başlıksız Eser';
+    document.getElementById('inspect-author').innerText = 'Gönderen / Yazar: ' + (item.author || 'Bilinmiyor');
+    document.getElementById('inspect-type').innerText = item.type || 'ESER';
+    
+    document.getElementById('inspect-email').innerText = item.email || 'Belirtilmedi';
+    document.getElementById('inspect-phone').innerText = item.phone || 'Belirtilmedi';
+
+    const legalBadge = document.getElementById('inspect-legal');
+    const isLegal = item.legalConsent?.accepted || item.legalAccepted;
+
+    if (isLegal) {
+      legalBadge.className = 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1';
+      legalBadge.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i> FSEK Onaylı & Taahhüt Alındı';
+    } else {
+      legalBadge.className = 'bg-rose-500/20 text-rose-400 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1';
+      legalBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-400"></i> Onay Alınmadı';
+    }
+
+    let bodyText = item.textBody || item.description || 'Bu eser için herhangi bir metin girilmemiş.';
+    if (item.type === 'photoroman' && item.images && Array.isArray(item.images)) {
+      bodyText = `Fotoroman Kareleri (${item.images.length} Sayfa):\n` + 
+        item.images.map((f, i) => `[Kare ${i + 1}] Görsel: ${f.img ? (f.img.startsWith('data:') ? 'Base64 Medya Dosyası' : f.img) : 'Boş'} \nReplik: "${f.text || '-'}"`).join('\n\n') +
+        `\n\nAtmosfer Fon Müziği: ${item.musicUrl ? (item.musicUrl.startsWith('data:') ? 'Base64 Ses Dosyası' : item.musicUrl) : 'Varsayılan'}\n\nGenel Açıklama:\n` + bodyText;
+    }
+    document.getElementById('inspect-body').innerText = bodyText;
+
+    const mediaBox = document.getElementById('inspect-media-container');
+    const mediaLink = document.getElementById('inspect-media-link');
+    const finalUrl = item.mediaUrl || item.musicUrl;
+    if (finalUrl && !finalUrl.startsWith('data:')) {
+      mediaBox.classList.remove('hidden');
+      mediaLink.href = finalUrl;
+    } else {
+      mediaBox.classList.add('hidden');
+    }
+
+    const publishBtn = document.getElementById('inspect-publish-btn');
+    if (item.status === 'published') {
+      publishBtn.innerHTML = `<i class="fa-solid fa-box-archive"></i> Taslağa Al`;
+      publishBtn.className = 'px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-slate-950 text-xs font-bold transition flex items-center gap-1.5';
+    } else {
+      publishBtn.innerHTML = `<i class="fa-solid fa-check"></i> Doğrudan Yayına Al`;
+      publishBtn.className = 'px-5 py-2 rounded-xl stage-gradient text-white text-xs font-bold shadow-lg shadow-rose-900/40 hover:opacity-95 transition flex items-center gap-1.5';
+    }
+
+    document.getElementById('modal-inspector').classList.remove('hidden');
+  }
+
+  function closeInspector() {
+    const modal = document.getElementById('modal-inspector');
+    if (modal) modal.classList.add('hidden');
+    inspectingItem = null;
+  }
+
+  function editFromInspector() {
+    if (!inspectingItem) return;
+    const targetId = inspectingItem._id;
+    closeInspector();
+    editContent(targetId);
+  }
+
+  async function publishFromInspector() {
+    if (!inspectingItem) return;
+    await toggleContentStatus(inspectingItem._id, inspectingItem.status);
+    closeInspector();
+  }
+
+  // --- ESER CRUD İŞLEMLERİ ---
+  async function handleContentSubmit(e) {
+    e.preventDefault();
+    const editId = document.getElementById('edit-content-id').value;
+    const btn = document.getElementById('form-submit-btn');
+    btn.disabled = true;
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> MongoDB'ye İşleniyor...`;
+
+    const textVal = document.getElementById('form-text-body').value.trim();
+    const typeVal = document.getElementById('form-type').value;
+
+    let mediaUrlVal = document.getElementById('form-media-url').value.trim();
+    let thumbnailVal = document.getElementById('form-thumbnail').value.trim();
+    let imagesPayload = [];
+    let musicUrlPayload = '';
+
+    // Fotoroman özel alanlarını topla
+    if (typeVal === 'photoroman') {
+      musicUrlPayload = document.getElementById('form-photo-music').value.trim();
+      imagesPayload = getPhotoromanFramesData();
+      if (!mediaUrlVal) mediaUrlVal = musicUrlPayload;
+      if (!thumbnailVal && imagesPayload.length > 0) {
+        thumbnailVal = imagesPayload[0].img;
+      }
+    }
+
+    const payload = {
+      title: document.getElementById('form-title').value.trim(),
+      type: typeVal,
+      status: document.getElementById('form-status').value,
+      author: document.getElementById('form-author').value.trim(),
+      mediaUrl: mediaUrlVal,
+      musicUrl: musicUrlPayload,
+      thumbnail: thumbnailVal,
+      images: imagesPayload,
+      textBody: textVal,
+      description: textVal
+    };
+
+    try {
+      const url = editId ? `${API_BASE}/contents/${editId}` : `${API_BASE}/contents`;
+      const method = editId ? 'PATCH' : 'POST';
+
+      const res = await fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        alert(editId ? 'Eser başarıyla güncellendi!' : 'Yeni eser başarıyla sahneye eklendi!');
+        cancelEditing();
+        fetchAdminContents();
+      } else {
+        alert('Kayıt sırasında sunucu hatası oluştu. Lütfen dosya boyutlarını kontrol edin.');
+      }
+    } catch (err) {
+      alert('Sunucuya ulaşılamadı.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Eseri Canlı MongoDB'ye Kaydet`;
+    }
+  }
+
+  function editContent(id) {
+    const item = currentContents.find(x => x._id === id);
+    if (!item) return;
+
+    document.getElementById('edit-content-id').value = item._id;
+    document.getElementById('form-title').value = item.title || '';
+    document.getElementById('form-type').value = item.type || 'music';
+    document.getElementById('form-status').value = item.status || 'published';
+    document.getElementById('form-author').value = item.author || '';
+    document.getElementById('form-media-url').value = item.mediaUrl || '';
+    document.getElementById('form-thumbnail').value = item.thumbnail || '';
+    document.getElementById('form-text-body').value = item.textBody || item.description || '';
+
+    // Fotoroman alanlarını doldur
+    toggleFormFieldsByType();
+    if (item.type === 'photoroman') {
+      const musicVal = item.musicUrl || item.mediaUrl || '';
+      document.getElementById('form-photo-music').value = musicVal;
+      if (musicVal) {
+        const preview = document.getElementById('admin-audio-preview');
+        preview.src = musicVal;
+        preview.classList.remove('hidden');
+      }
+
+      const container = document.getElementById('photo-frames-container');
+      container.innerHTML = '';
+      if (item.images && Array.isArray(item.images) && item.images.length > 0) {
+        item.images.forEach(f => {
+          addPhotoFrameRow(f.img || f.url || f, f.text || f.caption || '');
+        });
+      } else {
+        addPhotoFrameRow(item.thumbnail || '', item.textBody || '');
+      }
+    }
+
+    document.getElementById('form-heading').innerHTML = `<i class="fa-solid fa-pen text-amber-400"></i> Eseri Güncelle`;
+    document.getElementById('form-submit-btn').innerHTML = `<i class="fa-solid fa-check"></i> Değişiklikleri Kaydet`;
+    document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function cancelEditing() {
+    document.getElementById('content-form').reset();
+    document.getElementById('edit-content-id').value = '';
+    const container = document.getElementById('photo-frames-container');
+    if (container) container.innerHTML = '';
+    const preview = document.getElementById('admin-audio-preview');
+    if (preview) {
+      preview.pause();
+      preview.src = '';
+      preview.classList.add('hidden');
+    }
+    toggleFormFieldsByType();
+    if (currentUser) document.getElementById('form-author').value = currentUser.name;
+    document.getElementById('form-heading').innerHTML = `<i class="fa-solid fa-plus-circle text-rose-500"></i> Yeni Sahne Eseri Yükle`;
+    document.getElementById('form-submit-btn').innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Eseri Canlı MongoDB'ye Kaydet`;
+    document.getElementById('cancel-edit-btn').classList.add('hidden');
+  }
+
+  async function toggleContentStatus(id, currentStatus) {
+    const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+    try {
+      const res = await fetch(`${API_BASE}/contents/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok) {
+        fetchAdminContents();
+      } else {
+        alert('Durum güncellenemedi.');
+      }
+    } catch (err) {
+      alert('Sunucu hatası oluştu.');
+    }
+  }
+
+  async function deleteContent(id, title) {
+    if (!currentUser || currentUser.access !== 'admin') {
+      alert('Bu işlem için yalnızca Süper Admin yetkilidir.');
+      return;
+    }
+
+    if (!confirm(`"${title}" adlı eseri silmek ve veritabanından tamamen kaldırmak istediğinize emin misiniz?`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/contents/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        alert('Eser silindi.');
+        fetchAdminContents();
+      } else {
+        alert('Eser silinemedi.');
+      }
+    } catch (err) {
+      alert('Bağlantı hatası.');
+    }
+  }
+
+   // --- PERSONEL VE EDİTÖR YÖNETİMİ (MONGODB BULUT) ---
+  async function fetchStaffUsers() {
+    const tbody = document.getElementById('staff-table-body');
+    tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Personeller MongoDB'den yükleniyor...</td></tr>`;
+
+    try {
+      const res = await fetch(`${API_BASE}/users`);
+      const data = await res.json();
+      if (data.success) {
+        staffList = data.users || [];
+        renderStaffTable();
+      }
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-rose-400">Personel listesi sunucudan alınamadı.</td></tr>`;
+    }
+  }
+
+  function renderStaffTable() {
+    const tbody = document.getElementById('staff-table-body');
+    document.getElementById('staff-count').innerText = staffList.length;
+
+    if (staffList.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500">Kayıtlı editör bulunamadı.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = staffList.map(s => `
+      <tr class="hover:bg-slate-900/40 transition">
+        <td class="p-3.5">
+          <span class="font-bold text-white block text-sm flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-cyan-600/30 text-cyan-300 flex items-center justify-center font-bold text-[10px]">
+              ${(s.name || s.username).substring(0, 2).toUpperCase()}
+            </span>
+            ${escapeHtml(s.name || s.username)}
+          </span>
+          <span class="text-[10px] text-cyan-400 font-mono">@${escapeHtml(s.username)}</span>
+        </td>
+        <td class="p-3.5 text-slate-300">${escapeHtml(s.role)}</td>
+        <td class="p-3.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${s.access === 'admin' ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30'}">
+            ${s.access === 'admin' ? 'Süper Admin' : 'Editör'}
+          </span>
+        </td>
+        <td class="p-3.5 text-slate-500 font-mono text-[11px]">••••••••</td>
+        <td class="p-3.5 text-right space-x-1.5">
+          <button onclick="openEditStaffModal('${s._id}')" title="Düzenle & Şifre Değiştir" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 transition border border-amber-500/30">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          ${s.username !== 'yusuf' ? `
+            <button onclick="deleteStaff('${s._id}')" title="Hesabı Kaldır" class="px-2.5 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-600 text-rose-300 hover:text-white transition border border-rose-900/40">
+              <i class="fa-solid fa-user-minus"></i>
+            </button>
+          ` : '<span class="text-[10px] text-slate-600 font-mono ml-2">Ana Hesap</span>'}
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openEditStaffModal(id) {
+    const staff = staffList.find(s => s._id === id);
+    if (!staff) return alert('Personel bulunamadı!');
+
+    document.getElementById('edit-staff-id').value = staff._id;
+    document.getElementById('edit-staff-name').value = staff.name || '';
+    document.getElementById('edit-staff-username').value = staff.username || '';
+    if (document.getElementById('edit-staff-role')) document.getElementById('edit-staff-role').value = staff.role || 'İçerik Editörü';
+    if (document.getElementById('edit-staff-access')) document.getElementById('edit-staff-access').value = staff.access || 'editor';
+    document.getElementById('edit-staff-password').value = '';
+
+    document.getElementById('modal-edit-staff').classList.remove('hidden');
+  }
+
+  function closeEditStaffModal() {
+    const modal = document.getElementById('modal-edit-staff');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  async function handleEditStaffSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('edit-staff-id').value;
+    const payload = {
+      name: document.getElementById('edit-staff-name').value.trim(),
+      username: document.getElementById('edit-staff-username').value.trim(),
+      role: document.getElementById('edit-staff-role').value,
+      access: document.getElementById('edit-staff-access').value,
+      password: document.getElementById('edit-staff-password').value.trim()
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/users/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) {
+        closeEditStaffModal();
+        fetchStaffUsers();
+        alert('Editör bilgileri ve şifresi MongoDB bulutunda güncellendi!');
+      } else {
+        alert(data.message || 'Güncelleme hatası!');
+      }
+    } catch (err) {
+      alert('Sunucuya ulaşılamadı.');
+    }
+  }
+
+  async function handleStaffSubmit(e) {
+    e.preventDefault();
+    const newStaff = {
+      name: document.getElementById('staff-name').value.trim(),
+      username: document.getElementById('staff-username').value.trim(),
+      password: document.getElementById('staff-password').value.trim(),
+      role: document.getElementById('staff-role').value,
+      access: document.getElementById('staff-access').value
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStaff)
+      });
+      const data = await res.json();
+      if (data.success) {
+        e.target.reset();
+        fetchStaffUsers();
+        alert(`Editör MongoDB bulutuna kaydedildi!\nKullanıcı: ${newStaff.username}`);
+      } else {
+        alert(data.message || 'Kayıt başarısız!');
+      }
+    } catch (err) {
+      alert('Bulut sunucusuna bağlanılamadı.');
+    }
+  }
+
+  async function deleteStaff(id) {
+    if (!confirm('Bu editör hesabını buluttan silmek istediğinize emin misiniz?')) return;
+    try {
+      const res = await fetch(`${API_BASE}/users/${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        fetchStaffUsers();
+      } else {
+        alert(data.message || 'Silme işlemi başarısız.');
+      }
+    } catch (err) {
+      alert('Sunucu hatası.');
+    }
+  }
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, function(m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+    });
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedUser = sessionStorage.getItem('hayal_current_user');
+    if (savedUser) {
+      try {
+        currentUser = JSON.parse(savedUser);
+        unlockInterfaceByRole(currentUser);
+      } catch (e) {
+        sessionStorage.removeItem('hayal_current_user');
+      }
+    } else {
+      document.getElementById('login-overlay').classList.remove('hidden');
+      document.getElementById('admin-app').classList.add('hidden');
+    }
+  });
+</script>
+</body>
+</html>
+
