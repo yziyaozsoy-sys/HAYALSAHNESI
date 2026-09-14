@@ -1,6 +1,7 @@
 // server/index.js
 
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
@@ -331,10 +332,27 @@ app.delete('/api/users/:id', async (req, res) => {
     res.status(500).json({ success: false, message: 'Personel silinemedi: ' + err.message });
   }
 });
+// API sağlık kontrolü
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Hayal Sahnesi API sunucusu aktif ve çalışıyor.'
+  });
+});
 
-// Kök Dizin Kontrolü
+// Frontend dosyalarını public klasöründen sun
+const publicPath = path.resolve(__dirname, '../public');
+
+app.use(express.static(publicPath));
+
+// Ana vitrin
 app.get('/', (req, res) => {
-  res.send('Hayal Sahnesi API Sunucusu Aktif & Çalışıyor.');
+  res.sendFile(path.join(publicPath, 'index.html'));
+});
+
+// Yönetim paneli
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(publicPath, 'admin.html'));
 });
 
 // Port Dinleme
