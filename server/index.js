@@ -1,11 +1,16 @@
 // server/index.js
 
 const express = require('express');
+const path = require('path');
+const compression = require('compression');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+
+// 1. Yanıtları Gzip ile sıkıştır (Ağ trafiğini %70 azaltır, hızı artırır)
+app.use(compression());
 
 app.use(cors());
 
@@ -20,7 +25,6 @@ if (MONGODB_URI) {
   mongoose.connect(MONGODB_URI)
     .then(async () => {
       console.log('✅ MongoDB Hayal Sahnesi veritabanına bağlandı.');
-      // İlk açılışta ana yönetici hesabını garantiye al
       await seedAdminUser();
     })
     .catch((err) => console.error('❌ MongoDB bağlantı hatası:', err));
@@ -28,26 +32,25 @@ if (MONGODB_URI) {
   console.warn('⚠️ MONGODB_URI ortam değişkeni tanımlanmadı (.env veya Render kontrol edin)');
 }
 
-// --- İÇERİK ŞEMASI (FOTOROMAN KARELERİ VE LOOP MÜZİK DAHİL) ---
+// --- İÇERİK ŞEMASI ---
 const contentSchema = new mongoose.Schema({
   title: { type: String, required: true },
   type: { type: String, required: true }, // music, poem, series, photoroman, story
   author: { type: String, default: 'Anonim' },
-  email: { type: String, default: '' },       // İletişim e-posta
-  phone: { type: String, default: '' },       // İletişim telefon
+  email: { type: String, default: '' },
+  phone: { type: String, default: '' },
   status: { type: String, default: 'draft' }, // published, draft
   mediaUrl: { type: String, default: '' },
-  musicUrl: { type: String, default: '' },    // Fotoroman Arka Plan Loop Fon Müziği
+  musicUrl: { type: String, default: '' },
   thumbnail: { type: String, default: '' },
-  images: [{                                  // Fotoroman Kareleri / Sayfaları
-    img: { type: String, default: '' },       // Görsel (URL veya Base64)
-    text: { type: String, default: '' }       // Karedeki Diyalog / Replik
+  images: [{
+    img: { type: String, default: '' },
+    text: { type: String, default: '' }
   }],
-  textBody: { type: String, default: '' },    // Şiir mısraları, hikaye içeriği
-  description: { type: String, default: '' }, // Açıklama veya özet
+  textBody: { type: String, default: '' },
+  description: { type: String, default: '' },
   plays: { type: Number, default: 0 },
   views: { type: Number, default: 0 },
-  // Hukuki Sorumluluk ve Telif Onayı
   legalConsent: {
     accepted: { type: Boolean, default: false },
     acceptedAt: { type: Date, default: null },
@@ -55,7 +58,7 @@ const contentSchema = new mongoose.Schema({
   },
   createdAt: { type: Date, default: Date.now }
 }, { 
-  strict: false // Esnek şema
+  strict: false 
 });
 
 const Content = mongoose.model('Content', contentSchema);
@@ -66,13 +69,12 @@ const userSchema = new mongoose.Schema({
   name: { type: String, default: '' },
   password: { type: String, required: true },
   role: { type: String, default: 'İçerik Editörü' },
-  access: { type: String, default: 'editor' }, // admin, editor
+  access: { type: String, default: 'editor' },
   createdAt: { type: Date, default: Date.now }
 });
 
 const User = mongoose.model('User', userSchema);
 
-// Ana Yöneticiyi Otomatik Oluşturma (İlk Kurulum Garantisi)
 async function seedAdminUser() {
   try {
     const adminExists = await User.findOne({ username: 'yusuf' });
@@ -92,10 +94,8 @@ async function seedAdminUser() {
 }
 
 // ==========================================
-// BULUT GİRİŞ / AUTH API ENDPOINT'İ
+// AUTH API ENDPOINT'İ
 // ==========================================
-
-// Editörlerin her bilgisayardan giriş yapmasını sağlayan bulut kapısı
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -129,8 +129,6 @@ app.post('/api/auth/login', async (req, res) => {
 // ==========================================
 // İÇERİK (CONTENT) API ENDPOINT'LERİ
 // ==========================================
-
-// 1. Vitrin: Sadece yayındaki (published) eserleri getir
 app.get('/api/contents', async (req, res) => {
   try {
     const contents = await Content.find({ status: 'published' }).sort({ createdAt: -1 });
@@ -140,7 +138,6 @@ app.get('/api/contents', async (req, res) => {
   }
 });
 
-// 2. Admin & Kürasyon Masası: Taslaklar dahil tüm eserleri getir
 app.get('/api/admin/contents', async (req, res) => {
   try {
     const contents = await Content.find().sort({ createdAt: -1 });
@@ -150,23 +147,12 @@ app.get('/api/admin/contents', async (req, res) => {
   }
 });
 
-// 3. Eser Ekleme (Fotoroman Kareleri ve Loop Fon Müziği MongoDB'ye Kaydedilir)
 app.post('/api/contents', async (req, res) => {
   try {
     const { 
-      title, 
-      type, 
-      author, 
-      email, 
-      phone, 
-      status, 
-      mediaUrl, 
-      musicUrl,
-      thumbnail, 
-      images,
-      textBody, 
-      description,
-      legalAccepted 
+      title, type, author, email, phone, status, 
+      mediaUrl, musicUrl, thumbnail, images, 
+      textBody, description, legalAccepted 
     } = req.body;
 
     const contentText = textBody || description || '';
@@ -194,42 +180,35 @@ app.post('/api/contents', async (req, res) => {
     });
 
     const saved = await newContent.save();
-    console.log('✅ Yeni Eser Kaydedildi:', saved.title, '| Tür:', saved.type);
+    console.log('✅ Yeni Eser Kaydedildi:', saved.title);
     res.status(201).json({ success: true, data: saved });
   } catch (err) {
-    console.error('Kayıt Hatası:', err);
     res.status(400).json({ error: 'Eser kaydedilemedi', details: err.message });
   }
 });
 
-// 4. Eser Güncelleme (Düzenleme yapıldığında)
 app.patch('/api/contents/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const updated = await Content.findByIdAndUpdate(id, req.body, { new: true });
+    const updated = await Content.findByIdAndUpdate(req.params.id, req.body, { new: true });
     res.json({ success: true, data: updated });
   } catch (err) {
     res.status(400).json({ error: 'Güncelleme başarısız', details: err.message });
   }
 });
 
-// 5. Durum Güncelleme (Yayında / Taslak)
 app.patch('/api/contents/:id/status', async (req, res) => {
   try {
-    const { id } = req.params;
     const { status } = req.body;
-    const updated = await Content.findByIdAndUpdate(id, { status }, { new: true });
+    const updated = await Content.findByIdAndUpdate(req.params.id, { status }, { new: true });
     res.json({ success: true, data: updated });
   } catch (err) {
     res.status(400).json({ error: 'Durum güncellenemedi', details: err.message });
   }
 });
 
-// 6. Eser Silme
 app.delete('/api/contents/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    await Content.findByIdAndDelete(id);
+    await Content.findByIdAndDelete(req.params.id);
     res.json({ success: true, message: 'Eser başarıyla silindi' });
   } catch (err) {
     res.status(400).json({ error: 'Silme işlemi başarısız', details: err.message });
@@ -237,13 +216,10 @@ app.delete('/api/contents/:id', async (req, res) => {
 });
 
 // ==========================================
-// PERSONEL / KULLANICI (USER) API ENDPOINT'LERİ
+// KULLANICI / PERSONEL API ENDPOINT'LERİ
 // ==========================================
-
-// 7. Tüm Personelleri Listele
 app.get('/api/users', async (req, res) => {
   try {
-    // Şifreleri de admin panelinde görüntülemek ve düzenleyebilmek için çekiyoruz
     const users = await User.find().sort({ createdAt: -1 });
     res.json({ success: true, users });
   } catch (err) {
@@ -251,11 +227,9 @@ app.get('/api/users', async (req, res) => {
   }
 });
 
-// 8. Yeni Personel Ekle
 app.post('/api/users', async (req, res) => {
   try {
     const { username, name, password, role, access } = req.body;
-
     if (!username || !password) {
       return res.status(400).json({ success: false, message: 'Kullanıcı adı ve şifre zorunludur.' });
     }
@@ -281,7 +255,6 @@ app.post('/api/users', async (req, res) => {
   }
 });
 
-// 9. Personel Bilgilerini ve Şifresini Düzenle / Güncelle (PUT)
 app.put('/api/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -299,8 +272,6 @@ app.put('/api/users/:id', async (req, res) => {
     if (name !== undefined) updateData.name = name.trim();
     if (role) updateData.role = role;
     if (access) updateData.access = access;
-
-    // Şifre kutusu doluysa yeni şifreyi ata
     if (password && password.trim() !== '') {
       updateData.password = password.trim();
     }
@@ -310,13 +281,12 @@ app.put('/api/users/:id', async (req, res) => {
       return res.status(404).json({ success: false, message: 'Personel bulunamadı.' });
     }
 
-    res.json({ success: true, message: 'Personel bilgileri ve şifre başarıyla güncellendi.', user: updatedUser });
+    res.json({ success: true, message: 'Personel başarıyla güncellendi.', user: updatedUser });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Güncelleme hatası: ' + err.message });
   }
 });
 
-// 10. Personel Sil
 app.delete('/api/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -332,13 +302,33 @@ app.delete('/api/users/:id', async (req, res) => {
   }
 });
 
-// Kök Dizin Kontrolü
+// ==========================================
+// SAĞLIK KONTROLÜ & STATİK FRONTEND YÖNLENDİRMESİ
+// ==========================================
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ success: true, message: 'Hayal Sahnesi API sunucusu aktif ve çalışıyor.' });
+});
+
+// Frontend dosyalarını public klasöründen 1 günlük önbellekle sun
+const publicPath = path.resolve(__dirname, '../public');
+
+app.use(express.static(publicPath, {
+  maxAge: '1d',
+  etag: true
+}));
+
+// Ana vitrin
 app.get('/', (req, res) => {
-  res.send('Hayal Sahnesi API Sunucusu Aktif & Çalışıyor.');
+  res.sendFile(path.join(publicPath, 'index.html'));
+});
+
+// Yönetim Masası
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(publicPath, 'admin.html'));
 });
 
 // Port Dinleme
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`Hayal Sahnesi API sunucusu ${PORT} portunda aktif.`);
+  console.log(`Hayal Sahnesi sunucusu ${PORT} portunda aktif.`);
 });
