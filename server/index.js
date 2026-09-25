@@ -1,10 +1,12 @@
 // server/index.js
-
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const compression = require('compression');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const multer = require('multer');
+const sharp = require('sharp');
 require('dotenv').config();
 
 const app = express();
@@ -14,25 +16,27 @@ app.use(compression());
 
 app.use(cors());
 
-// Görsel ve loop fon müziği (Base64) MongoDB'ye sığabilsin diye limit 50mb yapıldı
+// Yüksek boyutlu veri transferi için limitler (Base64 ve çoklu veriler için)
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// MongoDB Bağlantısı (Render Environment'tan çeker)
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (MONGODB_URI) {
-  mongoose.connect(MONGODB_URI)
-    .then(async () => {
-      console.log('✅ MongoDB Hayal Sahnesi veritabanına bağlandı.');
-      await seedAdminUser();
-    })
-    .catch((err) => console.error('❌ MongoDB bağlantı hatası:', err));
-} else {
-  console.warn('⚠️ MONGODB_URI ortam değişkeni tanımlanmadı (.env veya Render kontrol edin)');
+// Uploads klasörünü oluştur ve garantiye al
+const publicPath = path.resolve(__dirname, '../public');
+const uploadDir = path.join(publicPath, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// --- İÇERİK ŞEMASI ---
+// Multer Bellek Depolama (RAM üzerinde tutup sharp ile işleyeceğiz)
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 15 * 1024 * 1024 } // Maks 15MB yükleme limiti
+});
+
+// --- ŞEMALAR ---
+
+// 1. İÇERİK ŞEMASI (REPLİK & SAHNE AÇIKLAMASI DESTEKLİ)
 const contentSchema = new mongoose.Schema({
   title: { type: String, required: true },
   type: { type: String, required: true }, // music, poem, series, photoroman, story
@@ -45,7 +49,8 @@ const contentSchema = new mongoose.Schema({
   thumbnail: { type: String, default: '' },
   images: [{
     img: { type: String, default: '' },
-    text: { type: String, default: '' }
+    text: { type: String, default: '' },       // Sahne Repliği
+    desc: { type: String, default: '' }        // Sahne Açıklaması / Yönetmen Notu
   }],
   textBody: { type: String, default: '' },
   description: { type: String, default: '' },
@@ -63,7 +68,7 @@ const contentSchema = new mongoose.Schema({
 
 const Content = mongoose.model('Content', contentSchema);
 
-// --- PERSONEL / KULLANICI ŞEMASI ---
+// 2. PERSONEL / KULLANICI ŞEMASI
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true, lowercase: true, trim: true },
   name: { type: String, default: '' },
@@ -75,6 +80,29 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+// 3. REKLAM (ADS) ŞEMASI
+const adSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  slot: { 
+    type: String, 
+    required: true, 
+    enum: ['skyscraper_left', 'skyscraper_right', 'leaderboard_top', 'in_feed'] 
+  },
+  type: { 
+    type: String, 
+    required: true, 
+    enum: ['google', 'html', 'image'] 
+  },
+  code: { type: String, default: '' },      // Google veya HTML kodu için
+  imageUrl: { type: String, default: '' },  // WebP görsel banner URL'si
+  targetUrl: { type: String, default: '' }, // Tıklanınca açılacak link
+  isActive: { type: Boolean, default: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Ad = mongoose.model('Ad', adSchema);
+
+// Otomatik Admin Tohumlama
 async function seedAdminUser() {
   try {
     const adminExists = await User.findOne({ username: 'yusuf' });
@@ -92,6 +120,122 @@ async function seedAdminUser() {
     console.error('Admin oluşturma hatası:', err.message);
   }
 }
+
+// MongoDB Bağlantısı (Render Environment'tan çeker)
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (MONGODB_URI) {
+  mongoose.connect(MONGODB_URI)
+    .then(async () => {
+      console.log('✅ MongoDB Hayal Sahnesi veritabanına bağlandı.');
+      await seedAdminUser();
+    })
+    .catch((err) => console.error('❌ MongoDB bağlantı hatası:', err));
+} else {
+  console.warn('⚠️ MONGODB_URI ortam değişkeni tanımlanmadı (.env veya Render kontrol edin)');
+}
+
+// ==========================================
+// OTOMATİK WEBP DÖNÜŞTÜRÜCÜ & GÖRSEL URL API
+// ==========================================
+app.post('/api/upload', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'Lütfen bir görsel seçiniz.' });
+    }
+
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+    const filename = `sahne-${uniqueSuffix}.webp`;
+    const outputPath = path.join(uploadDir, filename);
+
+    // Sharp ile görseli WebP'ye dönüştür, maksimum genişlik 1440px yap, en-boy oranını koru
+    await sharp(req.file.buffer)
+      .resize({ width: 1440, withoutEnlargement: true })
+      .webp({ quality: 82, effort: 4 })
+      .toFile(outputPath);
+
+    // Dışarıdan erişilebilir kalıcı statik WebP URL'si
+    const imageUrl = `/uploads/${filename}`;
+
+    return res.status(200).json({
+      success: true,
+      message: 'Görsel başarıyla WebP formatına dönüştürüldü.',
+      url: imageUrl,
+      filename: filename
+    });
+  } catch (err) {
+    console.error('Görsel işleme hatası:', err);
+    return res.status(500).json({ success: false, message: 'Görsel WebP formatına çevrilemedi: ' + err.message });
+  }
+});
+
+// ==========================================
+// REKLAM (ADS) API ENDPOINT'LERİ
+// ==========================================
+// Canlı sitede yayınlanan aktif reklamlar
+app.get('/api/ads/active', async (req, res) => {
+  try {
+    const ads = await Ad.find({ isActive: true });
+    res.json({ success: true, ads });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Aktif reklamlar alınamadı: ' + err.message });
+  }
+});
+
+// Admin tüm reklam listesi
+app.get('/api/admin/ads', async (req, res) => {
+  try {
+    const ads = await Ad.find().sort({ createdAt: -1 });
+    res.json({ success: true, ads });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Reklamlar alınamadı: ' + err.message });
+  }
+});
+
+// Yeni Reklam Ekle
+app.post('/api/admin/ads', async (req, res) => {
+  try {
+    const { title, slot, type, code, imageUrl, targetUrl, isActive } = req.body;
+    if (!title || !slot || !type) {
+      return res.status(400).json({ success: false, message: 'Başlık, alan ve reklam türü zorunludur.' });
+    }
+
+    const newAd = new Ad({
+      title,
+      slot,
+      type,
+      code: code || '',
+      imageUrl: imageUrl || '',
+      targetUrl: targetUrl || '',
+      isActive: isActive !== undefined ? Boolean(isActive) : true
+    });
+
+    await newAd.save();
+    res.status(201).json({ success: true, message: 'Reklam kaydedildi.', ad: newAd });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Reklam ekleme hatası: ' + err.message });
+  }
+});
+
+// Reklam Güncelleme (Aktif/Pasif dahil)
+app.patch('/api/admin/ads/:id', async (req, res) => {
+  try {
+    const updated = await Ad.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json({ success: true, message: 'Reklam güncellendi.', ad: updated });
+  } catch (err) {
+    res.status(400).json({ success: false, message: 'Güncelleme hatası: ' + err.message });
+  }
+});
+
+// Reklam Sil
+app.delete('/api/admin/ads/:id', async (req, res) => {
+  try {
+    await Ad.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Reklam silindi.' });
+  } catch (err) {
+    res.status(400).json({ success: false, message: 'Silme hatası: ' + err.message });
+  }
+});
 
 // ==========================================
 // AUTH API ENDPOINT'İ
@@ -303,14 +447,17 @@ app.delete('/api/users/:id', async (req, res) => {
 });
 
 // ==========================================
-// SAĞLIK KONTROLÜ & STATİK FRONTEND YÖNLENDİRMESİ
+// SAĞLIK KONTROLÜ & STATİK DOSYALAR
 // ==========================================
 app.get('/api/health', (req, res) => {
   res.status(200).json({ success: true, message: 'Hayal Sahnesi API sunucusu aktif ve çalışıyor.' });
 });
 
-// Frontend dosyalarını public klasöründen 1 günlük önbellekle sun
-const publicPath = path.resolve(__dirname, '../public');
+// Yüklenen WebP görselleri ve statik dosyaları sun
+app.use('/uploads', express.static(uploadDir, {
+  maxAge: '7d',
+  etag: true
+}));
 
 app.use(express.static(publicPath, {
   maxAge: '1d',
@@ -330,5 +477,5 @@ app.get('/admin', (req, res) => {
 // Port Dinleme
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`Hayal Sahnesi sunucusu ${PORT} portunda aktif.`);
+  console.log(`🎭 Hayal Sahnesi sunucusu ${PORT} portunda aktif.`);
 });

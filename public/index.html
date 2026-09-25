@@ -6,7 +6,7 @@
 <title>Hayal Sahnesi | Şiir, Fotoroman, Mini Dizi, Hikaye & Müzik</title>
 <meta name="description" content="Hayal Sahnesi; fotoromanlar, mini diziler, sesli şiir dinletileri ve edebiyatın buluştuğu dijital sahne.">
 
-<!-- Hızlandırma Preconnect & Preload -->
+<!-- CDN Bağlantılarını Hızlandır -->
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="preconnect" href="https://www.youtube.com" crossorigin>
 
@@ -20,14 +20,12 @@
 </noscript>
 
 <style>
-  /* Font Display Hızlandırması & Yüksek Kontrast Metin Standartları */
-  * {
-    font-display: swap;
-  }
+  * { font-display: swap; }
   body {
     background-color: #07090e;
     color: #f1f5f9;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    overflow-x: hidden;
   }
   .stage-gradient {
     background: linear-gradient(135deg, #e11d48 0%, #7c3aed 100%);
@@ -49,32 +47,56 @@
   .font-serif-stage {
     font-family: "Georgia", "Cambria", "Times New Roman", serif;
   }
-  .font-sans-stage {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Reklam Alanı Çerçevesi (Boşken düzeni bozmaz, CLS önler) */
+  .ad-banner-slot {
+    background: rgba(11, 15, 25, 0.6);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
   }
-  .font-mono-stage {
-    font-family: "Courier New", Courier, monospace;
+  .ad-badge {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 4px;
   }
 
   /* Okuma Temaları */
-  .reader-theme-dark {
-    background-color: #0a0d14 !important;
-    color: #f1f5f9 !important;
-  }
-  .reader-theme-sepia {
-    background-color: #fbf0d9 !important;
-    color: #382818 !important;
-  }
-  .reader-theme-contrast {
-    background-color: #000000 !important;
-    color: #ffffff !important;
-  }
+  .reader-theme-dark { background-color: #0a0d14 !important; color: #f1f5f9 !important; }
+  .reader-theme-sepia { background-color: #fbf0d9 !important; color: #382818 !important; }
+  .reader-theme-contrast { background-color: #000000 !important; color: #ffffff !important; }
 </style>
 
 <!-- YouTube API'yi defer ile yükle -->
 <script src="https://www.youtube.com/iframe_api" defer></script>
 </head>
-<body class="min-h-screen flex flex-col selection:bg-rose-600 selection:text-white">
+<body class="min-h-screen flex flex-col selection:bg-rose-600 selection:text-white relative">
+
+<!-- ========================================== -->
+<!-- MASAÜSTÜ SOL VE SAĞ DİKEY REKLAM KANATLARI (SKYSCRAPERS) -->
+<!-- ========================================== -->
+<aside class="hidden 2xl:flex fixed left-4 top-24 w-[160px] h-[600px] z-20" aria-label="Sol Reklam Alanı">
+  <div class="ad-banner-slot w-full h-full rounded-2xl p-2 text-center">
+    <span class="ad-badge">Sponsorlu Alan</span>
+    <div id="ad-skyscraper-left" class="w-full h-full flex items-center justify-center text-slate-500 text-xs">
+      <i class="fa-solid fa-rectangle-ad text-2xl text-slate-600"></i>
+    </div>
+  </div>
+</aside>
+
+<aside class="hidden 2xl:flex fixed right-4 top-24 w-[160px] h-[600px] z-20" aria-label="Sağ Reklam Alanı">
+  <div class="ad-banner-slot w-full h-full rounded-2xl p-2 text-center">
+    <span class="ad-badge">Sponsorlu Alan</span>
+    <div id="ad-skyscraper-right" class="w-full h-full flex items-center justify-center text-slate-500 text-xs">
+      <i class="fa-solid fa-rectangle-ad text-2xl text-slate-600"></i>
+    </div>
+  </div>
+</aside>
 
 <!-- Üst Menü / Navbar -->
 <header class="sticky top-0 z-40 card-stage border-b border-slate-800/80 px-4 sm:px-6 py-3.5 flex items-center justify-between">
@@ -101,7 +123,7 @@
   </div>
 </header>
 
-<!-- KATEGORİ SEÇİM ÇUBUĞU -->
+<!-- KATEGORİ SEÇİM ÇUBUĞU (TEK SAYFA GEZİNTİ) -->
 <nav class="max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-3 w-full" aria-label="Kategori Gezintisi">
   <div class="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-2 no-scrollbar">
     <button type="button" onclick="switchCategory('all')" id="tab-all" class="tab-btn active px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
@@ -125,12 +147,13 @@
   </div>
 </nav>
 
-<!-- İÇERİK PANELLERİ -->
-<main class="max-w-7xl mx-auto px-4 sm:px-6 pb-24 flex-1 w-full">
+<!-- İÇERİK PANELLERİ (CLS Önlemek İçin Sabit min-h-[520px]) -->
+<main class="max-w-7xl mx-auto px-4 sm:px-6 pb-24 flex-1 w-full min-h-[520px]">
 
   <!-- 1. VİTRİN / ÖNE ÇIKANLAR PANELİ -->
   <section id="panel-all" class="category-panel">
-    <div class="relative overflow-hidden rounded-3xl card-stage p-6 sm:p-10 my-4 border border-rose-500/20 text-center curtain-glow">
+    <!-- Sabit Yükseklik Verilmiş Hero Bloğu (CLS'yi Tamamen Sıfırlar) -->
+    <div class="relative overflow-hidden rounded-3xl card-stage p-6 sm:p-10 my-4 border border-rose-500/20 text-center curtain-glow min-h-[220px] flex flex-col justify-center">
       <div class="max-w-2xl mx-auto space-y-3">
         <span class="inline-block px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 text-xs font-semibold tracking-wide border border-rose-500/20">
           DİJİTAL SAHNE & EDEBİYAT
@@ -148,13 +171,23 @@
       </div>
     </div>
 
+    <!-- YATAY REKLAM KUŞAĞI (HERO ALTI LEADERBOARD) -->
+    <div class="my-6 ad-banner-slot w-full h-[90px] rounded-2xl" aria-label="Yatay Reklam Alanı">
+      <span class="ad-badge">Sponsorlu Alan</span>
+      <div id="ad-leaderboard" class="text-slate-500 text-xs flex items-center gap-2">
+        <i class="fa-solid fa-rectangle-ad text-lg text-slate-600"></i>
+        <span>728x90 Banner Alanı</span>
+      </div>
+    </div>
+
     <div class="mt-8 mb-4 flex items-center justify-between border-b border-white/10 pb-2">
       <h3 class="text-lg font-bold text-white flex items-center gap-2">
         <i class="fa-solid fa-sparkles text-rose-400"></i> Sahnede Öne Çıkanlar
       </h3>
       <span class="text-xs text-slate-300">Güncel Eserler</span>
     </div>
-    <div id="showcase-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    <!-- Sabit Min Yükseklik: Yüklenirken Sayfa Zıplamasını Önler -->
+    <div id="showcase-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]"></div>
   </section>
 
   <!-- 2. FOTOROMANLAR PANELİ -->
@@ -163,7 +196,7 @@
       <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-camera-retro text-amber-400"></i> Fotoromanlar</h2>
       <span class="text-xs text-slate-300">Görsel & Sesli Hikayeler</span>
     </div>
-    <div id="photoroman-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    <div id="photoroman-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]"></div>
   </section>
 
   <!-- 3. MİNİ DİZİLER PANELİ -->
@@ -172,7 +205,7 @@
       <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-film text-purple-400"></i> Mini Diziler</h2>
       <span class="text-xs text-slate-300">Sinematik Bölümler</span>
     </div>
-    <div id="series-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    <div id="series-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]"></div>
   </section>
 
   <!-- 4. ŞİİR VE DİNLETİ PANELİ -->
@@ -181,7 +214,7 @@
       <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-feather text-rose-400"></i> Sahne Şiirleri & Dinletiler</h2>
       <span class="text-xs text-slate-300">Sözün ve Sesin Ahengi</span>
     </div>
-    <div id="poem-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    <div id="poem-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]"></div>
   </section>
 
   <!-- 5. HİKAYELER PANELİ -->
@@ -190,7 +223,7 @@
       <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-book-open text-emerald-400"></i> Edebi Hikayeler</h2>
       <span class="text-xs text-slate-300">Metin ve Kurgular</span>
     </div>
-    <div id="story-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    <div id="story-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]"></div>
   </section>
 
   <!-- 6. MÜZİK PANELİ -->
@@ -201,52 +234,53 @@
         <i class="fa-solid fa-shuffle"></i> Karışık Çal
       </button>
     </div>
-    <div id="music-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    <div id="music-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]"></div>
   </section>
-    <!-- SAHNE HAKKINDA / TANITIM VE MANİFESTO -->
-    <section class="mt-16 card-stage rounded-3xl p-6 sm:p-10 border border-white/10 relative overflow-hidden">
-      <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-rose-600/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="max-w-3xl space-y-4 relative z-10">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 text-xs font-semibold border border-rose-500/20">
-          <i class="fa-solid fa-masks-theater"></i> Hayal Sahnesi Nedir?
-        </div>
-        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Kelimelerin ve Suretlerin Dijital Mabedi</h2>
-        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-serif-stage">
-          Hayal Sahnesi; geleneksel edebiyatın derinliğini modern dijital anlatı biçimleriyle buluşturan bağımsız bir sanat platformudur. Burada seslendirilen her dize, kadrajlanan her fotoroman karesi ve hayat bulan her mini dizi; yapay dünyaların gürültüsünden uzak, sahici bir duygunun izini sürer. Sanatçılar, şairler ve hikaye anlatıcıları için perdemiz daima aralıktır.
-        </p>
-        <div class="pt-2 flex flex-wrap items-center gap-4 text-xs text-slate-400">
-          <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-rose-400"></i> Bağımsız Kürasyon</span>
-          <span class="flex items-center gap-1.5"><i class="fa-solid fa-feather text-amber-400"></i> Telif ve Eser Saygısı</span>
-          <span class="flex items-center gap-1.5"><i class="fa-solid fa-envelope text-emerald-400"></i> İletişim: <a href="mailto:hayalsahnesi@hayalsahnesi.com" class="text-white hover:text-rose-400 font-semibold transition ml-1">hayalsahnesi@hayalsahnesi.com</a></span>
-        </div>
-      </div>
-    </section>
 
-</main>
-  <!-- ALT BİLGİ (FOOTER) -->
-  <footer class="border-t border-slate-850 bg-slate-950/80 text-slate-400 text-xs py-8 px-4 sm:px-6 mb-16">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-      <div class="flex items-center space-x-3 text-center md:text-left">
-        <div class="w-7 h-7 rounded-lg stage-gradient flex items-center justify-center font-bold text-white text-xs">
-          <i class="fa-solid fa-masks-theater"></i>
-        </div>
-        <div>
-          <p class="text-white font-bold text-sm">HAYAL SAHNESİ</p>
-          <p class="text-[11px] text-slate-300">© 2026 Hayal Sahnesi. Tüm hakları saklıdır.</p>
-        </div>
+  <!-- SAHNE HAKKINDA / MANİFESTO -->
+  <section class="mt-16 card-stage rounded-3xl p-6 sm:p-10 border border-white/10 relative overflow-hidden">
+    <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-rose-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="max-w-3xl space-y-4 relative z-10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 text-xs font-semibold border border-rose-500/20">
+        <i class="fa-solid fa-masks-theater"></i> Hayal Sahnesi Nedir?
       </div>
-
-      <!-- Yasal ve Bilgilendirme Linkleri -->
-      <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px]">
-        <button onclick="openModal('modal-kvkk')" class="hover:text-rose-400 transition">KVKK Aydınlatma Metni</button>
-        <button onclick="openModal('modal-cookie')" class="hover:text-rose-400 transition">Çerez Politikası</button>
-        <button onclick="openModal('modal-contact')" class="hover:text-rose-400 transition">Eser Başvurusu</button>
-        <a href="mailto:hayalsahnesi@hayalsahnesi.com" class="text-rose-400 hover:text-rose-300 font-semibold transition flex items-center gap-1">
-          <i class="fa-regular fa-envelope"></i> hayalsahnesi@hayalsahnesi.com
-        </a>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Kelimelerin ve Suretlerin Dijital Mabedi</h2>
+      <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-serif-stage">
+        Hayal Sahnesi; geleneksel edebiyatın derinliğini modern dijital anlatı biçimleriyle buluşturan bağımsız bir sanat platformudur. Burada seslendirilen her dize, kadrajlanan her fotoroman karesi ve hayat bulan her mini dizi; yapay dünyaların gürültüsünden uzak, sahici bir duygunun izini sürer. Sanatçılar, şairler ve hikaye anlatıcıları için perdemiz daima aralıktır.
+      </p>
+      <div class="pt-2 flex flex-wrap items-center gap-4 text-xs text-slate-400">
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-rose-400"></i> Bağımsız Kürasyon</span>
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-feather text-amber-400"></i> Telif ve Eser Saygısı</span>
+        <span class="flex items-center gap-1.5"><i class="fa-solid fa-envelope text-emerald-400"></i> İletişim: <a href="mailto:hayalsahnesi@hayalsahnesi.com" class="text-white hover:text-rose-400 font-semibold transition ml-1">hayalsahnesi@hayalsahnesi.com</a></span>
       </div>
     </div>
-  </footer>
+  </section>
+
+</main>
+
+<!-- ALT BİLGİ (FOOTER) -->
+<footer class="border-t border-slate-800/80 bg-slate-950/80 text-slate-400 text-xs py-8 px-4 sm:px-6 mb-16">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center space-x-3 text-center md:text-left">
+      <div class="w-7 h-7 rounded-lg stage-gradient flex items-center justify-center font-bold text-white text-xs">
+        <i class="fa-solid fa-masks-theater"></i>
+      </div>
+      <div>
+        <p class="text-white font-bold text-sm">HAYAL SAHNESİ</p>
+        <p class="text-[11px] text-slate-300">© 2026 Hayal Sahnesi. Tüm hakları saklıdır.</p>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px]">
+      <button onclick="openModal('modal-kvkk')" class="hover:text-rose-400 transition">KVKK Aydınlatma Metni</button>
+      <button onclick="openModal('modal-cookie')" class="hover:text-rose-400 transition">Çerez Politikası</button>
+      <button onclick="openModal('modal-contact')" class="hover:text-rose-400 transition">Eser Başvurusu</button>
+      <a href="mailto:hayalsahnesi@hayalsahnesi.com" class="text-rose-400 hover:text-rose-300 font-semibold transition flex items-center gap-1">
+        <i class="fa-regular fa-envelope"></i> hayalsahnesi@hayalsahnesi.com
+      </a>
+    </div>
+  </div>
+</footer>
 
 <!-- Sabit Sahne Çaları -->
 <aside class="sticky bottom-0 z-30 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800 px-4 sm:px-6 py-2.5 flex items-center justify-between">
@@ -286,67 +320,11 @@
 </div>
 
 <!-- ========================================== -->
-<!-- GELİŞMİŞ ESER OKUYUCU MODU (YAZI BOYUTU, FONT, KONTRAST AYARLI) -->
+<!-- YENİ FOTOROMAN OKUYUCU (REPLİK VE AÇIKLAMA RESMİN DIŞINDA / ALTINDA) -->
 <!-- ========================================== -->
-<div id="modal-story" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex flex-col p-3 sm:p-6 select-none">
-  <div id="reader-container" class="reader-theme-dark max-w-4xl mx-auto w-full h-full flex flex-col rounded-3xl border border-white/10 shadow-2xl overflow-hidden transition-colors duration-300">
-    
-    <!-- Okuyucu Üst Araç Çubuğu (Toolbar) -->
-    <div class="px-4 sm:px-6 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/5">
-      <div>
-        <h3 id="story-title" class="font-bold text-base sm:text-lg tracking-tight">Eser Başlığı</h3>
-        <p id="story-author" class="text-xs text-rose-400 font-semibold"></p>
-      </div>
-
-      <!-- Ayar Butonları Grubu -->
-      <div class="flex items-center gap-2 sm:gap-3">
-        
-        <!-- Yazı Boyutu Kontrolü (A- / A+) -->
-        <div class="flex items-center bg-black/40 rounded-xl border border-white/10 p-0.5">
-          <button onclick="adjustFontSize(-2)" title="Yazıyı Küçült" class="w-7 h-7 flex items-center justify-center text-xs font-bold hover:bg-white/10 rounded-lg transition">A-</button>
-          <span id="font-size-indicator" class="text-[11px] font-mono px-2 text-slate-300 font-bold">18px</span>
-          <button onclick="adjustFontSize(2)" title="Yazıyı Büyüt" class="w-7 h-7 flex items-center justify-center text-sm font-bold hover:bg-white/10 rounded-lg transition">A+</button>
-        </div>
-
-        <!-- Font Ailesi Değiştirici -->
-        <div class="flex items-center bg-black/40 rounded-xl border border-white/10 p-0.5 text-xs font-semibold">
-          <button onclick="setReaderFont('serif')" id="font-btn-serif" class="px-2.5 py-1 rounded-lg bg-rose-600 text-white transition">Roman</button>
-          <button onclick="setReaderFont('sans')" id="font-btn-sans" class="px-2.5 py-1 rounded-lg text-slate-300 hover:text-white transition">Modern</button>
-          <button onclick="setReaderFont('mono')" id="font-btn-mono" class="px-2.5 py-1 rounded-lg text-slate-300 hover:text-white transition">Daktilo</button>
-        </div>
-
-        <!-- Tema / Kontrast Değiştirici -->
-        <div class="flex items-center gap-1.5 bg-black/40 rounded-xl border border-white/10 p-1">
-          <button onclick="setReaderTheme('dark')" title="Karanlık Sahne" class="w-6 h-6 rounded-lg bg-slate-900 border border-slate-700 hover:scale-105 transition"></button>
-          <button onclick="setReaderTheme('sepia')" title="Sıcak Parşömen" class="w-6 h-6 rounded-lg bg-[#fbf0d9] border border-[#d9c5a3] hover:scale-105 transition"></button>
-          <button onclick="setReaderTheme('contrast')" title="Derin OLED Siyah" class="w-6 h-6 rounded-lg bg-black border border-white/40 hover:scale-105 transition"></button>
-        </div>
-
-        <!-- Kapat Butonu -->
-        <button onclick="closeModal('modal-story')" class="text-slate-400 hover:text-white text-xl p-1 transition ml-1">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-    </div>
-
-    <!-- Okuma Alanı (Yumuşak Scroll & Geniş Satır Aralığı) -->
-    <div class="flex-1 overflow-y-auto px-6 sm:px-12 py-8 max-w-3xl mx-auto w-full leading-relaxed">
-      <p id="story-body" class="whitespace-pre-line font-serif-stage transition-all duration-150 text-[18px] leading-[1.85] tracking-wide">
-        Metin yükleniyor...
-      </p>
-    </div>
-
-    <!-- Okuyucu Alt Bilgi Çubuğu -->
-    <div class="px-6 py-2 border-t border-white/5 text-[11px] text-slate-400 flex items-center justify-between bg-black/20">
-      <span>Hayal Sahnesi Küratörlüğü</span>
-      <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="hover:underline">Başa Dön ↑</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: FOTOROMAN OKUYUCU -->
-<div id="modal-reader" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex flex-col p-3 sm:p-6 select-none">
-  <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800/80">
+<div id="modal-reader" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex flex-col p-3 sm:p-5 select-none overflow-y-auto">
+  <!-- Üst Kontrol Çubuğu -->
+  <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800/80 max-w-4xl mx-auto w-full">
     <div class="flex items-center gap-3">
       <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
         <i class="fa-solid fa-camera-retro"></i>
@@ -358,6 +336,7 @@
     </div>
     
     <div class="flex items-center gap-2 sm:gap-3">
+      <!-- Ses Kontrolleri -->
       <div class="flex items-center gap-2 bg-slate-900/90 px-3 py-1.5 rounded-full border border-purple-800/40 shadow-inner">
         <button id="reader-mute-btn" onclick="toggleReaderAudioMute()" type="button" title="Müziği Aç / Kapat" class="text-purple-400 hover:text-white transition text-xs flex items-center justify-center w-5 h-5">
           <i id="reader-volume-icon" class="fa-solid fa-volume-high"></i>
@@ -371,10 +350,14 @@
     </div>
   </div>
 
-  <div class="flex-1 flex flex-col items-center justify-center relative w-full max-w-4xl mx-auto py-2 overflow-hidden">
-    <div class="relative w-full h-[60vh] md:h-[68vh] bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden shadow-2xl">
+  <!-- Sahne Gövdesi: Görsel ve Bağımsız Metin Alanı -->
+  <div class="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto w-full py-3 space-y-4">
+    
+    <!-- 1. FOTOROMAN KARE GÖRSELİ (YAZISIZ, NET VE TEMİZ) -->
+    <div class="relative w-full h-[48vh] sm:h-[58vh] bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden shadow-2xl">
       <img id="reader-img" src="" alt="Fotoroman Karesi" decoding="async" class="w-full h-full object-contain transition-opacity duration-300">
       
+      <!-- Yön Tuşları Görselin İki Yanında Sabit -->
       <button onclick="prevPhotoPage()" type="button" aria-label="Önceki Kare" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-amber-500 hover:text-slate-950 text-white flex items-center justify-center transition border border-white/10 shadow-lg backdrop-blur-sm z-20">
         <i class="fa-solid fa-chevron-left text-base"></i>
       </button>
@@ -382,23 +365,74 @@
       <button onclick="nextPhotoPage()" type="button" aria-label="Sonraki Kare" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-amber-500 hover:text-slate-950 text-white flex items-center justify-center transition border border-white/10 shadow-lg backdrop-blur-sm z-20">
         <i class="fa-solid fa-chevron-right text-base"></i>
       </button>
+    </div>
 
-      <div class="absolute bottom-3 left-3 right-3 bg-black/85 backdrop-blur-md p-3 rounded-xl border border-slate-800 text-center z-10">
-        <p id="reader-dialog" class="text-xs md:text-sm text-slate-100 font-serif-stage italic leading-relaxed"></p>
+    <!-- 2. RESMİN ALTINDAKİ BAĞIMSIZ SENARYO & REPLİK PANELİ -->
+    <div class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 text-left space-y-2 shadow-lg">
+      <div class="flex items-center justify-between text-xs border-b border-white/5 pb-2">
+        <span class="text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+          <i class="fa-solid fa-quote-left"></i> Sahne Replikleri & Açıklama
+        </span>
+        <span id="reader-page-counter" class="text-slate-400 font-mono text-xs">Kare 1 / 1</span>
       </div>
+      
+      <!-- Sahne Diyaloğu / Replik -->
+      <p id="reader-dialog" class="text-sm sm:text-base text-white font-serif-stage leading-relaxed italic"></p>
+      
+      <!-- Adminin Eklediği Sahne Açıklaması / Yönetmen Notu (Opsiyonel) -->
+      <p id="reader-scene-desc" class="text-xs text-slate-300 leading-normal pt-1 font-sans border-t border-white/5 hidden"></p>
     </div>
   </div>
 
+  <!-- Alt Gezinme Butonları -->
   <div class="flex items-center justify-between max-w-4xl mx-auto w-full pt-2 text-xs text-slate-300 border-t border-slate-900">
-    <button onclick="prevPhotoPage()" class="hover:text-amber-400 transition flex items-center gap-1 font-bold">
-      <i class="fa-solid fa-arrow-left"></i> Önceki
+    <button onclick="prevPhotoPage()" class="hover:text-amber-400 transition flex items-center gap-1.5 font-bold">
+      <i class="fa-solid fa-arrow-left"></i> Önceki Kare
     </button>
-    <div class="bg-slate-900 px-4 py-1.5 rounded-full border border-slate-800 font-mono text-amber-400 font-bold text-xs" id="reader-page-counter">
-      Kare 1 / 1
+    <button onclick="nextPhotoPage()" class="hover:text-amber-400 transition flex items-center gap-1.5 font-bold">
+      Sonraki Kare <i class="fa-solid fa-arrow-right"></i>
+    </button>
+  </div>
+</div>
+
+<!-- MODAL: HİKAYE VE ESER OKUYUCU -->
+<div id="modal-story" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex flex-col p-3 sm:p-6 select-none">
+  <div id="reader-container" class="reader-theme-dark max-w-4xl mx-auto w-full h-full flex flex-col rounded-3xl border border-white/10 shadow-2xl overflow-hidden transition-colors duration-300">
+    <div class="px-4 sm:px-6 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/5">
+      <div>
+        <h3 id="story-title" class="font-bold text-base sm:text-lg tracking-tight">Eser Başlığı</h3>
+        <p id="story-author" class="text-xs text-rose-400 font-semibold"></p>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div class="flex items-center bg-black/40 rounded-xl border border-white/10 p-0.5">
+          <button onclick="adjustFontSize(-2)" title="Yazıyı Küçült" class="w-7 h-7 flex items-center justify-center text-xs font-bold hover:bg-white/10 rounded-lg transition">A-</button>
+          <span id="font-size-indicator" class="text-[11px] font-mono px-2 text-slate-300 font-bold">18px</span>
+          <button onclick="adjustFontSize(2)" title="Yazıyı Büyüt" class="w-7 h-7 flex items-center justify-center text-sm font-bold hover:bg-white/10 rounded-lg transition">A+</button>
+        </div>
+        <div class="flex items-center bg-black/40 rounded-xl border border-white/10 p-0.5 text-xs font-semibold">
+          <button onclick="setReaderFont('serif')" id="font-btn-serif" class="px-2.5 py-1 rounded-lg bg-rose-600 text-white transition">Roman</button>
+          <button onclick="setReaderFont('sans')" id="font-btn-sans" class="px-2.5 py-1 rounded-lg text-slate-300 hover:text-white transition">Modern</button>
+          <button onclick="setReaderFont('mono')" id="font-btn-mono" class="px-2.5 py-1 rounded-lg text-slate-300 hover:text-white transition">Daktilo</button>
+        </div>
+        <div class="flex items-center gap-1.5 bg-black/40 rounded-xl border border-white/10 p-1">
+          <button onclick="setReaderTheme('dark')" title="Karanlık Sahne" class="w-6 h-6 rounded-lg bg-slate-900 border border-slate-700 hover:scale-105 transition"></button>
+          <button onclick="setReaderTheme('sepia')" title="Sıcak Parşömen" class="w-6 h-6 rounded-lg bg-[#fbf0d9] border border-[#d9c5a3] hover:scale-105 transition"></button>
+          <button onclick="setReaderTheme('contrast')" title="Derin OLED Siyah" class="w-6 h-6 rounded-lg bg-black border border-white/40 hover:scale-105 transition"></button>
+        </div>
+        <button onclick="closeModal('modal-story')" class="text-slate-400 hover:text-white text-xl p-1 transition ml-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
     </div>
-    <button onclick="nextPhotoPage()" class="hover:text-amber-400 transition flex items-center gap-1 font-bold">
-      Sonraki <i class="fa-solid fa-arrow-right"></i>
-    </button>
+    <div class="flex-1 overflow-y-auto px-6 sm:px-12 py-8 max-w-3xl mx-auto w-full leading-relaxed">
+      <p id="story-body" class="whitespace-pre-line font-serif-stage transition-all duration-150 text-[18px] leading-[1.85] tracking-wide">
+        Metin yükleniyor...
+      </p>
+    </div>
+    <div class="px-6 py-2 border-t border-white/5 text-[11px] text-slate-400 flex items-center justify-between bg-black/20">
+      <span>Hayal Sahnesi Küratörlüğü</span>
+      <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="hover:underline">Başa Dön ↑</button>
+    </div>
   </div>
 </div>
 
@@ -412,8 +446,7 @@
     <button onclick="closeModal('modal-video')" aria-label="Videoyu Kapat" class="text-slate-400 hover:text-white text-xl p-2"><i class="fa-solid fa-xmark"></i></button>
   </div>
   <div class="flex-1 flex items-center justify-center max-w-4xl mx-auto w-full py-4">
-    <div id="video-container" class="w-full aspect-video bg-slate-950 rounded-2xl border border-slate-800 flex flex-col items-center justify-center relative shadow-2xl overflow-hidden">
-    </div>
+    <div id="video-container" class="w-full aspect-video bg-slate-950 rounded-2xl border border-slate-800 flex flex-col items-center justify-center relative shadow-2xl overflow-hidden"></div>
   </div>
 </div>
 
@@ -480,50 +513,44 @@
     </form>
   </div>
 </div>
-  <!-- MODAL: KVKK AYDINLATMA METNİ -->
-  <div id="modal-kvkk" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4 select-none">
-    <div class="card-stage border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[85vh] flex flex-col">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base sm:text-lg flex items-center gap-2">
-          <i class="fa-solid fa-scale-balanced text-rose-400"></i> KVKK Aydınlatma Metni
-        </h3>
-        <button onclick="closeModal('modal-kvkk')" aria-label="Kapat" class="text-slate-400 hover:text-white text-xl p-1"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="flex-1 overflow-y-auto py-4 text-xs text-slate-300 space-y-3 leading-relaxed pr-2 font-sans">
-        <p><strong>1. Veri Sorumlusu:</strong> 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, Hayal Sahnesi kürasyon ekibi olarak kişisel verilerinizi mevzuata uygun şekilde işlemekteyiz.</p>
-        <p><strong>2. İşlenen Veriler ve Amaç:</strong> “Eser Gönder” formunu kullandığınızda paylaştığınız ad-soyad, e-posta, telefon ve eser içeriği bilgileri; yalnızca eser inceleme, telif doğrulama ve yayın süreçlerinde eser sahibine ulaşmak amacıyla işlenir.</p>
-        <p><strong>3. Verilerin Aktarımı:</strong> Toplanan kişisel verileriniz hiçbir surette üçüncü şahıslara veya reklam platformlarına satılmaz, ticari amaçla devredilmez.</p>
-        <p><strong>4. Haklarınız:</strong> KVKK m. 11 uyarınca verilerinizin silinmesini, düzeltilmesini veya bilgi verilmesini <strong>hayalsahnesi@hayalsahnesi.com</strong> e-posta adresi üzerinden her zaman talep edebilirsiniz.</p>
-      </div>
-      <div class="border-t border-slate-800 pt-3 text-right">
-        <button onclick="closeModal('modal-kvkk')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition">Anladım</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- MODAL: ÇEREZ POLİTİKASI -->
-  <div id="modal-cookie" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4 select-none">
-    <div class="card-stage border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-xl w-full max-h-[85vh] flex flex-col">
-      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-white text-base sm:text-lg flex items-center gap-2">
-          <i class="fa-solid fa-cookie-bite text-amber-400"></i> Çerez (Cookie) Politikası
-        </h3>
-        <button onclick="closeModal('modal-cookie')" aria-label="Kapat" class="text-slate-400 hover:text-white text-xl p-1"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="flex-1 overflow-y-auto py-4 text-xs text-slate-300 space-y-3 leading-relaxed pr-2 font-sans">
-        <p>Hayal Sahnesi, platformun teknik işleyişini sağlamak ve size en iyi sahne deneyimini sunmak için minimum düzeyde teknik çerez kullanır.</p>
-        <p><strong>Hangi Çerezler Kullanılır?</strong></p>
-        <ul class="list-disc pl-5 space-y-1">
-          <li><strong>Zorunlu Çerezler:</strong> Sahne ses oynatıcısının durumu, seçilen yazı boyutu ve tema tercihlerinin hatırlanması için kullanılır.</li>
-          <li><strong>Performans Çerezleri:</strong> Sayfa hızını ve kararlılığını ölçümlemek amacıyla anonim teknik veriler tutulur.</li>
-        </ul>
-        <p>Sitemizde kullanıcıları takip eden üçüncü taraf reklam çerezleri <u>kullanılmamaktadır</u>. Detaylı bilgi veya sorularınız için <strong>hayalsahnesi@hayalsahnesi.com</strong> adresine yazabilirsiniz.</p>
-      </div>
-      <div class="border-t border-slate-800 pt-3 text-right">
-        <button onclick="closeModal('modal-cookie')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition">Kabul Ediyorum</button>
-      </div>
+<!-- MODAL: KVKK AYDINLATMA METNİ -->
+<div id="modal-kvkk" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4 select-none">
+  <div class="card-stage border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[85vh] flex flex-col">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="font-bold text-white text-base sm:text-lg flex items-center gap-2">
+        <i class="fa-solid fa-scale-balanced text-rose-400"></i> KVKK Aydınlatma Metni
+      </h3>
+      <button onclick="closeModal('modal-kvkk')" aria-label="Kapat" class="text-slate-400 hover:text-white text-xl p-1"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="flex-1 overflow-y-auto py-4 text-xs text-slate-300 space-y-3 leading-relaxed pr-2 font-sans">
+      <p><strong>1. Veri Sorumlusu:</strong> 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca Hayal Sahnesi kürasyon ekibi kişisel verilerinizi mevzuata uygun işler.</p>
+      <p><strong>2. İşlenen Veriler ve Amaç:</strong> Paylaştığınız iletişim ve eser verileri yalnızca inceleme, telif teyidi ve yayın süreçlerinde kullanılır.</p>
+      <p><strong>3. Haklarınız:</strong> Bilgi alma veya silme taleplerinizi <strong>hayalsahnesi@hayalsahnesi.com</strong> üzerinden iletebilirsiniz.</p>
+    </div>
+    <div class="border-t border-slate-800 pt-3 text-right">
+      <button onclick="closeModal('modal-kvkk')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition">Anladım</button>
     </div>
   </div>
+</div>
+
+<!-- MODAL: ÇEREZ POLİTİKASI -->
+<div id="modal-cookie" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4 select-none">
+  <div class="card-stage border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-xl w-full max-h-[85vh] flex flex-col">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h3 class="font-bold text-white text-base sm:text-lg flex items-center gap-2">
+        <i class="fa-solid fa-cookie-bite text-amber-400"></i> Çerez Politikası
+      </h3>
+      <button onclick="closeModal('modal-cookie')" aria-label="Kapat" class="text-slate-400 hover:text-white text-xl p-1"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="flex-1 overflow-y-auto py-4 text-xs text-slate-300 space-y-3 leading-relaxed pr-2 font-sans">
+      <p>Hayal Sahnesi, platformun teknik işleyişi ve ses/okuyucu tercihlerinizin korunması için teknik çerezler kullanır. İletişim: <strong>hayalsahnesi@hayalsahnesi.com</strong></p>
+    </div>
+    <div class="border-t border-slate-800 pt-3 text-right">
+      <button onclick="closeModal('modal-cookie')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition">Kabul Ediyorum</button>
+    </div>
+  </div>
+</div>
 
 <script>
   const API_BASE = '/api';
@@ -533,6 +560,48 @@
   let activeSourceType = 'none';
   let isPlaying = false;
   let allContents = [];
+// Aktif Reklamları Çek ve Yerleştir
+async function loadLiveAds() {
+  try {
+    const res = await fetch(`${API_BASE}/ads/active`);
+    const json = await res.json();
+    const ads = json.ads || [];
+
+    ads.forEach(ad => {
+      let targetEl = null;
+      if (ad.slot === 'skyscraper_left') targetEl = document.getElementById('ad-skyscraper-left');
+      if (ad.slot === 'skyscraper_right') targetEl = document.getElementById('ad-skyscraper-right');
+      if (ad.slot === 'leaderboard_top') targetEl = document.getElementById('ad-leaderboard');
+
+      if (targetEl) {
+        if (ad.type === 'image') {
+          targetEl.innerHTML = `
+            <a href="${ad.targetUrl || '#'}" target="_blank" class="w-full h-full flex items-center justify-center overflow-hidden rounded-xl">
+              <img src="${ad.imageUrl}" alt="${escapeHtml(ad.title)}" class="w-full h-full object-cover rounded-xl hover:opacity-95 transition">
+            </a>`;
+        } else if (ad.type === 'google' || ad.type === 'html') {
+          targetEl.innerHTML = ad.code;
+          // Eğer kod içinde script varsa çalıştır
+          const scripts = targetEl.querySelectorAll('script');
+          scripts.forEach(s => {
+            const newScript = document.createElement('script');
+            if (s.src) newScript.src = s.src;
+            if (s.innerHTML) newScript.innerHTML = s.innerHTML;
+            document.body.appendChild(newScript);
+          });
+        }
+      }
+    });
+  } catch (err) {
+    console.warn('Reklamlar yüklenirken hata:', err);
+  }
+}
+
+// Sayfa açıldığında hem içerikleri hem reklamları yükle
+window.addEventListener('DOMContentLoaded', () => {
+  loadLiveContents();
+  loadLiveAds();
+});
 
   // --- GELİŞMİŞ OKUMA MODU AYARLARI ---
   let currentReaderFontSize = 18;
@@ -628,14 +697,31 @@
   }
 
   function distributeLiveContents(items) {
-    // 0. Vitrin / Öne Çıkanlar
+    // 0. Vitrin / Öne Çıkanlar (Araya 1 Adet Reklam Kartı Ekler)
     const showcaseGrid = document.getElementById('showcase-grid');
     if (showcaseGrid) {
       const showcaseItems = items.slice(0, 6);
       if (showcaseItems.length === 0) {
         showcaseGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Sahnede henüz yayınlanmış eser bulunmuyor.</div>`;
       } else {
-        showcaseGrid.innerHTML = showcaseItems.map(item => createShowcaseCard(item)).join('');
+        let html = '';
+        showcaseItems.forEach((item, index) => {
+          html += createShowcaseCard(item);
+          // 3. karttan sonra bir adet Organik İçerik Arası Reklam Kartı
+          if (index === 2) {
+            html += `
+              <div class="ad-banner-slot card-stage p-5 rounded-2xl flex flex-col justify-center items-center text-center min-h-[180px]">
+                <span class="ad-badge">Öne Çıkan Sponsor</span>
+                <div class="text-xs text-slate-400 space-y-1">
+                  <i class="fa-solid fa-sparkles text-rose-400 text-lg"></i>
+                  <p class="font-bold text-white">Hayal Sahnesi Kültür Alanı</p>
+                  <p class="text-[11px] text-slate-400">Burada yer almak için hayalsahnesi@hayalsahnesi.com</p>
+                </div>
+              </div>
+            `;
+          }
+        });
+        showcaseGrid.innerHTML = html;
       }
     }
 
@@ -647,7 +733,7 @@
         photoGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz fotoroman eseri eklenmemiş.</div>`;
       } else {
         photoGrid.innerHTML = photos.map(ph => {
-          const frames = (ph.images && Array.isArray(ph.images) && ph.images.length > 0) ? ph.images : [{ img: ph.thumbnail || '', text: ph.textBody || '' }];
+          const frames = (ph.images && Array.isArray(ph.images) && ph.images.length > 0) ? ph.images : [{ img: ph.thumbnail || '', text: ph.textBody || '', desc: '' }];
           const pagesData = encodeURIComponent(JSON.stringify(frames));
           const musicData = encodeURIComponent(ph.musicUrl || ph.mediaUrl || '');
           const frameCount = frames.length;
@@ -966,7 +1052,7 @@
     }
   }
 
-    function playNextShuffleTrack() {
+  function playNextShuffleTrack() {
     if (!musicPlaylist || musicPlaylist.length === 0) {
       playRandomMusicList();
       return;
@@ -1021,7 +1107,7 @@
     openModal('modal-video');
   }
 
-  // --- FOTOROMAN OKUYUCU MOTORU ---
+  // --- YENİLENMİŞ FOTOROMAN OKUYUCU MOTORU (REPLİK VE AÇIKLAMA AYRI) ---
   let currentPhotoPages = [];
   let currentPhotoIndex = 0;
 
@@ -1043,7 +1129,7 @@
     if (Array.isArray(imagesList) && imagesList.length > 0) {
       currentPhotoPages = imagesList;
     } else {
-      currentPhotoPages = [{ img: '', text: desc || 'Sahne başladı...' }];
+      currentPhotoPages = [{ img: '', text: desc || 'Sahne başladı...', desc: '' }];
     }
 
     currentPhotoIndex = 0;
@@ -1065,10 +1151,12 @@
     const page = currentPhotoPages[currentPhotoIndex];
     const imgEl = document.getElementById('reader-img');
     const dialogEl = document.getElementById('reader-dialog');
+    const sceneDescEl = document.getElementById('reader-scene-desc');
     const counterEl = document.getElementById('reader-page-counter');
 
     const imgSrc = typeof page === 'string' ? page : (page.img || '');
     const dialogText = typeof page === 'string' ? `Kare ${currentPhotoIndex + 1}` : (page.text || '');
+    const sceneDesc = (typeof page === 'object' && page.desc) ? page.desc : '';
 
     if (imgEl) {
       imgEl.style.opacity = '0.2';
@@ -1079,6 +1167,17 @@
     }
 
     if (dialogEl) dialogEl.innerText = dialogText || `Kare ${currentPhotoIndex + 1}`;
+    
+    // Admin açıklama notu varsa göster, yoksa gizle
+    if (sceneDescEl) {
+      if (sceneDesc.trim() !== '') {
+        sceneDescEl.innerText = 'Yönetmen Notu / Açıklama: ' + sceneDesc;
+        sceneDescEl.classList.remove('hidden');
+      } else {
+        sceneDescEl.classList.add('hidden');
+      }
+    }
+
     if (counterEl) counterEl.innerText = `Kare ${currentPhotoIndex + 1} / ${currentPhotoPages.length}`;
   }
 

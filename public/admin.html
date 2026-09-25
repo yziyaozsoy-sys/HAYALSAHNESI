@@ -83,7 +83,7 @@
       <a href="index.html" class="hover:text-rose-400 transition flex items-center gap-1">
         <i class="fa-solid fa-arrow-left"></i> Vitrine Dön
       </a>
-      <span class="font-mono text-[10px]">v3.2 MongoDB Photoroman Engine</span>
+      <span class="font-mono text-[10px]">v3.5 WebP & Ad Engine</span>
     </div>
   </div>
 </div>
@@ -115,14 +115,25 @@
         </div>
       </div>
 
+      <!-- Gezinme Menüsü -->
       <nav class="space-y-1.5 pt-2">
         <button onclick="switchAdminSection('contents')" id="nav-contents" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav">
           <i class="fa-solid fa-chart-line text-sm"></i>
           <span>Eser Kürasyonu</span>
         </button>
         
+        <button onclick="switchAdminSection('ads')" id="nav-ads" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
+          <i class="fa-solid fa-rectangle-ad text-sm text-amber-400"></i>
+          <span>Reklam Masası</span>
+        </button>
+
+        <button onclick="switchAdminSection('uploader')" id="nav-uploader" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
+          <i class="fa-solid fa-file-image text-sm text-cyan-400"></i>
+          <span>WebP Görsel Masası</span>
+        </button>
+
         <button onclick="switchAdminSection('staff')" id="nav-staff" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
-          <i class="fa-solid fa-users-gear text-sm"></i>
+          <i class="fa-solid fa-users-gear text-sm text-purple-400"></i>
           <span>Personel & Editörler</span>
         </button>
       </nav>
@@ -131,7 +142,7 @@
     <div class="pt-6 border-t border-slate-800/80 space-y-2">
       <div class="flex items-center justify-between text-xs text-slate-400">
         <span class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[8px] text-emerald-400 animate-pulse"></i> MongoDB Atlas</span>
-        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">50MB Aktif</span>
+        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold">Aktif & Yayında</span>
       </div>
       <a href="index.html" class="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-rose-500/50 text-slate-300 text-xs font-bold transition">
         <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Sahne Vitrinine Git
@@ -145,7 +156,9 @@
   <!-- Ana Yönetim Alanı -->
   <main class="flex-1 p-6 md:p-8 max-w-7xl mx-auto w-full space-y-8 overflow-y-auto">
 
+    <!-- ========================================== -->
     <!-- BÖLÜM 1: İSTATİSTİKLER VE ESER YÖNETİMİ -->
+    <!-- ========================================== -->
     <section id="section-contents" class="space-y-6">
       
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
@@ -259,12 +272,12 @@
               </div>
 
               <div>
-                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kapak / Görsel URL</label>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kapak / Görsel URL (WebP veya Dış Link)</label>
                 <input id="form-thumbnail" type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://...">
               </div>
             </div>
 
-            <!-- ÖZEL FOTOROMAN ALANI -->
+            <!-- ÖZEL FOTOROMAN ALANI (REPLİK VE SAHNE AÇIKLAMASI AYRILDI) -->
             <div id="photoroman-editor-box" class="hidden space-y-3 p-4 bg-amber-950/20 border border-amber-900/40 rounded-2xl">
               <div class="flex items-center justify-between border-b border-amber-900/40 pb-2">
                 <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
@@ -286,16 +299,16 @@
               <!-- Karelerin Listelendiği Dinamik Alan -->
               <div class="space-y-2 pt-2 border-t border-amber-900/30">
                 <div class="flex items-center justify-between">
-                  <label class="text-[11px] font-semibold text-amber-200">Sayfa Sayfa Görsel Kareler</label>
-                  <span class="text-[10px] text-slate-400">Dosya Yükle veya URL</span>
+                  <label class="text-[11px] font-semibold text-amber-200">Sayfa Sayfa Görseller & Replik/Açıklamalar</label>
+                  <span class="text-[10px] text-slate-400">WebP Otomatik Dönüştürülür</span>
                 </div>
                 
-                <div id="photo-frames-container" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+                <div id="photo-frames-container" class="space-y-3 max-h-96 overflow-y-auto pr-1">
                   <!-- Dinamik Kare Kutuları -->
                 </div>
 
                 <button type="button" onclick="addPhotoFrameRow()" class="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-500/30">
-                  <i class="fa-solid fa-plus"></i> + Yeni Fotoroman Karesi / Sayfası Ekle
+                  <i class="fa-solid fa-plus"></i> + Yeni Fotoroman Karesi Ekle
                 </button>
               </div>
             </div>
@@ -370,7 +383,93 @@
         </div>
       </div>
     </section>
-    <!-- BÖLÜM 2: PERSONEL VE EDİTÖR YÖNETİMİ -->
+
+    <!-- ========================================== -->
+    <!-- BÖLÜM 2: REKLAM MASASI (GOOGLE, HTML & WEBP BANNER) -->
+    <!-- ========================================== -->
+    <section id="section-ads" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-rectangle-ad text-amber-400"></i> Reklam & Sponsor Alanları
+          </h2>
+          <p class="text-xs text-slate-400">Google AdSense, özel script/HTML veya görsel WebP banner reklamlarını yönetin.</p>
+        </div>
+        <button onclick="openNewAdModal()" class="bg-amber-600 hover:bg-amber-500 px-4 py-2 rounded-xl text-xs font-bold text-white shadow-lg transition flex items-center gap-1.5">
+          <i class="fa-solid fa-plus"></i> + Yeni Reklam Tanımla
+        </button>
+      </div>
+
+      <div class="card-stage rounded-2xl border border-slate-800 overflow-hidden flex flex-col">
+        <div class="overflow-x-auto flex-1">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
+              <tr>
+                <th class="p-3.5">Reklam Başlığı</th>
+                <th class="p-3.5">Yerleşim Alanı (Slot)</th>
+                <th class="p-3.5">Türü</th>
+                <th class="p-3.5">İçerik / Önizleme</th>
+                <th class="p-3.5">Durum</th>
+                <th class="p-3.5 text-right">İşlemler</th>
+              </tr>
+            </thead>
+            <tbody id="ads-table-body" class="divide-y divide-slate-800/60 font-medium">
+              <tr><td colspan="6" class="p-6 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Reklamlar yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- BÖLÜM 3: OTOMATİK WEBP GÖRSEL MASASI -->
+    <!-- ========================================== -->
+    <section id="section-uploader" class="hidden space-y-6">
+      <div class="border-b border-slate-800 pb-4">
+        <h2 class="text-2xl font-black text-white flex items-center gap-2">
+          <i class="fa-solid fa-file-image text-cyan-400"></i> Otomatik WebP Dönüştürücü & Görsel Deposu
+        </h2>
+        <p class="text-xs text-slate-400">Yüklediğiniz herhangi bir görsel formatı sunucumuzda anında WebP'ye optimize edilir ve kalıcı URL üretilir.</p>
+      </div>
+
+      <div class="max-w-2xl mx-auto card-stage rounded-3xl p-6 sm:p-8 border border-white/10 space-y-4">
+        <div class="text-center space-y-1">
+          <div class="w-12 h-12 rounded-2xl bg-cyan-600/20 text-cyan-400 mx-auto flex items-center justify-center text-xl shadow-lg">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+          </div>
+          <h3 class="font-bold text-white text-base">Hızlı WebP Görsel Yükle</h3>
+          <p class="text-xs text-slate-400">PNG, JPG veya JPEG seçin, anında WebP linki alın.</p>
+        </div>
+
+        <div class="border-2 border-dashed border-slate-700 hover:border-cyan-500 rounded-2xl p-8 text-center cursor-pointer transition" onclick="document.getElementById('file-upload-input').click()">
+          <input id="file-upload-input" type="file" accept="image/*" class="hidden" onchange="uploadSingleImage(this)">
+          <i class="fa-solid fa-image text-4xl text-slate-500 mb-2"></i>
+          <p class="text-xs text-slate-200 font-semibold">Görsel seçmek için buraya tıklayın</p>
+          <p class="text-[10px] text-slate-500 mt-1">Maks 15MB • Sharp Otomatik WebP Motoru</p>
+        </div>
+
+        <div id="upload-result-box" class="hidden bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+          <div class="flex items-center gap-3">
+            <img id="upload-preview-img" src="" class="w-16 h-16 rounded-lg object-cover border border-slate-700">
+            <div class="flex-1 truncate">
+              <p class="text-xs font-bold text-white truncate" id="upload-file-name"></p>
+              <p class="text-[10px] text-emerald-400 font-mono">✓ Optimize Edilmiş WebP</p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kalıcı Görsel URL'si:</label>
+            <div class="flex gap-2">
+              <input id="upload-result-url" readonly type="text" class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-cyan-300 font-mono select-all">
+              <button onclick="copyUploadUrl()" class="px-3 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-xs font-bold transition">Kopyala</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- BÖLÜM 4: PERSONEL VE EDİTÖR YÖNETİMİ -->
+    <!-- ========================================== -->
     <section id="section-staff" class="hidden space-y-6">
       <div class="border-b border-slate-800 pb-4">
         <h2 class="text-2xl font-black text-white">Personel & Editör Hesapları</h2>
@@ -452,6 +551,74 @@
 
   </main>
 
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL: YENİ REKLAM TANIMLAMA PENCERESİ -->
+<!-- ========================================== -->
+<div id="modal-ad-create" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="card-stage border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
+    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+      <h4 class="font-extrabold text-white text-base flex items-center gap-2">
+        <i class="fa-solid fa-rectangle-ad text-amber-400"></i> Yeni Reklam Tanımla
+      </h4>
+      <button onclick="closeModal('modal-ad-create')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    </div>
+
+    <form onsubmit="handleSaveAd(event)" class="space-y-3.5 text-xs">
+      <div>
+        <label class="block font-semibold text-slate-200 mb-1">Reklam Başlığı / Notu *</label>
+        <input id="ad-title" required type="text" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500" placeholder="Örn: Sol Kule Google AdSense">
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block font-semibold text-slate-200 mb-1">Yerleşim Alanı (Slot) *</label>
+          <select id="ad-slot" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+            <option value="skyscraper_left">Sol Dikey Kule (160x600)</option>
+            <option value="skyscraper_right">Sağ Dikey Kule (160x600)</option>
+            <option value="leaderboard_top">Üst Yatay Afiş (728x90)</option>
+            <option value="in_feed">İçerik Arası Reklam Kartı</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-200 mb-1">Reklam Türü *</label>
+          <select id="ad-type" onchange="toggleAdTypeFields(this.value)" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+            <option value="google">Google AdSense / JS Kodu</option>
+            <option value="html">Özel HTML / İframe</option>
+            <option value="image">Görsel Banner (WebP)</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="field-ad-code">
+        <label class="block font-semibold text-slate-200 mb-1">Reklam Kodu (Script / HTML) *</label>
+        <textarea id="ad-code-val" rows="5" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white font-mono text-[11px] focus:outline-none focus:border-amber-500" placeholder="<script async src='https://pagead2.googlesyndication.com...'></script>"></textarea>
+      </div>
+
+      <div id="field-ad-image" class="hidden space-y-2">
+        <div>
+          <label class="block font-semibold text-slate-200 mb-1">Banner Görseli Seç (Otomatik WebP Olur)</label>
+          <input type="file" accept="image/*" onchange="uploadAdBannerImage(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs">
+          <input type="hidden" id="ad-image-url">
+          <p id="ad-image-status" class="text-[10px] text-cyan-400 mt-1 hidden"></p>
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-200 mb-1">Tıklanınca Açılacak Link (Hedef URL)</label>
+          <input id="ad-target-url" type="url" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-white focus:outline-none focus:border-amber-500" placeholder="https://...">
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-1">
+        <input id="ad-is-active" type="checkbox" checked class="w-4 h-4 rounded text-amber-600 bg-slate-900 border-slate-700 cursor-pointer">
+        <label for="ad-is-active" class="text-slate-300 font-semibold cursor-pointer">Kaydeder kaydetmez yayına al</label>
+      </div>
+
+      <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-white py-2.5 rounded-xl font-bold transition shadow-lg">
+        Reklamı Kaydet & Yayınla
+      </button>
+    </form>
+  </div>
 </div>
 
 <!-- ================= MODAL: PERSONEL DÜZENLEME & ŞİFRE DEĞİŞTİRME ================= -->
@@ -540,7 +707,6 @@
         </a>
       </div>
 
-      <!-- Yazar İletişim & Hukuki Sorumluluk / Telif Onay Kartı -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-slate-900/90 rounded-2xl border border-slate-800 text-xs">
         <div>
           <span class="text-slate-400 block text-[11px] mb-0.5">İletişim E-Posta:</span>
@@ -564,7 +730,6 @@
       </div>
     </div>
 
-    <!-- Alt Butonlar -->
     <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-2">
       <button onclick="closeInspector()" type="button" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-bold transition">
         Kapat
@@ -580,16 +745,17 @@
     </div>
   </div>
 </div>
+
 <script>
   const API_BASE = '/api';
   let currentContents = [];
   let selectedCategory = 'all';
   let currentUser = null;
   let inspectingItem = null;
+  let staffList = [];
+  let adsList = [];
 
-   let staffList = [];
-
-  // 1. CANLI BULUT GİRİŞİ (Herkes kendi cihazından MongoDB ile giriş yapar)
+  // --- 1. GİRİŞ VE YETKİLENDİRME ---
   async function handleLogin(e) {
     e.preventDefault();
     const userVal = document.getElementById('login-username').value.trim();
@@ -646,13 +812,14 @@
     } else {
       roleBadge.innerText = 'Editör (' + (user.role || 'İçerik') + ')';
       roleBadge.className = 'text-[10px] text-cyan-400 font-bold';
-      appBadgeRole.innerText = 'Editör Masası';
+            appBadgeRole.innerText = 'Editör Masası';
       navStaff.classList.add('hidden');
     }
 
     document.getElementById('form-author').value = user.name;
     toggleFormFieldsByType();
     fetchAdminContents();
+    fetchAds();
     if (user.access === 'admin') fetchStaffUsers();
   }
 
@@ -675,20 +842,29 @@
     }
   }
 
+  // Menü Sekmeleri Arası Geçiş
   function switchAdminSection(sec) {
     document.getElementById('section-contents').classList.toggle('hidden', sec !== 'contents');
+    document.getElementById('section-ads').classList.toggle('hidden', sec !== 'ads');
+    document.getElementById('section-uploader').classList.toggle('hidden', sec !== 'uploader');
     document.getElementById('section-staff').classList.toggle('hidden', sec !== 'staff');
 
-    document.getElementById('nav-contents').className = (sec === 'contents') 
-      ? 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav'
-      : 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition';
+    const navs = ['contents', 'ads', 'uploader', 'staff'];
+    navs.forEach(n => {
+      const el = document.getElementById(`nav-${n}`);
+      if (!el) return;
+      if (n === sec) {
+        el.className = 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav';
+      } else {
+        el.className = 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition';
+      }
+    });
 
-    document.getElementById('nav-staff').className = (sec === 'staff')
-      ? 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav'
-      : 'w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition';
+    if (sec === 'ads') fetchAds();
+    if (sec === 'staff' && currentUser?.access === 'admin') fetchStaffUsers();
   }
 
-  // --- FOTOROMAN DOSYA VE VERİ MOTORU ---
+  // --- FOTOROMAN ALTYAPISI (REPLİK + SAHNE AÇIKLAMASI AYRI) ---
   function toggleFormFieldsByType() {
     const type = document.getElementById('form-type').value;
     const isPhoto = (type === 'photoroman');
@@ -700,7 +876,7 @@
       stdMedia.classList.add('hidden');
       const container = document.getElementById('photo-frames-container');
       if (container.children.length === 0) {
-        addPhotoFrameRow('', '');
+        addPhotoFrameRow('', '', '');
       }
     } else {
       photoBox.classList.add('hidden');
@@ -729,27 +905,46 @@
     reader.readAsDataURL(file);
   }
 
-  function convertImageToBase64(input) {
+  // Fotoroman karesine seçilen resmi otomatik WebP'ye çevirip URL'sini yazar
+  async function uploadFrameImageToWebp(input) {
     const file = input.files[0];
     if (!file) return;
 
     const row = input.closest('div.group');
     const urlInput = row.querySelector('.frame-img-url');
     const previewImg = row.querySelector('.frame-preview-img');
+    const statusTxt = row.querySelector('.frame-upload-status');
 
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const base64Img = e.target.result;
-      urlInput.value = base64Img;
-      if (previewImg) {
-        previewImg.src = base64Img;
-        previewImg.classList.remove('hidden');
+    if (statusTxt) {
+      statusTxt.innerText = 'WebP dönüştürülüyor...';
+      statusTxt.classList.remove('hidden');
+    }
+
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const res = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) {
+        urlInput.value = data.url;
+        if (previewImg) {
+          previewImg.src = data.url;
+          previewImg.classList.remove('hidden');
+        }
+        if (statusTxt) {
+          statusTxt.innerText = '✓ WebP Hazır';
+          statusTxt.className = 'frame-upload-status text-[10px] text-emerald-400 font-mono';
+        }
+      } else {
+        alert('Görsel yüklenemedi: ' + data.message);
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err) {
+      alert('Görsel sunucuya aktarılamadı.');
+    }
   }
 
-  function addPhotoFrameRow(imgUrl = '', dialogText = '') {
+  function addPhotoFrameRow(imgUrl = '', dialogText = '', descText = '') {
     const container = document.getElementById('photo-frames-container');
     const frameIndex = container.children.length + 1;
 
@@ -758,24 +953,35 @@
     row.innerHTML = `
       <div class="flex items-center justify-between text-[11px] text-amber-400 font-bold">
         <span><i class="fa-solid fa-image"></i> Kare / Sayfa <span class="frame-num">${frameIndex}</span></span>
-        <button type="button" onclick="removePhotoFrameRow(this)" class="text-rose-400 hover:text-white text-xs p-1" title="Bu Kareyi Sil">
-          <i class="fa-solid fa-trash-can"></i>
-        </button>
+        <div class="flex items-center gap-2">
+          <span class="frame-upload-status text-[10px] text-cyan-400 font-mono hidden"></span>
+          <button type="button" onclick="removePhotoFrameRow(this)" class="text-rose-400 hover:text-white text-xs p-1" title="Bu Kareyi Sil">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div>
-          <input type="file" accept="image/*" onchange="convertImageToBase64(this)" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-300 hover:file:bg-amber-500/30 cursor-pointer">
+          <input type="file" accept="image/*" onchange="uploadFrameImageToWebp(this)" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-[11px] file:bg-amber-500/20 file:text-amber-300 hover:file:bg-amber-500/30 cursor-pointer">
         </div>
         <div>
-          <input type="text" class="frame-img-url w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="Veya Görsel URL" value="${escapeHtml(imgUrl)}">
+          <input type="text" class="frame-img-url w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="Görsel WebP URL" value="${escapeHtml(imgUrl)}">
         </div>
       </div>
 
       <img src="${imgUrl ? escapeHtml(imgUrl) : ''}" class="frame-preview-img ${imgUrl ? '' : 'hidden'} w-24 h-16 object-cover rounded-lg border border-slate-800">
 
+      <!-- Replik (Metin) -->
       <div>
-        <textarea rows="1" class="frame-dialog w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-amber-500" placeholder="Bu karedeki replik, diyalog ya da sahne notu...">${escapeHtml(dialogText)}</textarea>
+        <label class="block text-[10px] text-slate-400 font-semibold mb-0.5">Sahne Repliği / Diyalog:</label>
+        <textarea rows="1" class="frame-dialog w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500" placeholder="Bu karedeki oyuncu repliği...">${escapeHtml(dialogText)}</textarea>
+      </div>
+
+      <!-- Sahne Açıklaması / Yönetmen Notu (Resmin Altında Ayrı Gözükür) -->
+      <div>
+        <label class="block text-[10px] text-amber-300/80 font-semibold mb-0.5">Sahne Açıklaması / Yönetmen Notu (Opsiyonel):</label>
+        <textarea rows="1" class="frame-desc w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-amber-500" placeholder="Sahne atmosferi, mekan tasviri ya da arka plan notu...">${escapeHtml(descText)}</textarea>
       </div>
     `;
     container.appendChild(row);
@@ -805,8 +1011,9 @@
     rows.forEach(r => {
       const url = r.querySelector('.frame-img-url').value.trim();
       const txt = r.querySelector('.frame-dialog').value.trim();
+      const desc = r.querySelector('.frame-desc') ? r.querySelector('.frame-desc').value.trim() : '';
       if (url) {
-        frames.push({ img: url, text: txt });
+        frames.push({ img: url, text: txt, desc: desc });
       }
     });
     return frames;
@@ -899,7 +1106,7 @@
     tbody.innerHTML = items.map(c => `
       <tr class="hover:bg-slate-900/40 transition">
         <td class="p-3.5">
-          <span class="font-bold text-white block text-sm">${escapeHtml(c.title)}</span>
+          <span class="font-bold text-white block text-sm cursor-pointer hover:text-rose-400 transition" onclick="inspectContent('${c._id}')">${escapeHtml(c.title)}</span>
           <span class="text-[10px] text-slate-500 font-mono">${c._id}</span>
         </td>
         <td class="p-3.5">
@@ -915,7 +1122,10 @@
           </button>
         </td>
         <td class="p-3.5 text-right space-x-1.5">
-                    <button onclick="editContent('${c._id}')" title="Düzenle" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
+          <button onclick="inspectContent('${c._id}')" title="İncele & Önizle" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 transition">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+          <button onclick="editContent('${c._id}')" title="Düzenle" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition">
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
           ${isAdmin ? `
@@ -966,8 +1176,8 @@
     let bodyText = item.textBody || item.description || 'Bu eser için herhangi bir metin girilmemiş.';
     if (item.type === 'photoroman' && item.images && Array.isArray(item.images)) {
       bodyText = `Fotoroman Kareleri (${item.images.length} Sayfa):\n` + 
-        item.images.map((f, i) => `[Kare ${i + 1}] Görsel: ${f.img ? (f.img.startsWith('data:') ? 'Base64 Medya Dosyası' : f.img) : 'Boş'} \nReplik: "${f.text || '-'}"`).join('\n\n') +
-        `\n\nAtmosfer Fon Müziği: ${item.musicUrl ? (item.musicUrl.startsWith('data:') ? 'Base64 Ses Dosyası' : item.musicUrl) : 'Varsayılan'}\n\nGenel Açıklama:\n` + bodyText;
+        item.images.map((f, i) => `[Kare ${i + 1}] Görsel: ${f.img ? f.img : 'Boş'}\nReplik: "${f.text || '-'}"\nAçıklama: "${f.desc || '-'}"`).join('\n\n') +
+        `\n\nAtmosfer Fon Müziği: ${item.musicUrl || 'Varsayılan'}\n\nGenel Not:\n` + bodyText;
     }
     document.getElementById('inspect-body').innerText = bodyText;
 
@@ -1012,7 +1222,7 @@
     closeInspector();
   }
 
-  // --- ESER CRUD İŞLEMLERİ ---
+  // --- ESER FORMU GÖNDERME ---
   async function handleContentSubmit(e) {
     e.preventDefault();
     const editId = document.getElementById('edit-content-id').value;
@@ -1028,7 +1238,6 @@
     let imagesPayload = [];
     let musicUrlPayload = '';
 
-    // Fotoroman özel alanlarını topla
     if (typeVal === 'photoroman') {
       musicUrlPayload = document.getElementById('form-photo-music').value.trim();
       imagesPayload = getPhotoromanFramesData();
@@ -1066,7 +1275,7 @@
         cancelEditing();
         fetchAdminContents();
       } else {
-        alert('Kayıt sırasında sunucu hatası oluştu. Lütfen dosya boyutlarını kontrol edin.');
+        alert('Kayıt sırasında sunucu hatası oluştu.');
       }
     } catch (err) {
       alert('Sunucuya ulaşılamadı.');
@@ -1089,7 +1298,6 @@
     document.getElementById('form-thumbnail').value = item.thumbnail || '';
     document.getElementById('form-text-body').value = item.textBody || item.description || '';
 
-    // Fotoroman alanlarını doldur
     toggleFormFieldsByType();
     if (item.type === 'photoroman') {
       const musicVal = item.musicUrl || item.mediaUrl || '';
@@ -1104,10 +1312,10 @@
       container.innerHTML = '';
       if (item.images && Array.isArray(item.images) && item.images.length > 0) {
         item.images.forEach(f => {
-          addPhotoFrameRow(f.img || f.url || f, f.text || f.caption || '');
+          addPhotoFrameRow(f.img || f.url || f, f.text || f.caption || '', f.desc || '');
         });
       } else {
-        addPhotoFrameRow(item.thumbnail || '', item.textBody || '');
+        addPhotoFrameRow(item.thumbnail || '', item.textBody || '', '');
       }
     }
 
@@ -1115,6 +1323,7 @@
     document.getElementById('form-submit-btn').innerHTML = `<i class="fa-solid fa-check"></i> Değişiklikleri Kaydet`;
     document.getElementById('cancel-edit-btn').classList.remove('hidden');
 
+    switchAdminSection('contents');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -1177,7 +1386,196 @@
     }
   }
 
-   // --- PERSONEL VE EDİTÖR YÖNETİMİ (MONGODB BULUT) ---
+  // ==========================================
+  // REKLAM MASASI MOTORU (GOOGLE, HTML & WEBP)
+  // ==========================================
+  async function fetchAds() {
+    const tbody = document.getElementById('ads-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Reklamlar yükleniyor...</td></tr>`;
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/ads`);
+      const data = await res.json();
+      adsList = data.ads || [];
+      renderAdsTable();
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-rose-400">Reklamlar yüklenemedi.</td></tr>`;
+    }
+  }
+
+  function renderAdsTable() {
+    const tbody = document.getElementById('ads-table-body');
+    if (!tbody) return;
+
+    if (adsList.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">Henüz tanımlanmış bir reklam bulunmuyor.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = adsList.map(ad => `
+      <tr class="hover:bg-slate-900/40 transition">
+        <td class="p-3.5 font-bold text-white">${escapeHtml(ad.title)}</td>
+        <td class="p-3.5 text-amber-400 font-mono text-[11px]">${ad.slot}</td>
+        <td class="p-3.5 uppercase font-bold text-slate-300 text-[10px]">${ad.type}</td>
+        <td class="p-3.5 text-slate-400 max-w-xs truncate">
+          ${ad.type === 'image' 
+            ? `<a href="${ad.imageUrl}" target="_blank" class="text-cyan-400 underline font-mono text-[11px]">WebP Banner</a>` 
+            : `<span class="font-mono text-[10px] text-slate-500">${escapeHtml(ad.code ? ad.code.substring(0, 35) + '...' : '-')}</span>`}
+        </td>
+        <td class="p-3.5">
+          <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${ad.isActive ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">
+            ${ad.isActive ? '● Yayında' : '○ Pasif'}
+          </span>
+        </td>
+        <td class="p-3.5 text-right space-x-1.5 whitespace-nowrap">
+          <button onclick="toggleAdStatus('${ad._id}', ${!ad.isActive})" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-800 hover:bg-slate-700 text-white transition">
+            ${ad.isActive ? 'Durdur' : 'Yayınla'}
+          </button>
+          <button onclick="deleteAd('${ad._id}')" class="px-2 py-1 rounded-lg bg-rose-600/20 text-rose-300 hover:bg-rose-600 hover:text-white transition">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function openNewAdModal() {
+    document.getElementById('modal-ad-create').classList.remove('hidden');
+  }
+
+  function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden');
+  }
+
+  function toggleAdTypeFields(type) {
+    const codeField = document.getElementById('field-ad-code');
+    const imgField = document.getElementById('field-ad-image');
+    if (type === 'image') {
+      codeField.classList.add('hidden');
+      imgField.classList.remove('hidden');
+    } else {
+      codeField.classList.remove('hidden');
+      imgField.classList.add('hidden');
+    }
+  }
+
+  async function uploadAdBannerImage(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const status = document.getElementById('ad-image-status');
+    status.classList.remove('hidden');
+    status.innerText = 'Görsel WebP formatına çevriliyor...';
+
+    try {
+      const res = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('ad-image-url').value = data.url;
+        status.innerText = '✓ WebP Banner Hazır: ' + data.url;
+        status.className = 'text-[10px] text-emerald-400 mt-1';
+      } else {
+        status.innerText = 'Dönüştürme hatası: ' + data.message;
+      }
+    } catch (err) {
+      status.innerText = 'Sunucuya yüklenemedi.';
+    }
+  }
+
+  async function handleSaveAd(e) {
+    e.preventDefault();
+    const payload = {
+      title: document.getElementById('ad-title').value.trim(),
+      slot: document.getElementById('ad-slot').value,
+      type: document.getElementById('ad-type').value,
+      code: document.getElementById('ad-code-val').value.trim(),
+      imageUrl: document.getElementById('ad-image-url').value,
+      targetUrl: document.getElementById('ad-target-url').value.trim(),
+      isActive: document.getElementById('ad-is-active').checked
+    };
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/ads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert('Reklam başarıyla kaydedildi!');
+        closeModal('modal-ad-create');
+        e.target.reset();
+        fetchAds();
+      } else {
+        alert('Hata: ' + data.message);
+      }
+    } catch (err) {
+      alert('Sunucu hatası.');
+    }
+  }
+
+  async function toggleAdStatus(id, newStatus) {
+    try {
+      await fetch(`${API_BASE}/admin/ads/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive: newStatus })
+      });
+      fetchAds();
+    } catch (e) {
+      alert('Reklam durumu değiştirilemedi.');
+    }
+  }
+
+  async function deleteAd(id) {
+    if (!confirm('Bu reklamı silmek istediğinize emin misiniz?')) return;
+    try {
+      await fetch(`${API_BASE}/admin/ads/${id}`, { method: 'DELETE' });
+      fetchAds();
+    } catch (e) {
+      alert('Silme başarısız.');
+    }
+  }
+
+  // ==========================================
+  // WEBP GÖRSEL MASASI & URL ÜRETİCİ
+  // ==========================================
+  async function uploadSingleImage(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const res = await fetch(`${API_BASE}/upload`, { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('upload-result-box').classList.remove('hidden');
+        document.getElementById('upload-preview-img').src = data.url;
+        document.getElementById('upload-file-name').innerText = data.filename;
+        document.getElementById('upload-result-url').value = window.location.origin + data.url;
+      } else {
+        alert('Yükleme hatası: ' + data.message);
+      }
+    } catch (e) {
+      alert('Görsel sunucuya yüklenemedi.');
+    }
+  }
+
+  function copyUploadUrl() {
+    const copyText = document.getElementById('upload-result-url');
+    copyText.select();
+    document.execCommand('copy');
+    alert('WebP Görsel URL panoya kopyalandı:\n' + copyText.value);
+  }
+
+  // ==========================================
+  // PERSONEL VE EDİTÖR YÖNETİMİ
+  // ==========================================
   async function fetchStaffUsers() {
     const tbody = document.getElementById('staff-table-body');
     tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Personeller MongoDB'den yükleniyor...</td></tr>`;
@@ -1327,6 +1725,7 @@
       alert('Sunucu hatası.');
     }
   }
+
   function escapeHtml(str) {
     if (!str) return '';
     return String(str).replace(/[&<>"']/g, function(m) {
@@ -1351,4 +1750,3 @@
 </script>
 </body>
 </html>
-
