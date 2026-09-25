@@ -6,24 +6,28 @@
 <title>Hayal Sahnesi | Şiir, Fotoroman, Mini Dizi, Hikaye & Müzik</title>
 <meta name="description" content="Hayal Sahnesi; fotoromanlar, mini diziler, sesli şiir dinletileri ve edebiyatın buluştuğu dijital sahne.">
 
-<!-- CDN Bağlantılarını Hızlandır -->
+<!-- Hızlandırma Preconnect & Preload -->
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="preconnect" href="https://www.youtube.com" crossorigin>
 
-<!-- Tailwind'i gecikmeli (defer) yükle -->
+<!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com" defer></script>
 
-<!-- FontAwesome'ı render-blocking yapmadan asenkron yükle -->
+<!-- FontAwesome (Asenkron) -->
 <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </noscript>
 
 <style>
+  /* Font Display Hızlandırması & Yüksek Kontrast Metin Standartları */
+  * {
+    font-display: swap;
+  }
   body {
     background-color: #07090e;
-    color: #e2e8f0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #f1f5f9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
   .stage-gradient {
     background: linear-gradient(135deg, #e11d48 0%, #7c3aed 100%);
@@ -32,19 +36,38 @@
     box-shadow: 0 0 50px -10px rgba(225, 29, 72, 0.25);
   }
   .card-stage {
-    background: rgba(15, 20, 31, 0.75);
+    background: rgba(15, 20, 31, 0.85);
     backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .tab-btn.active {
     background: linear-gradient(135deg, #e11d48 0%, #9333ea 100%);
-    color: #fff;
+    color: #ffffff !important;
     font-weight: 700;
     border-color: transparent;
   }
-  .font-serif-italic {
-    font-family: Georgia, Cambria, "Times New Roman", Times, serif;
-    font-style: italic;
+  .font-serif-stage {
+    font-family: "Georgia", "Cambria", "Times New Roman", serif;
+  }
+  .font-sans-stage {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  .font-mono-stage {
+    font-family: "Courier New", Courier, monospace;
+  }
+
+  /* Okuma Temaları */
+  .reader-theme-dark {
+    background-color: #0a0d14 !important;
+    color: #f1f5f9 !important;
+  }
+  .reader-theme-sepia {
+    background-color: #fbf0d9 !important;
+    color: #382818 !important;
+  }
+  .reader-theme-contrast {
+    background-color: #000000 !important;
+    color: #ffffff !important;
   }
 </style>
 
@@ -63,13 +86,13 @@
       <h1 class="font-black text-lg sm:text-xl tracking-wider text-white uppercase flex items-center gap-1.5 leading-tight">
         HAYAL SAHNESİ <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
       </h1>
-      <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium tracking-wide">Perde Hayalleriniz İçin Açılıyor</p>
+      <p class="text-[10px] sm:text-[11px] text-slate-300 font-medium tracking-wide">Perde Hayalleriniz İçin Açılıyor</p>
     </div>
   </div>
 
-  <!-- Giriş / Eser Gönder Butonları -->
+  <!-- Sağ Düğmeler -->
   <div class="flex items-center space-x-2.5">
-    <a href="admin.html" class="hidden sm:flex text-slate-300 hover:text-white text-xs px-3 py-2 rounded-lg font-bold transition items-center gap-1.5 bg-slate-900 border border-slate-700 hover:border-rose-500">
+    <a href="admin.html" class="hidden sm:flex text-slate-200 hover:text-white text-xs px-3 py-2 rounded-lg font-bold transition items-center gap-1.5 bg-slate-900 border border-slate-700 hover:border-rose-500">
       <i class="fa-solid fa-lock text-rose-400"></i> Yönetim
     </a>
     <button onclick="openModal('modal-contact')" class="stage-gradient hover:opacity-95 text-white text-xs px-3.5 py-2 rounded-lg font-bold transition shadow-md shadow-rose-900/30 flex items-center gap-1.5">
@@ -78,71 +101,67 @@
   </div>
 </header>
 
-<!-- KATEGORİ SEÇİM ÇUBUĞU (SABİT & HIZLI GEZİNTİ) -->
+<!-- KATEGORİ SEÇİM ÇUBUĞU -->
 <nav class="max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-3 w-full" aria-label="Kategori Gezintisi">
   <div class="flex items-center justify-start md:justify-center gap-2 overflow-x-auto pb-2 no-scrollbar">
     <button type="button" onclick="switchCategory('all')" id="tab-all" class="tab-btn active px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
       <i class="fa-solid fa-sparkles mr-1.5 text-rose-400"></i> Vitrin
     </button>
-    <button type="button" onclick="switchCategory('photoroman')" id="tab-photoroman" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
+    <button type="button" onclick="switchCategory('photoroman')" id="tab-photoroman" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-200 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
       <i class="fa-solid fa-camera-retro mr-1.5 text-amber-400"></i> Fotoroman
     </button>
-    <button type="button" onclick="switchCategory('series')" id="tab-series" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
+    <button type="button" onclick="switchCategory('series')" id="tab-series" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-200 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
       <i class="fa-solid fa-film mr-1.5 text-purple-400"></i> Mini Diziler
     </button>
-    <button type="button" onclick="switchCategory('poem')" id="tab-poem" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
+    <button type="button" onclick="switchCategory('poem')" id="tab-poem" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-200 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
       <i class="fa-solid fa-feather mr-1.5 text-rose-400"></i> Şiir & Dinleti
     </button>
-    <button type="button" onclick="switchCategory('story')" id="tab-story" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
+    <button type="button" onclick="switchCategory('story')" id="tab-story" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-200 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
       <i class="fa-solid fa-book-open mr-1.5 text-emerald-400"></i> Edebi Hikayeler
     </button>
-    <button type="button" onclick="switchCategory('music')" id="tab-music" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-300 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
+    <button type="button" onclick="switchCategory('music')" id="tab-music" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-200 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
       <i class="fa-solid fa-music mr-1.5 text-cyan-400"></i> Müzik
     </button>
   </div>
 </nav>
 
-<!-- İÇERİK PANELLERİ (Sadece aktif olan açılır, sayfa kaymasını ve zıplamasını engeller) -->
+<!-- İÇERİK PANELLERİ -->
 <main class="max-w-7xl mx-auto px-4 sm:px-6 pb-24 flex-1 w-full">
 
   <!-- 1. VİTRİN / ÖNE ÇIKANLAR PANELİ -->
   <section id="panel-all" class="category-panel">
-    <!-- Hero Başlığı -->
     <div class="relative overflow-hidden rounded-3xl card-stage p-6 sm:p-10 my-4 border border-rose-500/20 text-center curtain-glow">
       <div class="max-w-2xl mx-auto space-y-3">
-        <span class="inline-block px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 text-xs font-semibold tracking-wide border border-rose-500/20">
+        <span class="inline-block px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 text-xs font-semibold tracking-wide border border-rose-500/20">
           DİJİTAL SAHNE & EDEBİYAT
         </span>
         <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">"Kelimeler Perdenin Karanlığına Dokunur"</h2>
-        <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
           Sesli şiir dinletileri, sinematik fotoroman kareleri ve bağımsız mini dizilerin buluştuğu dijital tiyatro salonu.
         </p>
         <div class="flex items-center justify-center gap-3 pt-2">
-          <button onclick="switchCategory('photoroman')" class="stage-gradient px-4 py-2 rounded-xl text-xs font-bold text-white shadow-lg shadow-rose-900/40">Fotoromanları Keşfet</button>
-          <button onclick="playRandomMusicList()" class="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-shuffle text-rose-400"></i> Rastgele Çal
+          <button onclick="switchCategory('poem')" class="stage-gradient px-4 py-2 rounded-xl text-xs font-bold text-white shadow-lg shadow-rose-900/40">Şiirleri Dinle & Oku</button>
+          <button onclick="playRandomMusicList()" class="bg-slate-900 hover:bg-slate-800 text-slate-100 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-shuffle text-rose-400"></i> Karışık Çal
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Vitrin Seçkileri Başlığı -->
     <div class="mt-8 mb-4 flex items-center justify-between border-b border-white/10 pb-2">
       <h3 class="text-lg font-bold text-white flex items-center gap-2">
         <i class="fa-solid fa-sparkles text-rose-400"></i> Sahnede Öne Çıkanlar
       </h3>
-      <span class="text-xs text-slate-400">Güncel Seçmeler</span>
+      <span class="text-xs text-slate-300">Güncel Eserler</span>
     </div>
-    <div id="showcase-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <!-- JS ile ilk 6 eser hızlıca yerleşir -->
-    </div>
+    <div id="showcase-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
   </section>
 
   <!-- 2. FOTOROMANLAR PANELİ -->
   <section id="panel-photoroman" class="category-panel hidden">
     <div class="flex items-center justify-between my-6 border-b border-white/10 pb-3">
-      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2"><i class="fa-solid fa-camera-retro text-amber-400"></i> Fotoromanlar</h2>
-      <span class="text-xs text-slate-400">Görsel & Sesli Hikayeler</span>
+      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-camera-retro text-amber-400"></i> Fotoromanlar</h2>
+      <span class="text-xs text-slate-300">Görsel & Sesli Hikayeler</span>
     </div>
     <div id="photoroman-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
   </section>
@@ -150,8 +169,8 @@
   <!-- 3. MİNİ DİZİLER PANELİ -->
   <section id="panel-series" class="category-panel hidden">
     <div class="flex items-center justify-between my-6 border-b border-white/10 pb-3">
-      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2"><i class="fa-solid fa-film text-purple-400"></i> Mini Diziler</h2>
-      <span class="text-xs text-slate-400">Sinematik Bölümler</span>
+      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-film text-purple-400"></i> Mini Diziler</h2>
+      <span class="text-xs text-slate-300">Sinematik Bölümler</span>
     </div>
     <div id="series-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
   </section>
@@ -159,8 +178,8 @@
   <!-- 4. ŞİİR VE DİNLETİ PANELİ -->
   <section id="panel-poem" class="category-panel hidden">
     <div class="flex items-center justify-between my-6 border-b border-white/10 pb-3">
-      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2"><i class="fa-solid fa-feather text-rose-400"></i> Sahne Şiirleri & Dinletiler</h2>
-      <span class="text-xs text-slate-400">Sözün ve Sesin Ahengi</span>
+      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-feather text-rose-400"></i> Sahne Şiirleri & Dinletiler</h2>
+      <span class="text-xs text-slate-300">Sözün ve Sesin Ahengi</span>
     </div>
     <div id="poem-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
   </section>
@@ -168,8 +187,8 @@
   <!-- 5. HİKAYELER PANELİ -->
   <section id="panel-story" class="category-panel hidden">
     <div class="flex items-center justify-between my-6 border-b border-white/10 pb-3">
-      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2"><i class="fa-solid fa-book-open text-emerald-400"></i> Edebi Hikayeler</h2>
-      <span class="text-xs text-slate-400">Metin ve Kurgular</span>
+      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-book-open text-emerald-400"></i> Edebi Hikayeler</h2>
+      <span class="text-xs text-slate-300">Metin ve Kurgular</span>
     </div>
     <div id="story-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
   </section>
@@ -177,8 +196,8 @@
   <!-- 6. MÜZİK PANELİ -->
   <section id="panel-music" class="category-panel hidden">
     <div class="flex items-center justify-between my-6 border-b border-white/10 pb-3">
-      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2"><i class="fa-solid fa-music text-cyan-400"></i> Sahne Müzikleri</h2>
-      <button onclick="playRandomMusicList()" type="button" class="px-3.5 py-1.5 rounded-lg bg-cyan-600/20 hover:bg-cyan-600 text-cyan-300 hover:text-white border border-cyan-500/30 text-xs font-bold transition flex items-center gap-1.5">
+      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-music text-cyan-400"></i> Sahne Müzikleri</h2>
+      <button onclick="playRandomMusicList()" type="button" class="px-3.5 py-1.5 rounded-lg bg-cyan-600/20 hover:bg-cyan-600 text-cyan-200 hover:text-white border border-cyan-500/30 text-xs font-bold transition flex items-center gap-1.5">
         <i class="fa-solid fa-shuffle"></i> Karışık Çal
       </button>
     </div>
@@ -195,12 +214,12 @@
     </div>
     <div class="truncate">
       <p id="player-title" class="text-xs font-bold text-white truncate">Bir Eser Seçin</p>
-      <p id="player-subtitle" class="text-[10px] text-slate-400 truncate">Hayal Sahnesi Ses Sistemi</p>
+      <p id="player-subtitle" class="text-[10px] text-slate-300 truncate">Hayal Sahnesi Ses Sistemi</p>
     </div>
   </div>
 
-  <div class="flex items-center space-x-3 text-slate-400">
-    <button type="button" onclick="playPrevShuffleTrack()" title="Önceki Parça" aria-label="Önceki Parça" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition">
+  <div class="flex items-center space-x-3 text-slate-300">
+    <button type="button" onclick="playPrevShuffleTrack()" title="Önceki Parça" aria-label="Önceki Parça" class="w-8 h-8 rounded-full flex items-center justify-center hover:text-white hover:bg-slate-800 transition">
       <i class="fa-solid fa-backward-step text-xs"></i>
     </button>
 
@@ -208,12 +227,12 @@
       <i class="fa-solid fa-play text-xs"></i>
     </button>
 
-    <button type="button" onclick="playNextShuffleTrack()" title="Sonraki Parça" aria-label="Sonraki Parça" class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition">
+    <button type="button" onclick="playNextShuffleTrack()" title="Sonraki Parça" aria-label="Sonraki Parça" class="w-8 h-8 rounded-full flex items-center justify-center hover:text-white hover:bg-slate-800 transition">
       <i class="fa-solid fa-forward-step text-xs"></i>
     </button>
   </div>
 
-  <div class="hidden sm:flex items-center space-x-2 text-slate-400 text-xs">
+  <div class="hidden sm:flex items-center space-x-2 text-slate-300 text-xs">
     <span class="text-[10px] font-mono text-emerald-400">● Sahne Canlı</span>
   </div>
 </aside>
@@ -222,6 +241,65 @@
 <audio id="reader-bg-audio" loop class="hidden"></audio>
 <div id="hidden-yt-container" class="hidden pointer-events-none opacity-0 fixed -bottom-96 -right-96">
   <div id="yt-player"></div>
+</div>
+
+<!-- ========================================== -->
+<!-- GELİŞMİŞ ESER OKUYUCU MODU (YAZI BOYUTU, FONT, KONTRAST AYARLI) -->
+<!-- ========================================== -->
+<div id="modal-story" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex flex-col p-3 sm:p-6 select-none">
+  <div id="reader-container" class="reader-theme-dark max-w-4xl mx-auto w-full h-full flex flex-col rounded-3xl border border-white/10 shadow-2xl overflow-hidden transition-colors duration-300">
+    
+    <!-- Okuyucu Üst Araç Çubuğu (Toolbar) -->
+    <div class="px-4 sm:px-6 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/5">
+      <div>
+        <h3 id="story-title" class="font-bold text-base sm:text-lg tracking-tight">Eser Başlığı</h3>
+        <p id="story-author" class="text-xs text-rose-400 font-semibold"></p>
+      </div>
+
+      <!-- Ayar Butonları Grubu -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        
+        <!-- Yazı Boyutu Kontrolü (A- / A+) -->
+        <div class="flex items-center bg-black/40 rounded-xl border border-white/10 p-0.5">
+          <button onclick="adjustFontSize(-2)" title="Yazıyı Küçült" class="w-7 h-7 flex items-center justify-center text-xs font-bold hover:bg-white/10 rounded-lg transition">A-</button>
+          <span id="font-size-indicator" class="text-[11px] font-mono px-2 text-slate-300 font-bold">18px</span>
+          <button onclick="adjustFontSize(2)" title="Yazıyı Büyüt" class="w-7 h-7 flex items-center justify-center text-sm font-bold hover:bg-white/10 rounded-lg transition">A+</button>
+        </div>
+
+        <!-- Font Ailesi Değiştirici -->
+        <div class="flex items-center bg-black/40 rounded-xl border border-white/10 p-0.5 text-xs font-semibold">
+          <button onclick="setReaderFont('serif')" id="font-btn-serif" class="px-2.5 py-1 rounded-lg bg-rose-600 text-white transition">Roman</button>
+          <button onclick="setReaderFont('sans')" id="font-btn-sans" class="px-2.5 py-1 rounded-lg text-slate-300 hover:text-white transition">Modern</button>
+          <button onclick="setReaderFont('mono')" id="font-btn-mono" class="px-2.5 py-1 rounded-lg text-slate-300 hover:text-white transition">Daktilo</button>
+        </div>
+
+        <!-- Tema / Kontrast Değiştirici -->
+        <div class="flex items-center gap-1.5 bg-black/40 rounded-xl border border-white/10 p-1">
+          <button onclick="setReaderTheme('dark')" title="Karanlık Sahne" class="w-6 h-6 rounded-lg bg-slate-900 border border-slate-700 hover:scale-105 transition"></button>
+          <button onclick="setReaderTheme('sepia')" title="Sıcak Parşömen" class="w-6 h-6 rounded-lg bg-[#fbf0d9] border border-[#d9c5a3] hover:scale-105 transition"></button>
+          <button onclick="setReaderTheme('contrast')" title="Derin OLED Siyah" class="w-6 h-6 rounded-lg bg-black border border-white/40 hover:scale-105 transition"></button>
+        </div>
+
+        <!-- Kapat Butonu -->
+        <button onclick="closeModal('modal-story')" class="text-slate-400 hover:text-white text-xl p-1 transition ml-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Okuma Alanı (Yumuşak Scroll & Geniş Satır Aralığı) -->
+    <div class="flex-1 overflow-y-auto px-6 sm:px-12 py-8 max-w-3xl mx-auto w-full leading-relaxed">
+      <p id="story-body" class="whitespace-pre-line font-serif-stage transition-all duration-150 text-[18px] leading-[1.85] tracking-wide">
+        Metin yükleniyor...
+      </p>
+    </div>
+
+    <!-- Okuyucu Alt Bilgi Çubuğu -->
+    <div class="px-6 py-2 border-t border-white/5 text-[11px] text-slate-400 flex items-center justify-between bg-black/20">
+      <span>Hayal Sahnesi Küratörlüğü</span>
+      <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="hover:underline">Başa Dön ↑</button>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL: FOTOROMAN OKUYUCU -->
@@ -264,12 +342,12 @@
       </button>
 
       <div class="absolute bottom-3 left-3 right-3 bg-black/85 backdrop-blur-md p-3 rounded-xl border border-slate-800 text-center z-10">
-        <p id="reader-dialog" class="text-xs md:text-sm text-slate-200 font-serif-italic leading-relaxed"></p>
+        <p id="reader-dialog" class="text-xs md:text-sm text-slate-100 font-serif-stage italic leading-relaxed"></p>
       </div>
     </div>
   </div>
 
-  <div class="flex items-center justify-between max-w-4xl mx-auto w-full pt-2 text-xs text-slate-400 border-t border-slate-900">
+  <div class="flex items-center justify-between max-w-4xl mx-auto w-full pt-2 text-xs text-slate-300 border-t border-slate-900">
     <button onclick="prevPhotoPage()" class="hover:text-amber-400 transition flex items-center gap-1 font-bold">
       <i class="fa-solid fa-arrow-left"></i> Önceki
     </button>
@@ -297,20 +375,6 @@
   </div>
 </div>
 
-<!-- MODAL: HİKAYE VE ESER METNİ OKUMA -->
-<div id="modal-story" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex flex-col p-4 md:p-8">
-  <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800 max-w-3xl mx-auto w-full">
-    <div>
-      <h3 id="story-title" class="font-bold text-base sm:text-lg">Eser Okuma</h3>
-      <p id="story-author" class="text-xs text-emerald-400 font-semibold"></p>
-    </div>
-    <button onclick="closeModal('modal-story')" aria-label="Hikayeyi Kapat" class="text-slate-400 hover:text-white text-xl p-2"><i class="fa-solid fa-xmark"></i></button>
-  </div>
-  <div class="flex-1 overflow-y-auto max-w-3xl mx-auto w-full py-6 space-y-4 text-slate-300 leading-relaxed font-serif text-sm sm:text-base">
-    <p id="story-body" class="whitespace-pre-line leading-relaxed">Metin yükleniyor...</p>
-  </div>
-</div>
-
 <!-- MODAL: ESER GÖNDERME FORMU -->
 <div id="modal-contact" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
   <div class="card-stage border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
@@ -318,20 +382,20 @@
       <h4 class="font-extrabold text-white text-base sm:text-lg">Sahneye Eser Gönderin</h4>
       <button onclick="closeModal('modal-contact')" aria-label="Formu Kapat" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
     </div>
-    <p class="text-xs text-slate-400">Şiir, hikaye veya müzik eserinizi doğrudan yönetim masamıza iletin.</p>
+    <p class="text-xs text-slate-300">Şiir, hikaye veya müzik eserinizi doğrudan yönetim masamıza iletin.</p>
     
     <form onsubmit="handleContact(event)" class="space-y-3">
       <div>
-        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Adınız / Mahlasınız *</label>
+        <label class="block text-[11px] font-semibold text-slate-200 mb-1">Adınız / Mahlasınız *</label>
         <input id="contact-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
       </div>
       <div>
-        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Başlığı *</label>
+        <label class="block text-[11px] font-semibold text-slate-200 mb-1">Eser Başlığı *</label>
         <input id="contact-title" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserin adı...">
       </div>
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Türü *</label>
+          <label class="block text-[11px] font-semibold text-slate-200 mb-1">Eser Türü *</label>
           <select id="contact-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
             <option value="poem">Şiir & Dinleti</option>
             <option value="story">Hikaye</option>
@@ -341,21 +405,21 @@
           </select>
         </div>
         <div>
-          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Medya Linki (Varsa)</label>
+          <label class="block text-[11px] font-semibold text-slate-200 mb-1">Medya Linki (Varsa)</label>
           <input id="contact-media-url" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="YouTube / MP3 linki">
         </div>
       </div>
       <div>
-        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Eser Metni / Şiir Mısraları / Açıklama *</label>
+        <label class="block text-[11px] font-semibold text-slate-200 mb-1">Eser Metni / Şiir Mısraları / Açıklama *</label>
         <textarea id="contact-text-body" required rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserinizin tüm sözlerini, mısralarını veya hikaye içeriğini buraya yazınız..."></textarea>
       </div>
       <div class="grid grid-cols-2 gap-2">
         <div>
-          <label class="block text-[11px] font-semibold text-slate-300 mb-1">E-Posta Adresiniz *</label>
+          <label class="block text-[11px] font-semibold text-slate-200 mb-1">E-Posta Adresiniz *</label>
           <input id="contact-email" required type="email" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="ornek@mail.com">
         </div>
         <div>
-          <label class="block text-[11px] font-semibold text-slate-300 mb-1">Telefon Numaranız *</label>
+          <label class="block text-[11px] font-semibold text-slate-200 mb-1">Telefon Numaranız *</label>
           <input id="contact-phone" required type="tel" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="05XX XXX XX XX">
         </div>
       </div>
@@ -363,7 +427,7 @@
       <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800">
         <label class="flex items-start gap-2.5 cursor-pointer select-none">
           <input id="contact-legal" required type="checkbox" class="mt-0.5 w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-slate-700 bg-slate-900 cursor-pointer">
-          <span class="text-[10px] text-slate-400 leading-tight">
+          <span class="text-[10px] text-slate-300 leading-tight">
             Gönderdiğim eserin <strong class="text-white">şahsıma ait olduğunu</strong>, telif hakkı ihlali içermediğini ve <strong class="text-rose-400">Hayal Sahnesi</strong>'nde yayınlanmasına muvafakat ettiğimi kabul ederim.
           </span>
         </label>
@@ -384,7 +448,52 @@
   let isPlaying = false;
   let allContents = [];
 
-  // --- KATEGORİ DEĞİŞTİRİCİ (SIFIR CLS & JET HIZ) ---
+  // --- GELİŞMİŞ OKUMA MODU AYARLARI ---
+  let currentReaderFontSize = 18;
+  function adjustFontSize(delta) {
+    currentReaderFontSize = Math.min(32, Math.max(14, currentReaderFontSize + delta));
+    const bodyEl = document.getElementById('story-body');
+    const indicator = document.getElementById('font-size-indicator');
+    if (bodyEl) bodyEl.style.fontSize = `${currentReaderFontSize}px`;
+    if (indicator) indicator.innerText = `${currentReaderFontSize}px`;
+  }
+
+  function setReaderFont(fontType) {
+    const bodyEl = document.getElementById('story-body');
+    if (!bodyEl) return;
+    bodyEl.classList.remove('font-serif-stage', 'font-sans-stage', 'font-mono-stage');
+    
+    document.querySelectorAll('#font-btn-serif, #font-btn-sans, #font-btn-mono').forEach(b => {
+      b.classList.remove('bg-rose-600', 'text-white');
+      b.classList.add('text-slate-300');
+    });
+
+    const activeBtn = document.getElementById(`font-btn-${fontType}`);
+    if (activeBtn) {
+      activeBtn.classList.add('bg-rose-600', 'text-white');
+      activeBtn.classList.remove('text-slate-300');
+    }
+
+    if (fontType === 'serif') bodyEl.classList.add('font-serif-stage');
+    if (fontType === 'sans') bodyEl.classList.add('font-sans-stage');
+    if (fontType === 'mono') bodyEl.classList.add('font-mono-stage');
+  }
+
+  function setReaderTheme(theme) {
+    const container = document.getElementById('reader-container');
+    if (!container) return;
+    container.classList.remove('reader-theme-dark', 'reader-theme-sepia', 'reader-theme-contrast');
+    container.classList.add(`reader-theme-${theme}`);
+  }
+
+  function openStory(title, author, content) {
+    document.getElementById('story-title').innerText = title;
+    document.getElementById('story-author').innerText = 'Yazar / Şair: ' + author;
+    document.getElementById('story-body').innerText = content || 'Eser içeriği bulunamadı.';
+    openModal('modal-story');
+  }
+
+  // --- KATEGORİ DEĞİŞTİRİCİ ---
   function switchCategory(cat) {
     document.querySelectorAll('.category-panel').forEach(panel => {
       panel.classList.add('hidden');
@@ -392,7 +501,7 @@
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.classList.remove('active');
-      btn.classList.add('text-slate-300');
+      btn.classList.add('text-slate-200');
     });
 
     const targetPanel = document.getElementById(`panel-${cat}`);
@@ -403,7 +512,7 @@
     const targetBtn = document.getElementById(`tab-${cat}`);
     if (targetBtn) {
       targetBtn.classList.add('active');
-      targetBtn.classList.remove('text-slate-300');
+      targetBtn.classList.remove('text-slate-200');
     }
 
     if (cat !== 'all') {
@@ -433,12 +542,12 @@
   }
 
   function distributeLiveContents(items) {
-    // 0. Vitrin / Öne Çıkanlar (İlk 6 Eser)
+    // 0. Vitrin / Öne Çıkanlar
     const showcaseGrid = document.getElementById('showcase-grid');
     if (showcaseGrid) {
       const showcaseItems = items.slice(0, 6);
       if (showcaseItems.length === 0) {
-        showcaseGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500">Sahnede henüz yayınlanmış eser bulunmuyor.</div>`;
+        showcaseGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Sahnede henüz yayınlanmış eser bulunmuyor.</div>`;
       } else {
         showcaseGrid.innerHTML = showcaseItems.map(item => createShowcaseCard(item)).join('');
       }
@@ -449,7 +558,7 @@
     const photoGrid = document.getElementById('photoroman-grid');
     if (photoGrid) {
       if (photos.length === 0) {
-        photoGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500">Henüz fotoroman eseri eklenmemiş.</div>`;
+        photoGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz fotoroman eseri eklenmemiş.</div>`;
       } else {
         photoGrid.innerHTML = photos.map(ph => {
           const frames = (ph.images && Array.isArray(ph.images) && ph.images.length > 0) ? ph.images : [{ img: ph.thumbnail || '', text: ph.textBody || '' }];
@@ -469,7 +578,7 @@
               </div>
               <div>
                 <h4 class="font-bold text-white text-base leading-snug">${escapeHtml(ph.title)}</h4>
-                <p class="text-xs text-slate-400 mt-0.5">${escapeHtml(ph.author || 'Yusuf Ziya')}</p>
+                <p class="text-xs text-slate-300 mt-0.5">${escapeHtml(ph.author || 'Yusuf Ziya')}</p>
               </div>
               <button onclick="launchPhotoroman('${escapeHtml(ph.title)}', '${escapeHtml(ph.author || 'Yusuf Ziya')}', '${pagesData}', '${musicData}')" class="w-full bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-500/30">
                 <i class="fa-solid fa-book-open"></i> Oku & Dinle
@@ -485,7 +594,7 @@
     const seriesGrid = document.getElementById('series-grid');
     if (seriesGrid) {
       if (series.length === 0) {
-        seriesGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500">Henüz mini dizi eklenmemiş.</div>`;
+        seriesGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz mini dizi eklenmemiş.</div>`;
       } else {
         seriesGrid.innerHTML = series.map(se => `
           <div class="card-stage rounded-2xl overflow-hidden group hover:border-purple-500/50 transition flex flex-col justify-between">
@@ -498,7 +607,7 @@
               <div>
                 <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wide">Mini Dizi</span>
                 <h4 class="font-bold text-white text-base leading-tight">${escapeHtml(se.title)}</h4>
-                <p class="text-xs text-slate-400 line-clamp-2 mt-1">${escapeHtml(se.textBody || se.description || '')}</p>
+                <p class="text-xs text-slate-300 line-clamp-2 mt-1">${escapeHtml(se.textBody || se.description || '')}</p>
               </div>
               <p class="text-xs text-slate-400 pt-2 border-t border-white/5">${escapeHtml(se.author || 'Yusuf Ziya')}</p>
             </div>
@@ -512,26 +621,26 @@
     const poemGrid = document.getElementById('poem-grid');
     if (poemGrid) {
       if (poems.length === 0) {
-        poemGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500">Henüz şiir eklenmemiş.</div>`;
+        poemGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz şiir eklenmemiş.</div>`;
       } else {
         poemGrid.innerHTML = poems.map(p => `
           <div class="card-stage rounded-2xl p-5 hover:border-rose-500/40 transition flex flex-col justify-between border border-rose-900/30 gap-4">
             <div class="space-y-2.5">
               <div class="flex items-center justify-between text-xs text-rose-400 font-semibold">
                 <span><i class="fa-solid fa-feather mr-1"></i>Şiir & Dinleti</span>
-                <span class="text-slate-400">${escapeHtml(p.author || 'Yusuf Ziya')}</span>
+                <span class="text-slate-300">${escapeHtml(p.author || 'Yusuf Ziya')}</span>
               </div>
               <h4 class="text-base font-bold text-white">${escapeHtml(p.title)}</h4>
-              <blockquote class="text-xs font-serif-italic text-slate-300 border-l-2 border-rose-500/40 pl-3 line-clamp-3">
+              <blockquote class="text-xs font-serif-stage italic text-slate-200 border-l-2 border-rose-500/40 pl-3 line-clamp-3">
                 "${escapeHtml(p.textBody || p.description || 'Kelimeler perdeye dökülüyor...')}"
               </blockquote>
             </div>
             <div class="pt-3 border-t border-slate-800/80 flex items-center justify-end gap-2">
-              <button onclick="openStory('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Yusuf Ziya')}', \`${escapeForJs(p.textBody || p.description)}\`)" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+              <button onclick="openStory('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Yusuf Ziya')}', \`${escapeForJs(p.textBody || p.description)}\`)" class="bg-slate-800 hover:bg-slate-700 text-slate-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
                 <i class="fa-solid fa-book-open"></i> Oku
               </button>
               ${p.mediaUrl ? `
-              <button onclick="handleMediaPlay('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Yusuf Ziya')}', '${escapeHtml(p.mediaUrl)}') " class="bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+              <button onclick="handleMediaPlay('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Yusuf Ziya')}', '${escapeHtml(p.mediaUrl)}') " class="bg-rose-600/20 hover:bg-rose-600 text-rose-200 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
                 <i class="fa-solid fa-headphones"></i> Dinle
               </button>` : ''}
             </div>
@@ -545,7 +654,7 @@
     const storyGrid = document.getElementById('story-grid');
     if (storyGrid) {
       if (stories.length === 0) {
-        storyGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500">Henüz edebi hikaye eklenmemiş.</div>`;
+        storyGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz edebi hikaye eklenmemiş.</div>`;
       } else {
         storyGrid.innerHTML = stories.map(s => `
           <div class="card-stage p-5 rounded-2xl hover:border-emerald-500/40 transition flex flex-col justify-between gap-3">
@@ -555,9 +664,9 @@
                 <span>Hikaye</span>
               </div>
               <h4 class="text-base font-bold text-white mb-1.5">${escapeHtml(s.title)}</h4>
-              <p class="text-xs text-slate-400 line-clamp-3">${escapeHtml(s.textBody || s.description || '...')}</p>
+              <p class="text-xs text-slate-300 line-clamp-3">${escapeHtml(s.textBody || s.description || '...')}</p>
             </div>
-            <button onclick="openStory('${escapeHtml(s.title)}', '${escapeHtml(s.author || 'Yusuf Ziya')}', \`${escapeForJs(s.textBody || s.description)}\`)" class="w-full bg-emerald-600/20 hover:bg-emerald-600 text-emerald-300 hover:text-white py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1">
+            <button onclick="openStory('${escapeHtml(s.title)}', '${escapeHtml(s.author || 'Yusuf Ziya')}', \`${escapeForJs(s.textBody || s.description)}\`)" class="w-full bg-emerald-600/20 hover:bg-emerald-600 text-emerald-200 hover:text-white py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1">
               <i class="fa-solid fa-book-open"></i> Metni Oku
             </button>
           </div>
@@ -570,7 +679,7 @@
     const musicGrid = document.getElementById('music-grid');
     if (musicGrid) {
       if (musics.length === 0) {
-        musicGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-500">Henüz müzik eseri eklenmemiş.</div>`;
+        musicGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz müzik eseri eklenmemiş.</div>`;
       } else {
         musicGrid.innerHTML = musics.map(m => `
           <div class="card-stage p-5 rounded-2xl flex flex-col justify-between hover:border-cyan-500/50 transition border border-cyan-900/40 gap-4">
@@ -584,7 +693,7 @@
               </div>
             </div>
             <div class="flex items-center gap-2 pt-2 border-t border-cyan-900/40">
-              <button onclick="handleMediaPlay('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Yusuf Ziya')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 bg-cyan-600/25 hover:bg-cyan-600 text-cyan-200 hover:text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
+              <button onclick="handleMediaPlay('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Yusuf Ziya')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 bg-cyan-600/25 hover:bg-cyan-600 text-cyan-100 hover:text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
                 <i class="fa-solid fa-headphones"></i> Dinle
               </button>
               ${m.mediaUrl && (m.mediaUrl.includes('youtube.com') || m.mediaUrl.includes('youtu.be')) ? `
@@ -598,7 +707,6 @@
     }
   }
 
-  // Vitrin Kartı Şablonu
   function createShowcaseCard(item) {
     let icon = 'fa-sparkles';
     let color = 'rose';
@@ -616,11 +724,11 @@
           <span class="text-[10px] font-bold text-${color}-400 uppercase tracking-wide flex items-center gap-1">
             <i class="fa-solid ${icon}"></i> ${badge}
           </span>
-          <span class="text-[11px] text-slate-400">${escapeHtml(item.author || 'Yusuf Ziya')}</span>
+          <span class="text-[11px] text-slate-300">${escapeHtml(item.author || 'Yusuf Ziya')}</span>
         </div>
         <div>
           <h4 class="font-bold text-white text-base leading-snug">${escapeHtml(item.title)}</h4>
-          <p class="text-xs text-slate-400 line-clamp-2 mt-1">${escapeHtml(item.textBody || item.description || 'Sahne eseri...')}</p>
+          <p class="text-xs text-slate-300 line-clamp-2 mt-1">${escapeHtml(item.textBody || item.description || 'Sahne eseri...')}</p>
         </div>
         <button onclick="switchCategory('${item.type}')" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-${color}-500 py-1.5 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5">
           Bölüme Git →
@@ -629,7 +737,6 @@
     `;
   }
 
-  // --- FORM GÖNDERME ---
   async function handleContact(e) {
     e.preventDefault();
     const submitBtn = document.getElementById('btn-contact-submit');
@@ -681,7 +788,6 @@
     }
   }
 
-  // --- YOUTUBE ID ÇIKARICI ---
   function getYouTubeId(url) {
     if (!url) return '';
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
@@ -689,7 +795,6 @@
     return (match && match[2].length === 11) ? match[2] : '';
   }
 
-  // --- ALT SAHNE ÇALARI ---
   function handleMediaPlay(title, author, mediaUrl) {
     const playerTitle = document.getElementById('player-title');
     const playerArtist = document.getElementById('player-subtitle');
@@ -743,7 +848,6 @@
     }
   }
 
-  // --- KARIŞIK ÇALMA MOTORU ---
   let musicPlaylist = [];
   let currentShuffleIndex = 0;
 
@@ -776,7 +880,7 @@
     }
   }
 
-  function playNextShuffleTrack() {
+    function playNextShuffleTrack() {
     if (!musicPlaylist || musicPlaylist.length === 0) {
       playRandomMusicList();
       return;
@@ -826,12 +930,12 @@
     if (videoId) {
       container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
     } else {
-      container.innerHTML = '<div class="p-6 text-center text-slate-400 text-xs">Bu esere ait video bulunmuyor.</div>';
+      container.innerHTML = '<div class="p-6 text-center text-slate-300 text-xs">Bu esere ait video bulunmuyor.</div>';
     }
     openModal('modal-video');
   }
 
-  // --- FOTOROMAN OKUYUCU ---
+  // --- FOTOROMAN OKUYUCU MOTORU ---
   let currentPhotoPages = [];
   let currentPhotoIndex = 0;
 
@@ -919,70 +1023,63 @@
     updateReaderAudioIcon(readerBgAudio.muted ? 0 : readerBgAudio.volume);
   }
 
-      function updateReaderAudioIcon(vol) {
-      const icon = document.getElementById('reader-volume-icon');
-      if (!icon) return;
-      if ((readerBgAudio && readerBgAudio.muted) || vol === 0) {
-        icon.className = 'fa-solid fa-volume-xmark text-rose-400';
-      } else if (vol < 0.4) {
-        icon.className = 'fa-solid fa-volume-low text-purple-300';
-      } else {
-        icon.className = 'fa-solid fa-volume-high text-purple-400';
+  function updateReaderAudioIcon(vol) {
+    const icon = document.getElementById('reader-volume-icon');
+    if (!icon) return;
+    if ((readerBgAudio && readerBgAudio.muted) || vol === 0) {
+      icon.className = 'fa-solid fa-volume-xmark text-rose-400';
+    } else if (vol < 0.4) {
+      icon.className = 'fa-solid fa-volume-low text-purple-300';
+    } else {
+      icon.className = 'fa-solid fa-volume-high text-purple-400';
+    }
+  }
+
+  // Klavye Yön Tuşları ile Sayfa Çevirme
+  window.addEventListener('keydown', (e) => {
+    const readerModal = document.getElementById('modal-reader');
+    if (readerModal && !readerModal.classList.contains('hidden')) {
+      if (e.key === 'ArrowRight') nextPhotoPage();
+      if (e.key === 'ArrowLeft') prevPhotoPage();
+      if (e.key === 'Escape') closeModal('modal-reader');
+    }
+  });
+
+  function openModal(id) { 
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('hidden'); 
+  }
+
+  function closeModal(id) { 
+    const el = document.getElementById(id);
+    if (el) el.classList.add('hidden'); 
+    if (id === 'modal-video') {
+      const vidCont = document.getElementById('video-container');
+      if (vidCont) vidCont.innerHTML = '';
+    }
+    if (id === 'modal-reader') {
+      if (readerBgAudio) {
+        readerBgAudio.pause();
+        readerBgAudio.src = '';
       }
     }
+  }
 
-    // Klavye Yön Tuşları ile Fotoroman Sayfası Çevirme
-    window.addEventListener('keydown', (e) => {
-      const readerModal = document.getElementById('modal-reader');
-      if (readerModal && !readerModal.classList.contains('hidden')) {
-        if (e.key === 'ArrowRight') nextPhotoPage();
-        if (e.key === 'ArrowLeft') prevPhotoPage();
-        if (e.key === 'Escape') closeModal('modal-reader');
-      }
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, function(m) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
     });
+  }
 
-    function openStory(title, author, content) {
-      document.getElementById('story-title').innerText = title;
-      document.getElementById('story-author').innerText = 'Yazar: ' + author;
-      document.getElementById('story-body').innerText = content || 'Eser içeriği bulunamadı.';
-      openModal('modal-story');
-    }
+  function escapeForJs(str) {
+    if (!str) return '';
+    return String(str).replace(/[`\\]/g, '\\$&');
+  }
 
-    function openModal(id) { 
-      const el = document.getElementById(id);
-      if (el) el.classList.remove('hidden'); 
-    }
-
-    function closeModal(id) { 
-      const el = document.getElementById(id);
-      if (el) el.classList.add('hidden'); 
-      if (id === 'modal-video') {
-        const vidCont = document.getElementById('video-container');
-        if (vidCont) vidCont.innerHTML = '';
-      }
-      if (id === 'modal-reader') {
-        if (readerBgAudio) {
-          readerBgAudio.pause();
-          readerBgAudio.src = '';
-        }
-      }
-    }
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str).replace(/[&<>"']/g, function(m) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
-      });
-    }
-
-    function escapeForJs(str) {
-      if (!str) return '';
-      return String(str).replace(/[`\\]/g, '\\$&');
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      loadLiveContents();
-    });
-  </script>
+  window.addEventListener('DOMContentLoaded', () => {
+    loadLiveContents();
+  });
+</script>
 </body>
 </html>
