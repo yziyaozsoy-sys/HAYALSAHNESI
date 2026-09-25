@@ -111,9 +111,9 @@
 
   <!-- Sağ Düğmeler -->
   <div class="flex items-center space-x-2">
-    <!-- PWA Uygulama Yükle Butonu (Yalnızca destekleyen tarayıcılarda görünür) -->
-    <button id="pwa-install-btn" class="hidden bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs px-2.5 py-2 rounded-lg font-bold transition items-center gap-1.5">
-      <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Uygulamayı</span> İndir
+    <!-- PWA Uygulama Yükle Butonu (Daima Görünür & Akıllı Yönlendirmeli) -->
+    <button id="pwa-install-btn" onclick="handlePwaInstallClick()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs px-2.5 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
+      <i class="fa-solid fa-mobile-screen text-rose-400"></i> <span class="hidden sm:inline">Uygulama</span>
     </button>
 
     <!-- Favorilerim Kütüphanesi -->
@@ -297,6 +297,39 @@
 <audio id="reader-bg-audio" loop class="hidden"></audio>
 <div id="hidden-yt-container" class="hidden pointer-events-none opacity-0 fixed -bottom-96 -right-96">
   <div id="yt-player"></div>
+</div>
+<!-- MODAL: PWA KURULUM REHBERİ -->
+<div id="modal-pwa-guide" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="card-stage border border-rose-500/30 rounded-3xl p-6 sm:p-8 max-w-sm w-full space-y-4 text-center shadow-2xl">
+    <div class="w-14 h-14 rounded-2xl stage-gradient text-white flex items-center justify-center text-2xl mx-auto shadow-lg shadow-rose-900/40">
+      <i class="fa-solid fa-masks-theater"></i>
+    </div>
+    <div>
+      <h3 class="text-base font-extrabold text-white">Hayal Sahnesi'ni Yükle</h3>
+      <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+        Sahnemizi telefonunuza veya bilgisayarınıza tam ekran bir uygulama olarak ekleyebilirsiniz.
+      </p>
+    </div>
+
+    <div class="bg-slate-900/90 rounded-2xl p-4 text-left border border-white/5 space-y-2.5 text-xs text-slate-300">
+      <div class="flex items-start gap-2">
+        <i class="fa-brands fa-apple text-rose-400 text-sm mt-0.5"></i>
+        <span><strong>iPhone (Safari):</strong> Alttaki <em>Paylaş</em> butonuna basıp <strong>"Ana Ekrana Ekle"</strong>yi seçin.</span>
+      </div>
+      <div class="flex items-start gap-2 border-t border-white/5 pt-2">
+        <i class="fa-brands fa-android text-emerald-400 text-sm mt-0.5"></i>
+        <span><strong>Android (Chrome):</strong> Üstteki üç noktaya basıp <strong>"Uygulamayı Yükle"</strong>yi seçin.</span>
+      </div>
+      <div class="flex items-start gap-2 border-t border-white/5 pt-2">
+        <i class="fa-solid fa-laptop text-cyan-400 text-sm mt-0.5"></i>
+        <span><strong>Bilgisayar (Chrome/Edge):</strong> Adres çubuğunun en sağındaki <strong>(⊕ Yükle)</strong> simgesine tıklayın.</span>
+      </div>
+    </div>
+
+    <button onclick="closeModal('modal-pwa-guide')" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition">
+      Anladım
+    </button>
+  </div>
 </div>
 
 <!-- MODAL: FAVORİLERİM / KİŞİSEL KÜTÜPHANEM -->
@@ -629,8 +662,9 @@
   let activePhotoromanItem = null;
   let activeSpotifyItem = null;
 
-  // --- PWA SERVICE WORKER & YÜKLEME BUTONU ---
+   // --- PWA SERVICE WORKER & AKILLI YÜKLEME ---
   let deferredPrompt = null;
+
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW hatası:', err));
@@ -640,22 +674,20 @@
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    const installBtn = document.getElementById('pwa-install-btn');
-    if (installBtn) {
-      installBtn.classList.remove('hidden');
-      installBtn.classList.add('flex');
-      installBtn.onclick = async () => {
-        if (deferredPrompt) {
-          deferredPrompt.prompt();
-          const { outcome } = await deferredPrompt.userChoice;
-          if (outcome === 'accepted') {
-            installBtn.classList.add('hidden');
-          }
-          deferredPrompt = null;
-        }
-      };
-    }
   });
+
+  function handlePwaInstallClick() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choice) => {
+        deferredPrompt = null;
+      });
+    } else {
+      // Tarayıcı otomatik kurulum popup'ı açmıyorsa (iOS veya masaüstü) rehber modalını aç
+      openModal('modal-pwa-guide');
+    }
+  }
+  window.handlePwaInstallClick = handlePwaInstallClick;
 
   // --- KİŞİSEL KÜTÜPHANE / FAVORİLER SİSTEMİ (LocalStorage) ---
   function getFavorites() {
