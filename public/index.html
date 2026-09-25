@@ -8,19 +8,17 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#e11d48">
 
-<!-- Hızlandırma -->
+<!-- Performans & Ön Bellekleme -->
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<link rel="dns-prefetch" href="https://www.youtube.com">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<link rel="preconnect" href="https://open.spotify.com" crossorigin>
-<link rel="preconnect" href="https://www.youtube.com" crossorigin>
 
-<!-- Tailwind CSS -->
-<script src="https://cdn.tailwindcss.com" defer></script>
+<!-- Tailwind CSS (Erken Ayrıştırma) -->
+<script src="https://cdn.tailwindcss.com"></script>
 
-<!-- FontAwesome -->
-<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</noscript>
+<!-- FontAwesome (Tamamen Asenkron, Ekranı Kilitlemeyen Yükleme) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
 <style>
   .category-panel { min-height: 480px; }
@@ -54,9 +52,20 @@
   }
   .font-serif-stage { font-family: "Georgia", "Cambria", "Times New Roman", serif; }
   .reader-theme-dark { background-color: #0a0d14 !important; color: #f1f5f9 !important; }
+    /* CLS & Hız Optimizasyonu */
+  @keyframes pulseSlow {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.6; }
+  }
+  .skeleton-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    min-height: 180px;
+    animation: pulseSlow 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
 </style>
 
-<script src="https://www.youtube.com/iframe_api" defer></script>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-rose-600 selection:text-white relative">
 
@@ -206,7 +215,14 @@
       </h3>
       <span class="text-xs text-slate-300">Güncel Eserler</span>
     </div>
-    <div id="showcase-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]"></div>
+       <div id="showcase-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]">
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card"></div>
+      <div class="skeleton-card hidden sm:block"></div>
+      <div class="skeleton-card hidden sm:block"></div>
+      <div class="skeleton-card hidden sm:block"></div>
+    </div>
   </section>
 
   <!-- 2. FOTOROMANLAR -->
@@ -1594,10 +1610,19 @@
       });
     }
 
-    // Sayfa Başlangıcı
+    // Sayfa Başlangıcı & Gecikmeli Yüklemeler
     window.addEventListener('DOMContentLoaded', () => {
       updateFavoriteCounter();
       loadLiveContents();
+
+      // YouTube API'yi ilk boyamayı geciktirmemesi için arka planda başlat
+      setTimeout(() => {
+        if (!window.YT) {
+          const tag = document.createElement('script');
+          tag.src = "https://www.youtube.com/iframe_api";
+          document.body.appendChild(tag);
+        }
+      }, 2000);
     });
   </script>
   </body>
