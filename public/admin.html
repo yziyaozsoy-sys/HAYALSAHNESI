@@ -581,7 +581,7 @@
   </div>
 </div>
 <script>
-  const API_BASE = 'https://hayalsahnesi.onrender.com/api';
+  const API_BASE = '/api';
   let currentContents = [];
   let selectedCategory = 'all';
   let currentUser = null;
@@ -1220,7 +1220,7 @@
             ${s.access === 'admin' ? 'Süper Admin' : 'Editör'}
           </span>
         </td>
-        <td class="p-3.5 text-slate-400 font-mono text-[11px]">${escapeHtml(s.password)}</td>
+        <td class="p-3.5 text-slate-500 font-mono text-[11px]">••••••••</td>
         <td class="p-3.5 text-right space-x-1.5">
           <button onclick="openEditStaffModal('${s._id}')" title="Düzenle & Şifre Değiştir" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 transition border border-amber-500/30">
             <i class="fa-solid fa-pen-to-square"></i>
