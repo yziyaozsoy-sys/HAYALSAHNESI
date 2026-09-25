@@ -16,7 +16,7 @@ app.use(compression());
 
 app.use(cors());
 
-// Yüksek boyutlu veri transferi için limitler (Base64 ve çoklu veriler için)
+// Yüksek boyutlu veri transferi için limitler
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -34,9 +34,11 @@ const upload = multer({
   limits: { fileSize: 15 * 1024 * 1024 } // Maks 15MB yükleme limiti
 });
 
-// --- ŞEMALAR ---
+// ==========================================
+// VERİTABANI ŞEMALARI
+// ==========================================
 
-// 1. İÇERİK ŞEMASI (REPLİK & SAHNE AÇIKLAMASI DESTEKLİ)
+// 1. İÇERİK ŞEMASI (REPLİK, AÇIKLAMA, BEĞENİ DESTEKLİ)
 const contentSchema = new mongoose.Schema({
   title: { type: String, required: true },
   type: { type: String, required: true }, // music, poem, series, photoroman, story
@@ -56,6 +58,8 @@ const contentSchema = new mongoose.Schema({
   description: { type: String, default: '' },
   plays: { type: Number, default: 0 },
   views: { type: Number, default: 0 },
+  likes: { type: Number, default: 0 },         // Beğeni Sayacı
+  dislikes: { type: Number, default: 0 },      // Beğenmeme Sayacı
   legalConsent: {
     accepted: { type: Boolean, default: false },
     acceptedAt: { type: Date, default: null },
@@ -93,16 +97,37 @@ const adSchema = new mongoose.Schema({
     required: true, 
     enum: ['google', 'html', 'image'] 
   },
-  code: { type: String, default: '' },      // Google veya HTML kodu için
-  imageUrl: { type: String, default: '' },  // WebP görsel banner URL'si
-  targetUrl: { type: String, default: '' }, // Tıklanınca açılacak link
+  code: { type: String, default: '' },
+  imageUrl: { type: String, default: '' },
+  targetUrl: { type: String, default: '' },
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now }
 });
 
 const Ad = mongoose.model('Ad', adSchema);
 
-// Otomatik Admin Tohumlama
+// 4. YORUM ŞEMASI
+const commentSchema = new mongoose.Schema({
+  contentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Content', required: true },
+  authorName: { type: String, required: true },
+  commentText: { type: String, required: true },
+  status: { type: String, default: 'approved' },
+  ipAddress: { type: String, default: '' },
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Comment = mongoose.model('Comment', commentSchema);
+
+// 5. YASAKLI KELİME ŞEMASI
+const badWordSchema = new mongoose.Schema({
+  word: { type: String, required: true, unique: true, lowercase: true, trim: true }
+});
+
+const BadWord = mongoose.model('BadWord', badWordSchema);
+
+// ==========================================
+// VERİTABANI BAŞLANGIÇ VERİLERİ (SEED)
+// ==========================================
 async function seedAdminUser() {
   try {
     const adminExists = await User.findOne({ username: 'yusuf' });
@@ -121,6 +146,19 @@ async function seedAdminUser() {
   }
 }
 
+async function seedDefaultBadWords() {
+  try {
+    const count = await BadWord.countDocuments();
+    if (count === 0) {
+      const defaults = ['aptal', 'salak', 'dolandırıcı', 'sahtekar', 'terbiyesiz'];
+      await BadWord.insertMany(defaults.map(w => ({ word: w })));
+      console.log('🛡️ Temel yasaklı kelimeler veritabanına eklendi.');
+    }
+  } catch (err) {
+    console.error('Yasaklı kelime tohumlama hatası:', err.message);
+  }
+}
+
 // MongoDB Bağlantısı (Render Environment'tan çeker)
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -129,6 +167,7 @@ if (MONGODB_URI) {
     .then(async () => {
       console.log('✅ MongoDB Hayal Sahnesi veritabanına bağlandı.');
       await seedAdminUser();
+      await seedDefaultBadWords();
     })
     .catch((err) => console.error('❌ MongoDB bağlantı hatası:', err));
 } else {
@@ -148,13 +187,11 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
     const filename = `sahne-${uniqueSuffix}.webp`;
     const outputPath = path.join(uploadDir, filename);
 
-    // Sharp ile görseli WebP'ye dönüştür, maksimum genişlik 1440px yap, en-boy oranını koru
     await sharp(req.file.buffer)
       .resize({ width: 1440, withoutEnlargement: true })
       .webp({ quality: 82, effort: 4 })
       .toFile(outputPath);
 
-    // Dışarıdan erişilebilir kalıcı statik WebP URL'si
     const imageUrl = `/uploads/${filename}`;
 
     return res.status(200).json({
@@ -172,7 +209,6 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
 // ==========================================
 // REKLAM (ADS) API ENDPOINT'LERİ
 // ==========================================
-// Canlı sitede yayınlanan aktif reklamlar
 app.get('/api/ads/active', async (req, res) => {
   try {
     const ads = await Ad.find({ isActive: true });
@@ -182,7 +218,6 @@ app.get('/api/ads/active', async (req, res) => {
   }
 });
 
-// Admin tüm reklam listesi
 app.get('/api/admin/ads', async (req, res) => {
   try {
     const ads = await Ad.find().sort({ createdAt: -1 });
@@ -192,7 +227,6 @@ app.get('/api/admin/ads', async (req, res) => {
   }
 });
 
-// Yeni Reklam Ekle
 app.post('/api/admin/ads', async (req, res) => {
   try {
     const { title, slot, type, code, imageUrl, targetUrl, isActive } = req.body;
@@ -217,7 +251,6 @@ app.post('/api/admin/ads', async (req, res) => {
   }
 });
 
-// Reklam Güncelleme (Aktif/Pasif dahil)
 app.patch('/api/admin/ads/:id', async (req, res) => {
   try {
     const updated = await Ad.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -227,7 +260,6 @@ app.patch('/api/admin/ads/:id', async (req, res) => {
   }
 });
 
-// Reklam Sil
 app.delete('/api/admin/ads/:id', async (req, res) => {
   try {
     await Ad.findByIdAndDelete(req.params.id);
@@ -271,7 +303,7 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // ==========================================
-// İÇERİK (CONTENT) API ENDPOINT'LERİ
+// İÇERİK (CONTENT) & REAKSİYON API ENDPOINT'LERİ
 // ==========================================
 app.get('/api/contents', async (req, res) => {
   try {
@@ -331,6 +363,22 @@ app.post('/api/contents', async (req, res) => {
   }
 });
 
+// Beğeni / Beğenmeme Artırma
+app.post('/api/contents/:id/react', async (req, res) => {
+  try {
+    const { action } = req.body;
+    const updateField = action === 'dislike' ? { dislikes: 1 } : { likes: 1 };
+    const updated = await Content.findByIdAndUpdate(
+      req.params.id,
+      { $inc: updateField },
+      { new: true }
+    );
+    res.json({ success: true, likes: updated.likes || 0, dislikes: updated.dislikes || 0 });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 app.patch('/api/contents/:id', async (req, res) => {
   try {
     const updated = await Content.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -356,6 +404,98 @@ app.delete('/api/contents/:id', async (req, res) => {
     res.json({ success: true, message: 'Eser başarıyla silindi' });
   } catch (err) {
     res.status(400).json({ error: 'Silme işlemi başarısız', details: err.message });
+  }
+});
+
+// ==========================================
+// YORUMLAR & YASAKLI KELİME FİLTRESİ API
+// ==========================================
+app.get('/api/contents/:id/comments', async (req, res) => {
+  try {
+    const comments = await Comment.find({ contentId: req.params.id, status: 'approved' }).sort({ createdAt: -1 });
+    res.json({ success: true, comments });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.post('/api/contents/:id/comments', async (req, res) => {
+  try {
+    const { authorName, commentText } = req.body;
+    if (!commentText || !commentText.trim()) {
+      return res.status(400).json({ success: false, message: 'Yorum metni boş olamaz.' });
+    }
+
+    const cleanText = commentText.toLowerCase();
+    const badWords = await BadWord.find();
+    
+    // Yasaklı kelime taraması
+    const hasBadWord = badWords.some(bw => cleanText.includes(bw.word));
+    if (hasBadWord) {
+      return res.status(400).json({
+        success: false, 
+        message: 'Yorumunuz topluluk kurallarına aykırı veya sakıncalı ifadeler içerdiği için yayınlanamadı.' 
+      });
+    }
+
+    const newComment = new Comment({
+      contentId: req.params.id,
+      authorName: authorName && authorName.trim() ? authorName.trim() : 'Ziyaretçi',
+      commentText: commentText.trim(),
+      ipAddress: req.headers['x-forwarded-for'] || req.socket.remoteAddress || ''
+    });
+
+    await newComment.save();
+    res.status(201).json({ success: true, message: 'Yorumunuz sahnede yerini aldı!', comment: newComment });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.get('/api/admin/comments', async (req, res) => {
+  try {
+    const comments = await Comment.find().populate('contentId', 'title').sort({ createdAt: -1 });
+    res.json({ success: true, comments });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.delete('/api/admin/comments/:id', async (req, res) => {
+  try {
+    await Comment.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Yorum silindi.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.get('/api/admin/bad-words', async (req, res) => {
+  try {
+    const words = await BadWord.find().sort({ word: 1 });
+    res.json({ success: true, words });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+app.post('/api/admin/bad-words', async (req, res) => {
+  try {
+    const { word } = req.body;
+    if (!word) return res.status(400).json({ success: false, message: 'Kelime gerekli.' });
+    const newWord = await BadWord.create({ word: word.toLowerCase().trim() });
+    res.status(201).json({ success: true, word: newWord });
+  } catch (err) {
+    res.status(400).json({ success: false, message: 'Kelime eklenemedi veya zaten mevcut.' });
+  }
+});
+
+app.delete('/api/admin/bad-words/:id', async (req, res) => {
+  try {
+    await BadWord.findByIdAndDelete(req.params.id);
+    res.json({ success: true, message: 'Yasaklı kelime kaldırıldı.' });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
   }
 });
 
@@ -453,7 +593,6 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ success: true, message: 'Hayal Sahnesi API sunucusu aktif ve çalışıyor.' });
 });
 
-// Yüklenen WebP görselleri ve statik dosyaları sun
 app.use('/uploads', express.static(uploadDir, {
   maxAge: '7d',
   etag: true
@@ -464,17 +603,17 @@ app.use(express.static(publicPath, {
   etag: true
 }));
 
-// Ana vitrin
 app.get('/', (req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });
 
-// Yönetim Masası
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(publicPath, 'admin.html'));
 });
 
-// Port Dinleme
+// ==========================================
+// PORT DİNLEME (EN SONDA OLMALIDIR)
+// ==========================================
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`🎭 Hayal Sahnesi sunucusu ${PORT} portunda aktif.`);

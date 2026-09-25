@@ -83,7 +83,7 @@
       <a href="index.html" class="hover:text-rose-400 transition flex items-center gap-1">
         <i class="fa-solid fa-arrow-left"></i> Vitrine Dön
       </a>
-      <span class="font-mono text-[10px]">v3.5 WebP & Ad Engine</span>
+      <span class="font-mono text-[10px]">v4.0 Moderasyon & Sansür Filtresi</span>
     </div>
   </div>
 </div>
@@ -120,6 +120,18 @@
         <button onclick="switchAdminSection('contents')" id="nav-contents" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition active-nav">
           <i class="fa-solid fa-chart-line text-sm"></i>
           <span>Eser Kürasyonu</span>
+        </button>
+
+        <!-- Yeni: Yorumlar Masası -->
+        <button onclick="switchAdminSection('comments')" id="nav-comments" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
+          <i class="fa-solid fa-comments text-sm text-emerald-400"></i>
+          <span>Yorumlar & Onay</span>
+        </button>
+
+        <!-- Yeni: Yasaklı Kelime Filtresi -->
+        <button onclick="switchAdminSection('badwords')" id="nav-badwords" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
+          <i class="fa-solid fa-ban text-sm text-rose-400"></i>
+          <span>Yasaklı Kelimeler</span>
         </button>
         
         <button onclick="switchAdminSection('ads')" id="nav-ads" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
@@ -160,7 +172,6 @@
     <!-- BÖLÜM 1: İSTATİSTİKLER VE ESER YÖNETİMİ -->
     <!-- ========================================== -->
     <section id="section-contents" class="space-y-6">
-      
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
         <div>
           <h2 class="text-2xl font-black text-white">Eser Havuzu & Kürasyon</h2>
@@ -222,7 +233,6 @@
 
       <!-- Form ve Eser Tablosu -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Sol Panel: Form -->
         <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
           <div class="flex items-center justify-between border-b border-slate-800 pb-3">
             <h3 id="form-heading" class="font-bold text-white text-sm flex items-center gap-2">
@@ -264,7 +274,6 @@
               <input id="form-author" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
             </div>
 
-            <!-- Standart Medya ve Kapak Alanları -->
             <div id="standard-media-fields" class="space-y-3">
               <div>
                 <label class="block text-[11px] font-semibold text-slate-300 mb-1">Medya Bağlantısı (YouTube / MP3)</label>
@@ -277,7 +286,6 @@
               </div>
             </div>
 
-            <!-- ÖZEL FOTOROMAN ALANI (REPLİK VE SAHNE AÇIKLAMASI AYRILDI) -->
             <div id="photoroman-editor-box" class="hidden space-y-3 p-4 bg-amber-950/20 border border-amber-900/40 rounded-2xl">
               <div class="flex items-center justify-between border-b border-amber-900/40 pb-2">
                 <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
@@ -286,7 +294,6 @@
                 <span class="text-[10px] text-emerald-400 font-mono"><i class="fa-solid fa-database"></i> MongoDB Depolama</span>
               </div>
 
-              <!-- Loop Fon Müziği -->
               <div class="space-y-1.5">
                 <label class="block text-[11px] font-semibold text-amber-200">Fotoroman Atmosfer Fon Müziği (Loop MP3)</label>
                 <div class="space-y-1">
@@ -296,16 +303,13 @@
                 <audio id="admin-audio-preview" controls class="hidden w-full h-8 mt-1"></audio>
               </div>
 
-              <!-- Karelerin Listelendiği Dinamik Alan -->
               <div class="space-y-2 pt-2 border-t border-amber-900/30">
                 <div class="flex items-center justify-between">
                   <label class="text-[11px] font-semibold text-amber-200">Sayfa Sayfa Görseller & Replik/Açıklamalar</label>
                   <span class="text-[10px] text-slate-400">WebP Otomatik Dönüştürülür</span>
                 </div>
                 
-                <div id="photo-frames-container" class="space-y-3 max-h-96 overflow-y-auto pr-1">
-                  <!-- Dinamik Kare Kutuları -->
-                </div>
+                <div id="photo-frames-container" class="space-y-3 max-h-96 overflow-y-auto pr-1"></div>
 
                 <button type="button" onclick="addPhotoFrameRow()" class="w-full py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 text-xs font-bold transition flex items-center justify-center gap-1.5 border border-amber-500/30">
                   <i class="fa-solid fa-plus"></i> + Yeni Fotoroman Karesi Ekle
@@ -324,7 +328,6 @@
           </form>
         </div>
 
-        <!-- Sağ Panel: Tablo -->
         <div class="card-stage rounded-2xl border border-slate-800 lg:col-span-2 overflow-hidden flex flex-col">
           <div class="p-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/40">
             <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
@@ -337,7 +340,6 @@
             </div>
           </div>
 
-          <!-- Kategori Butonları -->
           <div class="px-4 py-2.5 bg-slate-950/80 border-b border-slate-800 flex items-center gap-1.5 overflow-x-auto text-xs">
             <button onclick="setFilterCategory('all')" class="filter-btn active px-3 py-1 rounded-lg border border-slate-800 transition text-slate-300 hover:text-white" data-cat="all">
               Tümü (<span id="count-all">0</span>)
@@ -359,7 +361,6 @@
             </button>
           </div>
 
-          <!-- Tablo Gövdesi -->
           <div class="overflow-x-auto flex-1">
             <table class="w-full text-left text-xs">
               <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
@@ -385,7 +386,91 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- BÖLÜM 2: REKLAM MASASI (GOOGLE, HTML & WEBP BANNER) -->
+    <!-- BÖLÜM 2: YORUMLAR & MODERASYON MASASI (YENİ) -->
+    <!-- ========================================== -->
+    <section id="section-comments" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-comments text-emerald-400"></i> Ziyaretçi Yorumları & Moderasyon
+          </h2>
+          <p class="text-xs text-slate-400">Eserlere yapılan yorumları inceleyin, uygunsuz olanları tek tıkla sahneden kaldırın.</p>
+        </div>
+        <button onclick="fetchAdminComments()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
+          <i class="fa-solid fa-rotate-right"></i> Yorumları Yenile
+        </button>
+      </div>
+
+      <div class="card-stage rounded-2xl border border-slate-800 overflow-hidden flex flex-col">
+        <div class="overflow-x-auto flex-1">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
+              <tr>
+                <th class="p-3.5">Yorum Yapan</th>
+                <th class="p-3.5">İlgili Eser</th>
+                <th class="p-3.5">Yorum Metni</th>
+                <th class="p-3.5">Tarih</th>
+                <th class="p-3.5 text-right">İşlem</th>
+              </tr>
+            </thead>
+            <tbody id="comments-table-body" class="divide-y divide-slate-800/60 font-medium">
+              <tr><td colspan="5" class="p-6 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Yorumlar yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- BÖLÜM 3: YASAKLI KELİMELER / HAKARET FİLTRESİ (YENİ) -->
+    <!-- ========================================== -->
+    <section id="section-badwords" class="hidden space-y-6">
+      <div class="border-b border-slate-800 pb-4">
+        <h2 class="text-2xl font-black text-white flex items-center gap-2">
+          <i class="fa-solid fa-ban text-rose-500"></i> Yasaklı Kelime & Hakaret Filtre Masası
+        </h2>
+        <p class="text-xs text-slate-400">Buraya ekleyeceğiniz kelimeler ziyaretçiler yorum yazarken anında taranır ve hakaret içeren yorumların gönderilmesi sistemce engellenir.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Sol Panel: Kelime Ekleme Formu -->
+        <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
+          <h3 class="font-bold text-white text-sm flex items-center gap-2 border-b border-slate-800 pb-3">
+            <i class="fa-solid fa-plus-circle text-rose-400"></i> Yasaklı Kelime Ekle
+          </h3>
+          <form onsubmit="handleAddBadWord(event)" class="space-y-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Engellenecek Sözcük / İfade *</label>
+              <input id="badword-input" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: hakaret_sozu">
+              <p class="text-[10px] text-slate-500 mt-1">Büyük/küçük harf duyarlılığı olmadan tüm biçimler taranır.</p>
+            </div>
+            <button type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-shield-halved"></i> Filtreye Kaydet
+            </button>
+          </form>
+        </div>
+
+        <!-- Sağ Panel: Aktif Yasaklı Kelimeler -->
+        <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-2 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <h4 class="font-bold text-white text-sm flex items-center gap-2">
+                <i class="fa-solid fa-list-check text-rose-400"></i> Aktif Filtre Listesi (<span id="badword-count">0</span>)
+              </h4>
+            </div>
+            <div id="badwords-chips-container" class="flex flex-wrap gap-2 pt-4 max-h-80 overflow-y-auto">
+              <span class="text-xs text-slate-500">Kelimeler yükleniyor...</span>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-500 pt-3 border-t border-slate-800">
+            * Bir kelimeyi kaldırmak için yanındaki <i class="fa-solid fa-xmark text-rose-400"></i> butonuna tıklayabilirsiniz.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- BÖLÜM 4: REKLAM MASASI (GOOGLE, HTML & WEBP BANNER) -->
     <!-- ========================================== -->
     <section id="section-ads" class="hidden space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
@@ -422,7 +507,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- BÖLÜM 3: OTOMATİK WEBP GÖRSEL MASASI -->
+    <!-- BÖLÜM 5: OTOMATİK WEBP GÖRSEL MASASI -->
     <!-- ========================================== -->
     <section id="section-uploader" class="hidden space-y-6">
       <div class="border-b border-slate-800 pb-4">
@@ -468,7 +553,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- BÖLÜM 4: PERSONEL VE EDİTÖR YÖNETİMİ -->
+    <!-- BÖLÜM 6: PERSONEL VE EDİTÖR YÖNETİMİ -->
     <!-- ========================================== -->
     <section id="section-staff" class="hidden space-y-6">
       <div class="border-b border-slate-800 pb-4">
@@ -553,9 +638,7 @@
 
 </div>
 
-<!-- ========================================== -->
-<!-- MODAL: YENİ REKLAM TANIMLAMA PENCERESİ -->
-<!-- ========================================== -->
+<!-- ================= MODAL: YENİ REKLAM TANIMLAMA ================= -->
 <div id="modal-ad-create" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
   <div class="card-stage border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
     <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -715,7 +798,7 @@
         <div>
           <span class="text-slate-400 block text-[11px] mb-0.5">İletişim Telefon:</span>
           <span id="inspect-phone" class="font-mono text-emerald-400 font-semibold select-all">-</span>
-        </div>
+                  </div>
         <div class="sm:col-span-2 pt-2 mt-1 border-t border-slate-800/80 flex items-center justify-between">
           <span class="text-slate-400 text-[11px]">Telif & Hukuki Sorumluluk:</span>
           <span id="inspect-legal" class="px-2 py-0.5 rounded text-[10px] font-bold"></span>
@@ -754,6 +837,8 @@
   let inspectingItem = null;
   let staffList = [];
   let adsList = [];
+  let commentsList = [];
+  let badWordsList = [];
 
   // --- 1. GİRİŞ VE YETKİLENDİRME ---
   async function handleLogin(e) {
@@ -812,7 +897,7 @@
     } else {
       roleBadge.innerText = 'Editör (' + (user.role || 'İçerik') + ')';
       roleBadge.className = 'text-[10px] text-cyan-400 font-bold';
-            appBadgeRole.innerText = 'Editör Masası';
+      appBadgeRole.innerText = 'Editör Masası';
       navStaff.classList.add('hidden');
     }
 
@@ -820,6 +905,8 @@
     toggleFormFieldsByType();
     fetchAdminContents();
     fetchAds();
+    fetchAdminComments();
+    fetchBadWords();
     if (user.access === 'admin') fetchStaffUsers();
   }
 
@@ -845,11 +932,13 @@
   // Menü Sekmeleri Arası Geçiş
   function switchAdminSection(sec) {
     document.getElementById('section-contents').classList.toggle('hidden', sec !== 'contents');
+    document.getElementById('section-comments').classList.toggle('hidden', sec !== 'comments');
+    document.getElementById('section-badwords').classList.toggle('hidden', sec !== 'badwords');
     document.getElementById('section-ads').classList.toggle('hidden', sec !== 'ads');
     document.getElementById('section-uploader').classList.toggle('hidden', sec !== 'uploader');
     document.getElementById('section-staff').classList.toggle('hidden', sec !== 'staff');
 
-    const navs = ['contents', 'ads', 'uploader', 'staff'];
+    const navs = ['contents', 'comments', 'badwords', 'ads', 'uploader', 'staff'];
     navs.forEach(n => {
       const el = document.getElementById(`nav-${n}`);
       if (!el) return;
@@ -860,11 +949,13 @@
       }
     });
 
+    if (sec === 'comments') fetchAdminComments();
+    if (sec === 'badwords') fetchBadWords();
     if (sec === 'ads') fetchAds();
     if (sec === 'staff' && currentUser?.access === 'admin') fetchStaffUsers();
   }
 
-  // --- FOTOROMAN ALTYAPISI (REPLİK + SAHNE AÇIKLAMASI AYRI) ---
+  // --- FOTOROMAN ALTYAPISI ---
   function toggleFormFieldsByType() {
     const type = document.getElementById('form-type').value;
     const isPhoto = (type === 'photoroman');
@@ -905,7 +996,6 @@
     reader.readAsDataURL(file);
   }
 
-  // Fotoroman karesine seçilen resmi otomatik WebP'ye çevirip URL'sini yazar
   async function uploadFrameImageToWebp(input) {
     const file = input.files[0];
     if (!file) return;
@@ -972,16 +1062,14 @@
 
       <img src="${imgUrl ? escapeHtml(imgUrl) : ''}" class="frame-preview-img ${imgUrl ? '' : 'hidden'} w-24 h-16 object-cover rounded-lg border border-slate-800">
 
-      <!-- Replik (Metin) -->
       <div>
         <label class="block text-[10px] text-slate-400 font-semibold mb-0.5">Sahne Repliği / Diyalog:</label>
-        <textarea rows="1" class="frame-dialog w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500" placeholder="Bu karedeki oyuncu repliği...">${escapeHtml(dialogText)}</textarea>
+        <textarea rows="1" class="frame-dialog w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-amber-500" placeholder="Bu karedeki diyalog...">${escapeHtml(dialogText)}</textarea>
       </div>
 
-      <!-- Sahne Açıklaması / Yönetmen Notu (Resmin Altında Ayrı Gözükür) -->
       <div>
-        <label class="block text-[10px] text-amber-300/80 font-semibold mb-0.5">Sahne Açıklaması / Yönetmen Notu (Opsiyonel):</label>
-        <textarea rows="1" class="frame-desc w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-amber-500" placeholder="Sahne atmosferi, mekan tasviri ya da arka plan notu...">${escapeHtml(descText)}</textarea>
+        <label class="block text-[10px] text-amber-300/80 font-semibold mb-0.5">Sahne Açıklaması / Yönetmen Notu:</label>
+        <textarea rows="1" class="frame-desc w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none focus:border-amber-500" placeholder="Mekan tasviri veya atmosfer notu...">${escapeHtml(descText)}</textarea>
       </div>
     `;
     container.appendChild(row);
@@ -1027,13 +1115,12 @@
     try {
       const res = await fetch(`${API_BASE}/admin/contents`);
       const json = await res.json();
-      
       currentContents = Array.isArray(json) ? json : (json.data || []);
       updateStatistics(currentContents);
       updateCategoryCounts(currentContents);
       applyFilters();
     } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-rose-400"><i class="fa-solid fa-circle-exclamation mr-2"></i> Sunucuya bağlanırken hata oluştu.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-rose-400">Sunucuya bağlanırken hata oluştu.</td></tr>`;
     }
   }
 
@@ -1097,7 +1184,7 @@
     document.getElementById('content-count').innerText = items.length;
 
     if (!items || items.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">Bu kategoride veya aramada eşleşen eser bulunamadı.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">Bu kategoride eser bulunamadı.</td></tr>`;
       return;
     }
 
@@ -1129,7 +1216,7 @@
             <i class="fa-solid fa-pen-to-square"></i>
           </button>
           ${isAdmin ? `
-            <button onclick="deleteContent('${c._id}', '${escapeHtml(c.title)}')" title="Kaldır / Sil" class="px-2.5 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-600 text-rose-300 hover:text-white transition border border-rose-900/40">
+            <button onclick="deleteContent('${c._id}', '${escapeHtml(c.title)}')" title="Sil" class="px-2.5 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-600 text-rose-300 hover:text-white transition border border-rose-900/40">
               <i class="fa-solid fa-trash"></i>
             </button>
           ` : ''}
@@ -1387,7 +1474,124 @@
   }
 
   // ==========================================
-  // REKLAM MASASI MOTORU (GOOGLE, HTML & WEBP)
+  // BÖLÜM 2 & 3: YORUMLAR & YASAKLI KELİMELER MASASI
+  // ==========================================
+  async function fetchAdminComments() {
+    const tbody = document.getElementById('comments-table-body');
+    if (!tbody) return;
+    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Yorumlar yükleniyor...</td></tr>`;
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/comments`);
+      const data = await res.json();
+      commentsList = data.comments || [];
+      renderCommentsTable();
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-rose-400">Yorumlar yüklenirken hata oluştu.</td></tr>`;
+    }
+  }
+
+  function renderCommentsTable() {
+    const tbody = document.getElementById('comments-table-body');
+    if (!tbody) return;
+
+    if (commentsList.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">Henüz yayınlanmış bir ziyaretçi yorumu bulunmuyor.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = commentsList.map(c => `
+      <tr class="hover:bg-slate-900/40 transition">
+        <td class="p-3.5 font-bold text-emerald-400">${escapeHtml(c.authorName)}</td>
+        <td class="p-3.5 text-white">${escapeHtml(c.contentId?.title || 'Bilinmeyen Eser')}</td>
+        <td class="p-3.5 text-slate-300 max-w-sm">${escapeHtml(c.commentText)}</td>
+        <td class="p-3.5 text-slate-500 text-[11px] font-mono">${new Date(c.createdAt).toLocaleDateString('tr-TR')}</td>
+        <td class="p-3.5 text-right">
+          <button onclick="deleteComment('${c._id}')" class="px-2.5 py-1 rounded-lg bg-rose-950/40 hover:bg-rose-600 text-rose-300 hover:text-white transition border border-rose-900/40 text-[11px]">
+            <i class="fa-solid fa-trash mr-1"></i> Sil
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  async function deleteComment(id) {
+    if (!confirm('Bu yorumu kalıcı olarak silmek istediğinize emin misiniz?')) return;
+    try {
+      const res = await fetch(`${API_BASE}/admin/comments/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchAdminComments();
+      } else {
+        alert('Yorum silinemedi.');
+      }
+    } catch (e) {
+      alert('Sunucu hatası.');
+    }
+  }
+
+  async function fetchBadWords() {
+    const container = document.getElementById('badwords-chips-container');
+    if (!container) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/bad-words`);
+      const data = await res.json();
+      badWordsList = data.words || [];
+      document.getElementById('badword-count').innerText = badWordsList.length;
+
+      if (badWordsList.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 italic">Henüz yasaklı kelime tanımlanmadı.</p>`;
+        return;
+      }
+
+      container.innerHTML = badWordsList.map(w => `
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-300 border border-rose-500/25">
+          ${escapeHtml(w.word)}
+          <button onclick="deleteBadWord('${w._id}')" class="text-rose-400 hover:text-white ml-0.5" title="Kelimeyi Filtreden Kaldır">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </span>
+      `).join('');
+    } catch (err) {
+      container.innerHTML = `<p class="text-xs text-rose-400">Filtre listesi alınamadı.</p>`;
+    }
+  }
+
+  async function handleAddBadWord(e) {
+    e.preventDefault();
+    const input = document.getElementById('badword-input');
+    const word = input.value.trim();
+    if (!word) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/admin/bad-words`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ word })
+      });
+      const data = await res.json();
+      if (data.success) {
+        input.value = '';
+        fetchBadWords();
+      } else {
+        alert(data.message || 'Kelime eklenemedi.');
+      }
+    } catch (e) {
+      alert('Sunucu hatası.');
+    }
+  }
+
+  async function deleteBadWord(id) {
+    try {
+      await fetch(`${API_BASE}/admin/bad-words/${id}`, { method: 'DELETE' });
+      fetchBadWords();
+    } catch (e) {
+      alert('Kaldırılamadı.');
+    }
+  }
+
+  // ==========================================
+  // REKLAM MASASI MOTORU
   // ==========================================
   async function fetchAds() {
     const tbody = document.getElementById('ads-table-body');
@@ -1409,7 +1613,7 @@
     if (!tbody) return;
 
     if (adsList.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">Henüz tanımlanmış bir reklam bulunmuyor.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-slate-500">Henüz tanımlanmış reklam bulunmuyor.</td></tr>`;
       return;
     }
 
@@ -1506,7 +1710,7 @@
       });
       const data = await res.json();
       if (data.success) {
-        alert('Reklam başarıyla kaydedildi!');
+        alert('Reklam kaydedildi!');
         closeModal('modal-ad-create');
         e.target.reset();
         fetchAds();
@@ -1542,7 +1746,7 @@
   }
 
   // ==========================================
-  // WEBP GÖRSEL MASASI & URL ÜRETİCİ
+  // WEBP GÖRSEL MASASI
   // ==========================================
   async function uploadSingleImage(input) {
     if (!input.files || !input.files[0]) return;
@@ -1673,7 +1877,7 @@
       if (data.success) {
         closeEditStaffModal();
         fetchStaffUsers();
-        alert('Editör bilgileri ve şifresi MongoDB bulutunda güncellendi!');
+        alert('Editör bilgileri güncellendi!');
       } else {
         alert(data.message || 'Güncelleme hatası!');
       }
@@ -1702,17 +1906,17 @@
       if (data.success) {
         e.target.reset();
         fetchStaffUsers();
-        alert(`Editör MongoDB bulutuna kaydedildi!\nKullanıcı: ${newStaff.username}`);
+        alert(`Editör kaydedildi: ${newStaff.username}`);
       } else {
         alert(data.message || 'Kayıt başarısız!');
       }
     } catch (err) {
-      alert('Bulut sunucusuna bağlanılamadı.');
+      alert('Sunucuya bağlanılamadı.');
     }
   }
 
   async function deleteStaff(id) {
-    if (!confirm('Bu editör hesabını buluttan silmek istediğinize emin misiniz?')) return;
+    if (!confirm('Bu hesabı silmek istediğinize emin misiniz?')) return;
     try {
       const res = await fetch(`${API_BASE}/users/${id}`, { method: 'DELETE' });
       const data = await res.json();
