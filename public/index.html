@@ -203,8 +203,50 @@
     </div>
     <div id="music-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
   </section>
+    <!-- SAHNE HAKKINDA / TANITIM VE MANİFESTO -->
+    <section class="mt-16 card-stage rounded-3xl p-6 sm:p-10 border border-white/10 relative overflow-hidden">
+      <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-rose-600/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="max-w-3xl space-y-4 relative z-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 text-xs font-semibold border border-rose-500/20">
+          <i class="fa-solid fa-masks-theater"></i> Hayal Sahnesi Nedir?
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Kelimelerin ve Suretlerin Dijital Mabedi</h2>
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-serif-stage">
+          Hayal Sahnesi; geleneksel edebiyatın derinliğini modern dijital anlatı biçimleriyle buluşturan bağımsız bir sanat platformudur. Burada seslendirilen her dize, kadrajlanan her fotoroman karesi ve hayat bulan her mini dizi; yapay dünyaların gürültüsünden uzak, sahici bir duygunun izini sürer. Sanatçılar, şairler ve hikaye anlatıcıları için perdemiz daima aralıktır.
+        </p>
+        <div class="pt-2 flex flex-wrap items-center gap-4 text-xs text-slate-400">
+          <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-rose-400"></i> Bağımsız Kürasyon</span>
+          <span class="flex items-center gap-1.5"><i class="fa-solid fa-feather text-amber-400"></i> Telif ve Eser Saygısı</span>
+          <span class="flex items-center gap-1.5"><i class="fa-solid fa-envelope text-emerald-400"></i> İletişim: <a href="mailto:hayalsahnesi@hayalsahnesi.com" class="text-white hover:text-rose-400 font-semibold transition ml-1">hayalsahnesi@hayalsahnesi.com</a></span>
+        </div>
+      </div>
+    </section>
 
 </main>
+  <!-- ALT BİLGİ (FOOTER) -->
+  <footer class="border-t border-slate-850 bg-slate-950/80 text-slate-400 text-xs py-8 px-4 sm:px-6 mb-16">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3 text-center md:text-left">
+        <div class="w-7 h-7 rounded-lg stage-gradient flex items-center justify-center font-bold text-white text-xs">
+          <i class="fa-solid fa-masks-theater"></i>
+        </div>
+        <div>
+          <p class="text-white font-bold text-sm">HAYAL SAHNESİ</p>
+          <p class="text-[11px] text-slate-300">© 2026 Hayal Sahnesi. Tüm hakları saklıdır.</p>
+        </div>
+      </div>
+
+      <!-- Yasal ve Bilgilendirme Linkleri -->
+      <div class="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px]">
+        <button onclick="openModal('modal-kvkk')" class="hover:text-rose-400 transition">KVKK Aydınlatma Metni</button>
+        <button onclick="openModal('modal-cookie')" class="hover:text-rose-400 transition">Çerez Politikası</button>
+        <button onclick="openModal('modal-contact')" class="hover:text-rose-400 transition">Eser Başvurusu</button>
+        <a href="mailto:hayalsahnesi@hayalsahnesi.com" class="text-rose-400 hover:text-rose-300 font-semibold transition flex items-center gap-1">
+          <i class="fa-regular fa-envelope"></i> hayalsahnesi@hayalsahnesi.com
+        </a>
+      </div>
+    </div>
+  </footer>
 
 <!-- Sabit Sahne Çaları -->
 <aside class="sticky bottom-0 z-30 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800 px-4 sm:px-6 py-2.5 flex items-center justify-between">
@@ -438,6 +480,50 @@
     </form>
   </div>
 </div>
+  <!-- MODAL: KVKK AYDINLATMA METNİ -->
+  <div id="modal-kvkk" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4 select-none">
+    <div class="card-stage border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-2xl w-full max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-white text-base sm:text-lg flex items-center gap-2">
+          <i class="fa-solid fa-scale-balanced text-rose-400"></i> KVKK Aydınlatma Metni
+        </h3>
+        <button onclick="closeModal('modal-kvkk')" aria-label="Kapat" class="text-slate-400 hover:text-white text-xl p-1"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="flex-1 overflow-y-auto py-4 text-xs text-slate-300 space-y-3 leading-relaxed pr-2 font-sans">
+        <p><strong>1. Veri Sorumlusu:</strong> 6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, Hayal Sahnesi kürasyon ekibi olarak kişisel verilerinizi mevzuata uygun şekilde işlemekteyiz.</p>
+        <p><strong>2. İşlenen Veriler ve Amaç:</strong> “Eser Gönder” formunu kullandığınızda paylaştığınız ad-soyad, e-posta, telefon ve eser içeriği bilgileri; yalnızca eser inceleme, telif doğrulama ve yayın süreçlerinde eser sahibine ulaşmak amacıyla işlenir.</p>
+        <p><strong>3. Verilerin Aktarımı:</strong> Toplanan kişisel verileriniz hiçbir surette üçüncü şahıslara veya reklam platformlarına satılmaz, ticari amaçla devredilmez.</p>
+        <p><strong>4. Haklarınız:</strong> KVKK m. 11 uyarınca verilerinizin silinmesini, düzeltilmesini veya bilgi verilmesini <strong>hayalsahnesi@hayalsahnesi.com</strong> e-posta adresi üzerinden her zaman talep edebilirsiniz.</p>
+      </div>
+      <div class="border-t border-slate-800 pt-3 text-right">
+        <button onclick="closeModal('modal-kvkk')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition">Anladım</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ÇEREZ POLİTİKASI -->
+  <div id="modal-cookie" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4 select-none">
+    <div class="card-stage border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-xl w-full max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-white text-base sm:text-lg flex items-center gap-2">
+          <i class="fa-solid fa-cookie-bite text-amber-400"></i> Çerez (Cookie) Politikası
+        </h3>
+        <button onclick="closeModal('modal-cookie')" aria-label="Kapat" class="text-slate-400 hover:text-white text-xl p-1"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="flex-1 overflow-y-auto py-4 text-xs text-slate-300 space-y-3 leading-relaxed pr-2 font-sans">
+        <p>Hayal Sahnesi, platformun teknik işleyişini sağlamak ve size en iyi sahne deneyimini sunmak için minimum düzeyde teknik çerez kullanır.</p>
+        <p><strong>Hangi Çerezler Kullanılır?</strong></p>
+        <ul class="list-disc pl-5 space-y-1">
+          <li><strong>Zorunlu Çerezler:</strong> Sahne ses oynatıcısının durumu, seçilen yazı boyutu ve tema tercihlerinin hatırlanması için kullanılır.</li>
+          <li><strong>Performans Çerezleri:</strong> Sayfa hızını ve kararlılığını ölçümlemek amacıyla anonim teknik veriler tutulur.</li>
+        </ul>
+        <p>Sitemizde kullanıcıları takip eden üçüncü taraf reklam çerezleri <u>kullanılmamaktadır</u>. Detaylı bilgi veya sorularınız için <strong>hayalsahnesi@hayalsahnesi.com</strong> adresine yazabilirsiniz.</p>
+      </div>
+      <div class="border-t border-slate-800 pt-3 text-right">
+        <button onclick="closeModal('modal-cookie')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition">Kabul Ediyorum</button>
+      </div>
+    </div>
+  </div>
 
 <script>
   const API_BASE = '/api';
