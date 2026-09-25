@@ -20,6 +20,18 @@
 </noscript>
 
 <style>
+  /* CLS Önleyici Sabit Rezerv Alanları */
+  .category-panel {
+    min-height: 480px;
+  }
+  #showcase-grid, #poem-grid, #story-grid, #photoroman-grid, #series-grid, #music-grid {
+    min-height: 320px;
+  }
+  #ad-leaderboard {
+    min-height: 90px;
+    contain: layout;
+  }
+
   * { font-display: swap; }
   body {
     background-color: #07090e;
@@ -61,7 +73,7 @@
 <body class="min-h-screen flex flex-col selection:bg-rose-600 selection:text-white relative">
 
 <!-- ========================================== -->
-<!-- MASAÜSTÜ SOL VE SAĞ DİKEY REKLAM KANATLARI (160x600 - CLS ÖNLENMİŞ) -->
+<!-- MASAÜSTÜ SOL VE SAĞ DİKEY REKLAM KANATLARI (160x600) -->
 <!-- ========================================== -->
 <aside class="hidden 2xl:flex fixed left-4 top-24 w-[160px] h-[600px] z-20" aria-label="Sol Reklam Alanı">
   <div id="ad-skyscraper-left" class="w-full h-full rounded-2xl border border-white/10 bg-slate-900/80 overflow-hidden flex flex-col items-center justify-between p-4 text-center shadow-lg">
@@ -151,7 +163,7 @@
 
   <!-- 1. VİTRİN / ÖNE ÇIKANLAR PANELİ -->
   <section id="panel-all" class="category-panel">
-    <!-- Sabit Yükseklik Hero Bloğu -->
+    <!-- Hero Bloğu -->
     <div class="relative overflow-hidden rounded-3xl card-stage p-6 sm:p-10 my-4 border border-rose-500/20 text-center curtain-glow min-h-[220px] flex flex-col justify-center">
       <div class="max-w-2xl mx-auto space-y-3">
         <span class="inline-block px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 text-xs font-semibold tracking-wide border border-rose-500/20">
@@ -170,7 +182,7 @@
       </div>
     </div>
 
-    <!-- YATAY REKLAM KUŞAĞI (LEADERBOARD: 728x90) -->
+    <!-- YATAY REKLAM KUŞAĞI -->
     <div class="my-6 max-w-5xl mx-auto">
       <div id="ad-leaderboard" class="w-full h-[90px] rounded-2xl border border-white/10 bg-slate-900/80 overflow-hidden flex items-center justify-center shadow-inner">
         <a href="javascript:void(0)" onclick="openModal('modal-contact')" class="w-full h-full flex items-center justify-center gap-3 px-4 text-center group cursor-pointer">
@@ -247,7 +259,7 @@
 </main>
 
 <!-- ========================================== -->
-<!-- SABİT SAHNE ÇALARI (HIZ KONTROLLÜ: 0.75x, 1x, 1.25x, 1.5x) -->
+<!-- SABİT SAHNE ÇALARI (0.75x, 1x, 1.25x, 1.5x) -->
 <!-- ========================================== -->
 <aside class="sticky bottom-0 z-30 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800 px-4 sm:px-6 py-2.5 flex items-center justify-between">
   <div class="flex items-center space-x-3 overflow-hidden max-w-[40%] sm:max-w-[45%]">
@@ -274,7 +286,7 @@
       <i class="fa-solid fa-forward-step text-xs"></i>
     </button>
 
-    <!-- Hız Seçici Düğmesi (0.75x - 1x - 1.25x - 1.5x) -->
+    <!-- Hız Seçici Düğmesi -->
     <button id="player-speed-btn" onclick="cycleAudioSpeed()" type="button" title="Oynatma Hızı" class="px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 hover:border-rose-500 text-[11px] font-mono font-bold text-rose-400 transition">
       1.0x
     </button>
@@ -292,12 +304,11 @@
 </div>
 
 <!-- ========================================== -->
-<!-- MODAL: HİKAYE & ŞİİR OKUMA + YORUM VE ETKİLEŞİM MASASI -->
+<!-- MODAL: HİKAYE & ŞİİR OKUMA + YORUM MASASI -->
 <!-- ========================================== -->
 <div id="modal-story" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex flex-col p-3 sm:p-6 select-none overflow-y-auto">
   <div id="reader-container" class="reader-theme-dark max-w-4xl mx-auto w-full flex flex-col rounded-3xl border border-white/10 shadow-2xl overflow-hidden transition-colors duration-300 my-auto">
     
-    <!-- Üst Bar -->
     <div class="px-4 sm:px-6 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/5">
       <div>
         <h3 id="story-title" class="font-bold text-base sm:text-lg tracking-tight">Eser Başlığı</h3>
@@ -315,13 +326,12 @@
       </div>
     </div>
 
-    <!-- Okuma Alanı -->
     <div class="px-6 sm:px-12 py-8 max-w-3xl mx-auto w-full leading-relaxed">
       <p id="story-body" class="whitespace-pre-line font-serif-stage transition-all duration-150 text-[18px] leading-[1.85] tracking-wide">
         Metin yükleniyor...
       </p>
 
-      <!-- Etkileşim: Beğen / Beğenmeme Butonları -->
+      <!-- Beğeni Butonları -->
       <div class="pt-8 mt-8 border-t border-white/10 flex items-center justify-between">
         <span class="text-xs text-slate-400">Bu eseri nasıl buldunuz?</span>
         <div class="flex items-center gap-3">
@@ -334,15 +344,12 @@
         </div>
       </div>
 
-      <!-- ========================================== -->
-      <!-- YORUM ALANI & FİLTRELİ FORM -->
-      <!-- ========================================== -->
+      <!-- Yorum Formu -->
       <div class="mt-8 pt-6 border-t border-white/10 space-y-4">
         <h4 class="text-sm font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-comments text-rose-400"></i> Sahne Yorumları (<span id="comment-count">0</span>)
         </h4>
 
-        <!-- Yorum Formu -->
         <form onsubmit="submitComment(event)" class="space-y-2.5 bg-slate-950/60 p-4 rounded-2xl border border-white/5">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <input id="comment-author" type="text" placeholder="Adınız veya Mahlasınız (İsteğe Bağlı)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
@@ -356,7 +363,6 @@
           </div>
         </form>
 
-        <!-- Yorum Listesi -->
         <div id="comment-list" class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
           <p class="text-xs text-slate-500 italic">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
         </div>
@@ -366,7 +372,7 @@
   </div>
 </div>
 
-<!-- MODAL: FOTOROMAN OKUYUCU (REPLİK & AÇIKLAMA AYRI) -->
+<!-- MODAL: FOTOROMAN OKUYUCU -->
 <div id="modal-reader" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex flex-col p-3 sm:p-5 select-none overflow-y-auto">
   <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800/80 max-w-4xl mx-auto w-full">
     <div class="flex items-center gap-3">
@@ -414,6 +420,26 @@
       </div>
       <p id="reader-dialog" class="text-sm sm:text-base text-white font-serif-stage leading-relaxed italic"></p>
       <p id="reader-scene-desc" class="text-xs text-slate-300 leading-normal pt-1 font-sans border-t border-white/5 hidden"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================== -->
+<!-- MODAL: MİNİ DİZİ & VİDEO İZLEME (EKSİK OLAN KISIM EKLENDİ) -->
+<!-- ========================================== -->
+<div id="modal-video" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex flex-col p-3 sm:p-6 select-none overflow-y-auto">
+  <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800 max-w-4xl mx-auto w-full">
+    <div>
+      <h3 id="video-title" class="font-bold text-sm sm:text-base text-white">Mini Dizi</h3>
+      <p id="video-ep" class="text-[11px] text-purple-400 font-medium">Özel Gösterim</p>
+    </div>
+    <button onclick="closeModal('modal-video')" class="text-slate-400 hover:text-white text-xl p-1.5 transition">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+  <div class="flex-1 flex items-center justify-center max-w-4xl mx-auto w-full py-4">
+    <div id="video-container" class="w-full aspect-video bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center">
+      <!-- YouTube iFrame Buraya Enjekte Edilir -->
     </div>
   </div>
 </div>
@@ -492,9 +518,35 @@
   let allContents = [];
   let currentStoryItem = null;
 
+  // --- KATEGORİ DEĞİŞTİRME FONKSİYONU ---
+  function switchCategory(cat) {
+    const panels = document.querySelectorAll('.category-panel');
+    panels.forEach(p => p.classList.add('hidden'));
+
+    const activePanel = document.getElementById(`panel-${cat}`);
+    if (activePanel) {
+      activePanel.classList.remove('hidden');
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    const activeBtn = document.getElementById(`tab-${cat}`);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+    }
+
+    window.scrollTo({
+      top: 140,
+      behavior: 'smooth'
+    });
+  }
+  window.switchCategory = switchCategory;
+
   // --- SES OYNATMA HIZI KONTROLÜ (0.75x, 1x, 1.25x, 1.5x) ---
   const availableSpeeds = [0.75, 1.0, 1.25, 1.5];
-  let currentSpeedIndex = 1; // Varsayılan 1.0x
+  let currentSpeedIndex = 1;
 
   function cycleAudioSpeed() {
     currentSpeedIndex = (currentSpeedIndex + 1) % availableSpeeds.length;
@@ -510,7 +562,7 @@
     if (speedBtn) speedBtn.innerText = `${speed}x`;
   }
 
-  // --- AKTİF REKLAMLARI YÜKLE & YÖNLENDİR ---
+  // --- AKTİF REKLAMLARI YÜKLE ---
   async function loadLiveAds() {
     try {
       const res = await fetch(`${API_BASE}/ads/active`);
@@ -721,16 +773,16 @@
             </div>
             <h4 class="text-base font-bold text-white mb-1.5">${escapeHtml(s.title)}</h4>
             <p class="text-xs text-slate-300 line-clamp-3">${escapeHtml(s.textBody || s.description || '...')}</p>
-            </div>
-            <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
-              <span class="text-[11px] text-slate-400"><i class="fa-solid fa-thumbs-up text-emerald-400"></i> ${s.likes || 0}</span>
-              <button onclick='openStoryWithInteractions(${JSON.stringify(s)})' class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-200 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1">
-                <i class="fa-solid fa-book-open"></i> Oku & Yorum Yap
-              </button>
-            </div>
           </div>
-            `).join('');
-        }
+          <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400"><i class="fa-solid fa-thumbs-up text-emerald-400"></i> ${s.likes || 0}</span>
+            <button onclick='openStoryWithInteractions(${JSON.stringify(s)})' class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-200 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1">
+              <i class="fa-solid fa-book-open"></i> Oku & Yorum Yap
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
 
     // 3. Fotoromanlar
     const photos = items.filter(x => x.type === 'photoroman');
@@ -779,7 +831,8 @@
         seriesGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz mini dizi eklenmemiş.</div>`;
       } else {
         seriesGrid.innerHTML = series.map(se => `
-          <div class="card-stage rounded-2xl overflow-hidden group hover:border-purple-500/50 transition flex flex-col justify-between">
+          <div class="card-stage rounded-2xl overflow-hidden group hover:
+         border-purple-500/50 transition flex flex-col justify-between">
             <div class="h-44 bg-slate-900 relative flex items-center justify-center cursor-pointer" onclick="openVideoPlayer('${escapeHtml(se.title)}', '${escapeHtml(se.author || 'Yusuf Ziya')}', '${escapeHtml(se.mediaUrl || '')}')">
               <div class="w-12 h-12 rounded-full bg-rose-600/80 flex items-center justify-center text-white z-20 group-hover:scale-110 transition shadow-lg">
                 <i class="fa-solid fa-play ml-0.5"></i>
@@ -1163,11 +1216,6 @@
     });
   }
 
-  function escapeForJs(str) {
-    if (!str) return '';
-    return String(str).replace(/[`\\]/g, '\\$&');
-  }
-
   // Sayfa İlk Açılışı
   window.addEventListener('DOMContentLoaded', () => {
     loadLiveContents();
@@ -1176,3 +1224,4 @@
 </script>
 </body>
 </html>
+ 
