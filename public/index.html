@@ -163,7 +163,6 @@
 
   <!-- 1. VİTRİN / ÖNE ÇIKANLAR PANELİ -->
   <section id="panel-all" class="category-panel">
-    <!-- Hero Bloğu -->
     <div class="relative overflow-hidden rounded-3xl card-stage p-6 sm:p-10 my-4 border border-rose-500/20 text-center curtain-glow min-h-[220px] flex flex-col justify-center">
       <div class="max-w-2xl mx-auto space-y-3">
         <span class="inline-block px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 text-xs font-semibold tracking-wide border border-rose-500/20">
@@ -286,7 +285,6 @@
       <i class="fa-solid fa-forward-step text-xs"></i>
     </button>
 
-    <!-- Hız Seçici Düğmesi -->
     <button id="player-speed-btn" onclick="cycleAudioSpeed()" type="button" title="Oynatma Hızı" class="px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 hover:border-rose-500 text-[11px] font-mono font-bold text-rose-400 transition">
       1.0x
     </button>
@@ -304,21 +302,22 @@
 </div>
 
 <!-- ========================================== -->
-<!-- MODAL: HİKAYE & ŞİİR OKUMA + YORUM MASASI -->
+<!-- MODAL: HİKAYE & ŞİİR & MÜZİK OKUMA / YORUM MASASI -->
 <!-- ========================================== -->
-<div id="modal-story" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex flex-col p-3 sm:p-6 select-none overflow-y-auto">
-  <div id="reader-container" class="reader-theme-dark max-w-4xl mx-auto w-full flex flex-col rounded-3xl border border-white/10 shadow-2xl overflow-hidden transition-colors duration-300 my-auto">
+<div id="modal-story" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-6 select-none overflow-y-auto">
+  <div id="reader-container" class="reader-theme-dark max-w-4xl w-full max-h-[92vh] flex flex-col rounded-3xl border border-white/10 shadow-2xl overflow-hidden transition-colors duration-300">
     
-    <div class="px-4 sm:px-6 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/5">
+    <!-- Üst Bar (Sabit) -->
+    <div class="px-4 sm:px-6 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/5 shrink-0">
       <div>
-        <h3 id="story-title" class="font-bold text-base sm:text-lg tracking-tight">Eser Başlığı</h3>
+        <h3 id="story-title" class="font-bold text-base sm:text-lg tracking-tight text-white">Eser Başlığı</h3>
         <p id="story-author" class="text-xs text-rose-400 font-semibold"></p>
       </div>
       <div class="flex items-center gap-2 sm:gap-3">
         <div class="flex items-center bg-black/40 rounded-xl border border-white/10 p-0.5">
-          <button onclick="adjustFontSize(-2)" title="Yazıyı Küçült" class="w-7 h-7 flex items-center justify-center text-xs font-bold hover:bg-white/10 rounded-lg transition">A-</button>
+          <button onclick="adjustFontSize(-2)" title="Yazıyı Küçült" class="w-7 h-7 flex items-center justify-center text-xs font-bold hover:bg-white/10 rounded-lg transition text-white">A-</button>
           <span id="font-size-indicator" class="text-[11px] font-mono px-2 text-slate-300 font-bold">18px</span>
-          <button onclick="adjustFontSize(2)" title="Yazıyı Büyüt" class="w-7 h-7 flex items-center justify-center text-sm font-bold hover:bg-white/10 rounded-lg transition">A+</button>
+          <button onclick="adjustFontSize(2)" title="Yazıyı Büyüt" class="w-7 h-7 flex items-center justify-center text-sm font-bold hover:bg-white/10 rounded-lg transition text-white">A+</button>
         </div>
         <button onclick="closeModal('modal-story')" class="text-slate-400 hover:text-white text-xl p-1 transition ml-1">
           <i class="fa-solid fa-xmark"></i>
@@ -326,44 +325,51 @@
       </div>
     </div>
 
-    <div class="px-6 sm:px-12 py-8 max-w-3xl mx-auto w-full leading-relaxed">
-      <p id="story-body" class="whitespace-pre-line font-serif-stage transition-all duration-150 text-[18px] leading-[1.85] tracking-wide">
+    <!-- Kaydırılabilir İçerik Alanı (Metin + Beğeni + Yorum Formu) -->
+    <div class="px-6 sm:px-12 py-8 max-w-3xl mx-auto w-full leading-relaxed overflow-y-auto flex-1 space-y-8">
+      <p id="story-body" class="whitespace-pre-line font-serif-stage transition-all duration-150 text-[18px] leading-[1.85] tracking-wide text-slate-200">
         Metin yükleniyor...
       </p>
 
-      <!-- Beğeni Butonları -->
-      <div class="pt-8 mt-8 border-t border-white/10 flex items-center justify-between">
-        <span class="text-xs text-slate-400">Bu eseri nasıl buldunuz?</span>
+      <!-- Beğen / Beğenmeme Butonları -->
+      <div class="pt-6 border-t border-white/10 flex items-center justify-between">
+        <span class="text-xs text-slate-400 font-medium">Bu eseri nasıl buldunuz?</span>
         <div class="flex items-center gap-3">
-          <button onclick="handleReaction('like')" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 text-xs font-bold transition flex items-center gap-1.5 border border-emerald-500/20">
+          <button onclick="handleReaction('like')" type="button" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 text-xs font-bold transition flex items-center gap-1.5 border border-emerald-500/20 cursor-pointer">
             <i class="fa-solid fa-thumbs-up"></i> Beğen (<span id="modal-like-count">0</span>)
           </button>
-          <button onclick="handleReaction('dislike')" class="px-3.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-rose-500/20">
+          <button onclick="handleReaction('dislike')" type="button" class="px-3.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-rose-500/20 cursor-pointer">
             <i class="fa-solid fa-thumbs-down"></i> Beğenme (<span id="modal-dislike-count">0</span>)
           </button>
         </div>
       </div>
 
-      <!-- Yorum Formu -->
-      <div class="mt-8 pt-6 border-t border-white/10 space-y-4">
+      <!-- Sahne Yorumları Alanı -->
+      <div class="pt-4 border-t border-white/10 space-y-4">
         <h4 class="text-sm font-bold text-white flex items-center gap-2">
           <i class="fa-solid fa-comments text-rose-400"></i> Sahne Yorumları (<span id="comment-count">0</span>)
         </h4>
 
-        <form onsubmit="submitComment(event)" class="space-y-2.5 bg-slate-950/60 p-4 rounded-2xl border border-white/5">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <input id="comment-author" type="text" placeholder="Adınız veya Mahlasınız (İsteğe Bağlı)" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+        <!-- Yorum Yazma Formu -->
+        <form onsubmit="submitComment(event)" class="space-y-3 bg-slate-950/80 p-4 rounded-2xl border border-white/10">
+          <div>
+            <input id="comment-author" type="text" placeholder="Adınız veya Mahlasınız (İsteğe Bağlı)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
           </div>
-          <textarea id="comment-text" required rows="2" placeholder="Eser hakkında düşünceleriniz... (Topluluk kurallarına uygun olmalıdır)" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500"></textarea>
+          <div>
+            <textarea id="comment-text" required rows="3" placeholder="Eser hakkındaki yorumunuzu yazın..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500"></textarea>
+          </div>
           <div class="flex items-center justify-between pt-1">
-            <span class="text-[10px] text-slate-400"><i class="fa-solid fa-shield-halved text-emerald-400"></i> Otomatik Hakaret Korumalı</span>
-            <button type="submit" id="btn-comment-submit" class="stage-gradient px-4 py-1.5 rounded-xl text-xs font-bold text-white shadow-md hover:opacity-95 transition">
+            <span class="text-[10px] text-slate-400 flex items-center gap-1">
+              <i class="fa-solid fa-shield-halved text-emerald-400"></i> Otomatik Filtre Korumalı
+            </span>
+            <button type="submit" id="btn-comment-submit" class="stage-gradient px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md hover:opacity-95 transition cursor-pointer">
               Yorumu Sahnele
             </button>
           </div>
         </form>
 
-        <div id="comment-list" class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+        <!-- Yorumlar Listesi -->
+        <div id="comment-list" class="space-y-2.5 pb-6">
           <p class="text-xs text-slate-500 italic">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
         </div>
       </div>
@@ -372,7 +378,9 @@
   </div>
 </div>
 
-<!-- MODAL: FOTOROMAN OKUYUCU -->
+<!-- ========================================== -->
+<!-- MODAL: FOTOROMAN OKUYUCU (BEĞENİ VE YORUM BUTONLU) -->
+<!-- ========================================== -->
 <div id="modal-reader" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex flex-col p-3 sm:p-5 select-none overflow-y-auto">
   <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800/80 max-w-4xl mx-auto w-full">
     <div class="flex items-center gap-3">
@@ -411,7 +419,7 @@
       </button>
     </div>
 
-    <div class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 text-left space-y-2 shadow-lg">
+    <div class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-5 text-left space-y-3 shadow-lg">
       <div class="flex items-center justify-between text-xs border-b border-white/5 pb-2">
         <span class="text-amber-400 font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
           <i class="fa-solid fa-quote-left"></i> Sahne Replikleri & Açıklama
@@ -420,12 +428,27 @@
       </div>
       <p id="reader-dialog" class="text-sm sm:text-base text-white font-serif-stage leading-relaxed italic"></p>
       <p id="reader-scene-desc" class="text-xs text-slate-300 leading-normal pt-1 font-sans border-t border-white/5 hidden"></p>
+
+      <!-- FOTOROMAN BEĞENİ VE YORUMLARI AÇMA BÖLÜMÜ -->
+      <div class="pt-3 border-t border-white/10 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <button onclick="handleReaderReaction('like')" type="button" class="px-3 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 text-xs font-bold transition flex items-center gap-1 border border-emerald-500/20">
+            <i class="fa-solid fa-thumbs-up"></i> (<span id="reader-like-count">0</span>)
+          </button>
+          <button onclick="handleReaderReaction('dislike')" type="button" class="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white text-xs font-bold transition flex items-center gap-1 border border-rose-500/20">
+            <i class="fa-solid fa-thumbs-down"></i> (<span id="reader-dislike-count">0</span>)
+          </button>
+        </div>
+        <button onclick="openCommentsForCurrentPhotoroman()" type="button" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-white/10">
+          <i class="fa-solid fa-comments text-amber-400"></i> Yorumları Gör & Yaz
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- ========================================== -->
-<!-- MODAL: MİNİ DİZİ & VİDEO İZLEME (EKSİK OLAN KISIM EKLENDİ) -->
+<!-- MODAL: MİNİ DİZİ & VİDEO İZLEME -->
 <!-- ========================================== -->
 <div id="modal-video" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex flex-col p-3 sm:p-6 select-none overflow-y-auto">
   <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800 max-w-4xl mx-auto w-full">
@@ -439,12 +462,13 @@
   </div>
   <div class="flex-1 flex items-center justify-center max-w-4xl mx-auto w-full py-4">
     <div id="video-container" class="w-full aspect-video bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center">
-      <!-- YouTube iFrame Buraya Enjekte Edilir -->
     </div>
   </div>
 </div>
 
+<!-- ========================================== -->
 <!-- MODAL: ESER GÖNDERME FORMU -->
+<!-- ========================================== -->
 <div id="modal-contact" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
   <div class="card-stage border border-slate-800 rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-4 max-h-[90vh] overflow-y-auto">
     <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -517,6 +541,7 @@
   let isPlaying = false;
   let allContents = [];
   let currentStoryItem = null;
+  let activePhotoromanItem = null;
 
   // --- KATEGORİ DEĞİŞTİRME FONKSİYONU ---
   function switchCategory(cat) {
@@ -562,6 +587,16 @@
     if (speedBtn) speedBtn.innerText = `${speed}x`;
   }
 
+  // --- YAZI BOYUTU AYARI (A- / A+) ---
+  let currentFontSize = 18;
+  function adjustFontSize(delta) {
+    currentFontSize = Math.min(Math.max(14, currentFontSize + delta), 28);
+    const bodyEl = document.getElementById('story-body');
+    const indEl = document.getElementById('font-size-indicator');
+    if (bodyEl) bodyEl.style.fontSize = `${currentFontSize}px`;
+    if (indEl) indEl.innerText = `${currentFontSize}px`;
+  }
+
   // --- AKTİF REKLAMLARI YÜKLE ---
   async function loadLiveAds() {
     try {
@@ -603,6 +638,13 @@
   }
 
   // --- BEĞENİ VE YORUM İŞLEMLERİ ---
+  function openInteractionsById(id) {
+    const item = allContents.find(c => String(c._id) === String(id));
+    if (!item) return;
+    openStoryWithInteractions(item);
+  }
+  window.openInteractionsById = openInteractionsById;
+
   function openStoryWithInteractions(item) {
     currentStoryItem = item;
     document.getElementById('story-title').innerText = item.title;
@@ -635,11 +677,30 @@
       const data = await res.json();
       if (data.success) {
         localStorage.setItem(key, action);
+        currentStoryItem.likes = data.likes;
+        currentStoryItem.dislikes = data.dislikes;
         document.getElementById('modal-like-count').innerText = data.likes;
         document.getElementById('modal-dislike-count').innerText = data.dislikes;
+        
+        const rLikes = document.getElementById('reader-like-count');
+        const rDislikes = document.getElementById('reader-dislike-count');
+        if (rLikes) rLikes.innerText = data.likes;
+        if (rDislikes) rDislikes.innerText = data.dislikes;
       }
     } catch (err) {
       alert('Oylama sunucuya iletilemedi.');
+    }
+  }
+
+  function handleReaderReaction(action) {
+    if (!activePhotoromanItem) return;
+    currentStoryItem = activePhotoromanItem;
+    handleReaction(action);
+  }
+
+  function openCommentsForCurrentPhotoroman() {
+    if (activePhotoromanItem) {
+      openStoryWithInteractions(activePhotoromanItem);
     }
   }
 
@@ -735,7 +796,7 @@
           <div class="space-y-2.5">
             <div class="flex items-center justify-between text-xs text-rose-400 font-semibold">
               <span><i class="fa-solid fa-feather mr-1"></i>Şiir & Dinleti</span>
-              <span class="text-slate-300">${escapeHtml(p.author || 'Yusuf Ziya')}</span>
+              <span class="text-slate-300">${escapeHtml(p.author || 'Hayal Sahnesi')}</span>
             </div>
             <h4 class="text-base font-bold text-white">${escapeHtml(p.title)}</h4>
             <blockquote class="text-xs font-serif-stage italic text-slate-200 border-l-2 border-rose-500/40 pl-3 line-clamp-3">
@@ -747,11 +808,11 @@
               <span><i class="fa-solid fa-thumbs-up text-emerald-400"></i> ${p.likes || 0}</span>
             </div>
             <div class="flex items-center gap-2">
-              <button onclick='openStoryWithInteractions(${JSON.stringify(p)})' class="bg-slate-800 hover:bg-slate-700 text-slate-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+              <button onclick="openInteractionsById('${p._id}')" class="bg-slate-800 hover:bg-slate-700 text-slate-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
                 <i class="fa-solid fa-book-open"></i> Oku & Yorum Yap
               </button>
               ${p.mediaUrl ? `
-              <button onclick="handleMediaPlay('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Yusuf Ziya')}', '${escapeHtml(p.mediaUrl)}') " class="bg-rose-600/20 hover:bg-rose-600 text-rose-200 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
+              <button onclick="handleMediaPlay('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Hayal Sahnesi')}', '${escapeHtml(p.mediaUrl)}') " class="bg-rose-600/20 hover:bg-rose-600 text-rose-200 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
                 <i class="fa-solid fa-headphones"></i> Dinle
               </button>` : ''}
             </div>
@@ -768,7 +829,7 @@
         <div class="card-stage p-5 rounded-2xl hover:border-emerald-500/40 transition flex flex-col justify-between gap-3">
           <div>
             <div class="flex items-center justify-between text-[11px] text-emerald-400 font-semibold mb-1">
-              <span>${escapeHtml(s.author || 'Yusuf Ziya')}</span>
+              <span>${escapeHtml(s.author || 'Hayal Sahnesi')}</span>
               <span>Hikaye</span>
             </div>
             <h4 class="text-base font-bold text-white mb-1.5">${escapeHtml(s.title)}</h4>
@@ -776,7 +837,7 @@
           </div>
           <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
             <span class="text-[11px] text-slate-400"><i class="fa-solid fa-thumbs-up text-emerald-400"></i> ${s.likes || 0}</span>
-            <button onclick='openStoryWithInteractions(${JSON.stringify(s)})' class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-200 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1">
+            <button onclick="openInteractionsById('${s._id}')" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-200 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1">
               <i class="fa-solid fa-book-open"></i> Oku & Yorum Yap
             </button>
           </div>
@@ -789,12 +850,11 @@
     const photoGrid = document.getElementById('photoroman-grid');
     if (photoGrid) {
       if (photos.length === 0) {
-        photoGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz fotoroman eseri eklenmemiş.</div>`;
+        photoGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">
+          Henüz fotoroman eseri eklenmemiş.</div>`;
       } else {
         photoGrid.innerHTML = photos.map(ph => {
           const frames = (ph.images && Array.isArray(ph.images) && ph.images.length > 0) ? ph.images : [{ img: ph.thumbnail || '', text: ph.textBody || '', desc: '' }];
-          const pagesData = encodeURIComponent(JSON.stringify(frames));
-          const musicData = encodeURIComponent(ph.musicUrl || ph.mediaUrl || '');
           const frameCount = frames.length;
 
           return `
@@ -809,11 +869,11 @@
               </div>
               <div>
                 <h4 class="font-bold text-white text-base leading-snug">${escapeHtml(ph.title)}</h4>
-                <p class="text-xs text-slate-300 mt-0.5">${escapeHtml(ph.author || 'Yusuf Ziya')}</p>
+                <p class="text-xs text-slate-300 mt-0.5">${escapeHtml(ph.author || 'Hayal Sahnesi')}</p>
               </div>
               <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between">
                 <span class="text-[11px] text-slate-400"><i class="fa-solid fa-thumbs-up text-amber-400"></i> ${ph.likes || 0}</span>
-                <button onclick="launchPhotoroman('${escapeHtml(ph.title)}', '${escapeHtml(ph.author || 'Yusuf Ziya')}', '${pagesData}', '${musicData}')" class="bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-amber-500/30">
+                <button onclick="launchPhotoromanById('${ph._id}')" class="bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-amber-500/30">
                   <i class="fa-solid fa-book-open"></i> Oku & Dinle
                 </button>
               </div>
@@ -831,9 +891,8 @@
         seriesGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz mini dizi eklenmemiş.</div>`;
       } else {
         seriesGrid.innerHTML = series.map(se => `
-          <div class="card-stage rounded-2xl overflow-hidden group hover:
-         border-purple-500/50 transition flex flex-col justify-between">
-            <div class="h-44 bg-slate-900 relative flex items-center justify-center cursor-pointer" onclick="openVideoPlayer('${escapeHtml(se.title)}', '${escapeHtml(se.author || 'Yusuf Ziya')}', '${escapeHtml(se.mediaUrl || '')}')">
+          <div class="card-stage rounded-2xl overflow-hidden group hover:border-purple-500/50 transition flex flex-col justify-between">
+            <div class="h-44 bg-slate-900 relative flex items-center justify-center cursor-pointer" onclick="openVideoPlayer('${escapeHtml(se.title)}', '${escapeHtml(se.author || 'Hayal Sahnesi')}', '${escapeHtml(se.mediaUrl || '')}')">
               <div class="w-12 h-12 rounded-full bg-rose-600/80 flex items-center justify-center text-white z-20 group-hover:scale-110 transition shadow-lg">
                 <i class="fa-solid fa-play ml-0.5"></i>
               </div>
@@ -845,7 +904,9 @@
                 <p class="text-xs text-slate-300 line-clamp-2 mt-1">${escapeHtml(se.textBody || se.description || '')}</p>
               </div>
               <div class="pt-2 border-t border-white/5 flex items-center justify-between">
-                <span class="text-xs text-slate-400">${escapeHtml(se.author || 'Yusuf Ziya')}</span>
+                <button onclick="openInteractionsById('${se._id}')" class="text-[11px] text-purple-300 hover:text-white flex items-center gap-1">
+                  <i class="fa-solid fa-comments"></i> Yorum & Beğeni
+                </button>
                 <span class="text-[11px] text-slate-400"><i class="fa-solid fa-thumbs-up text-purple-400"></i> ${se.likes || 0}</span>
               </div>
             </div>
@@ -869,15 +930,23 @@
               </div>
               <div class="truncate">
                 <h4 class="font-bold text-white text-base truncate">${escapeHtml(m.title)}</h4>
-                <p class="text-xs text-cyan-400 font-semibold truncate">${escapeHtml(m.author || 'Yusuf Ziya')}</p>
+                <p class="text-xs text-cyan-400 font-semibold truncate">${escapeHtml(m.author || 'Hayal Sahnesi')}</p>
               </div>
             </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
+              <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-up text-cyan-400"></i> ${m.likes || 0}</span>
+              <button onclick="openInteractionsById('${m._id}')" class="text-cyan-300 hover:text-white text-[11px] underline flex items-center gap-1">
+                <i class="fa-solid fa-comments"></i> Yorumlar & Beğeni
+              </button>
+            </div>
+
             <div class="flex items-center gap-2 pt-2 border-t border-cyan-900/40">
-              <button onclick="handleMediaPlay('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Yusuf Ziya')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 bg-cyan-600/25 hover:bg-cyan-600 text-cyan-100 hover:text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
+              <button onclick="handleMediaPlay('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Hayal Sahnesi')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 bg-cyan-600/25 hover:bg-cyan-600 text-cyan-100 hover:text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
                 <i class="fa-solid fa-headphones"></i> Dinle
               </button>
               ${m.mediaUrl && (m.mediaUrl.includes('youtube.com') || m.mediaUrl.includes('youtu.be')) ? `
-              <button onclick="openVideoPlayer('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Yusuf Ziya')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 stage-gradient text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
+              <button onclick="openVideoPlayer('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Hayal Sahnesi')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 stage-gradient text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
                 <i class="fa-solid fa-film"></i> İzle
               </button>` : ''}
             </div>
@@ -904,7 +973,7 @@
           <span class="text-[10px] font-bold text-${color}-400 uppercase tracking-wide flex items-center gap-1">
             <i class="fa-solid ${icon}"></i> ${badge}
           </span>
-          <span class="text-[11px] text-slate-300">${escapeHtml(item.author || 'Yusuf Ziya')}</span>
+          <span class="text-[11px] text-slate-300">${escapeHtml(item.author || 'Hayal Sahnesi')}</span>
         </div>
         <div>
           <h4 class="font-bold text-white text-base leading-snug">${escapeHtml(item.title)}</h4>
@@ -928,7 +997,7 @@
     const playerTitle = document.getElementById('player-title');
     const playerArtist = document.getElementById('player-subtitle');
     if (playerTitle) playerTitle.innerText = title;
-    if (playerArtist) playerArtist.innerText = (author || 'Yusuf Ziya') + ' • Sahne Çalıyor';
+    if (playerArtist) playerArtist.innerText = (author || 'Hayal Sahnesi') + ' • Sahne Çalıyor';
 
     if (globalAudio) {
       globalAudio.pause();
@@ -1069,27 +1138,29 @@
   let currentPhotoPages = [];
   let currentPhotoIndex = 0;
 
-  function launchPhotoroman(title, author, encodedPages, encodedMusic) {
-    let pagesList = [];
-    try {
-      pagesList = JSON.parse(decodeURIComponent(encodedPages)) || [];
-    } catch (e) {
-      pagesList = [];
-    }
-    const musicUrl = decodeURIComponent(encodedMusic || '');
-    openReader(title, author, `${pagesList.length} Kare`, pagesList, musicUrl);
+  function launchPhotoromanById(id) {
+    const item = allContents.find(c => String(c._id) === String(id));
+    if (!item) return;
+    activePhotoromanItem = item;
+
+    const frames = (item.images && Array.isArray(item.images) && item.images.length > 0) 
+      ? item.images 
+      : [{ img: item.thumbnail || '', text: item.textBody || item.description || 'Sahne başladı...', desc: '' }];
+
+    const rLikes = document.getElementById('reader-like-count');
+    const rDislikes = document.getElementById('reader-dislike-count');
+    if (rLikes) rLikes.innerText = item.likes || 0;
+    if (rDislikes) rDislikes.innerText = item.dislikes || 0;
+
+    openReader(item.title, item.author, `${frames.length} Kare`, frames, item.musicUrl || item.mediaUrl || '');
   }
+  window.launchPhotoromanById = launchPhotoromanById;
 
   function openReader(title, desc, frameCount, imagesList, musicUrl) {
     document.getElementById('reader-title').innerText = title || 'Fotoroman';
     document.getElementById('reader-info').innerText = frameCount || 'Özel Sahne';
 
-    if (Array.isArray(imagesList) && imagesList.length > 0) {
-      currentPhotoPages = imagesList;
-    } else {
-      currentPhotoPages = [{ img: '', text: desc || 'Sahne başladı...', desc: '' }];
-    }
-
+    currentPhotoPages = imagesList;
     currentPhotoIndex = 0;
     renderPhotoPage();
 
@@ -1224,4 +1295,3 @@
 </script>
 </body>
 </html>
- 
