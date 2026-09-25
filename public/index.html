@@ -131,9 +131,9 @@
     </button>
 
     <!-- Mikro Bağış Butonu -->
-    <button onclick="openModal('modal-donate')" class="bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-slate-950 border border-amber-500/30 text-xs px-3 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
-      <i class="fa-solid fa-mug-hot"></i> <span class="hidden sm:inline">Destek</span>
-    </button>
+   <a href="https://kreosus.com/httpshayalsahnesicom" target="_blank" rel="noopener noreferrer" class="kreosus-gradient text-slate-950 font-black px-4 py-2 rounded-xl text-xs hover:opacity-95 transition shrink-0 flex items-center gap-1.5 shadow-md">
+  <i class="fa-solid fa-coffee"></i> Kahve Ismarla
+</a>
 
     <a href="admin.html" class="hidden md:flex text-slate-200 hover:text-white text-xs px-3 py-2 rounded-lg font-bold transition items-center gap-1.5 bg-slate-900 border border-slate-700 hover:border-rose-500">
       <i class="fa-solid fa-lock text-rose-400"></i> Yönetim
@@ -555,7 +555,7 @@
   </div>
 </div>
 
-<!-- MODAL: MİKRO BAĞIŞ & DESTEK -->
+<!-- MODAL: MİKRO BAĞIŞ & DESTEK (KREOSUS ODAKLI) -->
 <div id="modal-donate" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
   <div class="card-stage border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-5 text-center shadow-2xl">
     <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl mx-auto shadow-lg shadow-amber-900/30">
@@ -564,28 +564,28 @@
     <div class="space-y-1">
       <h3 class="text-xl font-black text-white">Sanata & Sahneye Destek</h3>
       <p class="text-xs text-slate-300 leading-relaxed">
-        Hayal Sahnesi, bağımsız edebiyatçıların ve sanatçıların özgürce ürettiği dijital bir platformdur. Üretimlerimizin devamlılığı için katkıda bulunabilirsiniz.
+        Hayal Sahnesi, bağımsız şairlerin, yazarların ve sanatçıların özgürce ürettiği dijital bir sahnedir. Üretimlerimizin devamlılığı için bize bir kahve ısmarlayabilirsiniz.
       </p>
     </div>
 
     <div class="space-y-3 pt-2">
-      <a href="https://kreosus.com" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl kreosus-gradient text-slate-950 font-black text-xs flex items-center justify-between hover:opacity-95 transition shadow-lg">
-        <span class="flex items-center gap-2"><i class="fa-solid fa-coffee text-sm"></i> Kreosus ile Bir Kahve Ismarla</span>
-        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      <!-- Doğrudan Yusuf Ziya / Hayal Sahnesi Kreosus Profili -->
+      <a href="https://kreosus.com/httpshayalsahnesicom" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-5 rounded-2xl kreosus-gradient text-slate-950 font-black text-sm flex items-center justify-between hover:scale-[1.02] transition shadow-lg shadow-amber-500/20">
+        <span class="flex items-center gap-2.5">
+          <i class="fa-solid fa-coffee text-base"></i> Kreosus ile Bir Kahve Ismarla
+        </span>
+        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
       </a>
-      <a href="https://patreon.com" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl bg-slate-900 border border-slate-700 hover:border-rose-500 text-white font-bold text-xs flex items-center justify-between hover:bg-slate-800 transition">
-        <span class="flex items-center gap-2"><i class="fa-brands fa-patreon text-rose-500 text-sm"></i> Patreon Destekçisi Ol</span>
-        <i class="fa-solid fa-arrow-up-right-from-square"></i>
-      </a>
-      <a href="javascript:void(0)" onclick="openModal('modal-contact'); closeModal('modal-donate');" class="w-full py-2.5 px-4 rounded-xl bg-slate-950 text-slate-400 hover:text-white text-xs block transition">
-        Kurumsal Sponsorluk İçin İletişime Geçin →
+
+      <!-- Kurumsal İletişim / Reklam -->
+      <a href="javascript:void(0)" onclick="openModal('modal-contact'); closeModal('modal-donate');" class="w-full py-2.5 px-4 rounded-xl bg-slate-900/80 border border-white/5 text-slate-400 hover:text-white text-xs block transition">
+        Kurumsal Sponsorluk & İlan İçin İletişime Geçin →
       </a>
     </div>
 
-    <button onclick="closeModal('modal-donate')" class="text-xs text-slate-500 hover:text-slate-300 mt-2 block mx-auto underline">Kapat</button>
+    <button onclick="closeModal('modal-donate')" class="text-xs text-slate-500 hover:text-slate-300 mt-2 block mx-auto underline">Vazgeç / Kapat</button>
   </div>
 </div>
-
 <!-- MODAL: MİNİ DİZİ & VİDEO -->
 <div id="modal-video" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex flex-col p-3 sm:p-6 select-none overflow-y-auto">
   <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800 max-w-4xl mx-auto w-full">
