@@ -1250,3 +1250,156 @@ window.shareAuthorProfile = shareAuthorProfile;
       }
     }, 2000);
   });
+// ==========================================
+// VİRAL MISRA SEÇİMİ & GÖRSEL SANAT KARTI MOTORU (CANVAS API)
+// ==========================================
+let selectedQuoteText = '';
+
+document.addEventListener('selectionchange', () => {
+  const selection = window.getSelection();
+  const text = selection.toString().trim();
+  const tooltip = document.getElementById('quote-share-tooltip');
+  if (!tooltip) return;
+
+  // En az 5 harflik anlamlı bir mısra/cümle seçildiyse
+  if (text.length >= 5) {
+    selectedQuoteText = text;
+    const range = selection.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+
+    tooltip.style.top = `${Math.max(10, rect.top - 50 + window.scrollY)}px`;
+    tooltip.style.left = `${rect.left + (rect.width / 2)}px`;
+    tooltip.classList.remove('hidden');
+  } else {
+    // Seçim bırakıldıysa gizle
+    if (!selectedQuoteText) {
+      tooltip.classList.add('hidden');
+    }
+  }
+});
+
+// Sayfa üzerinde başka bir yere tıklanınca balonu gizle
+document.addEventListener('mousedown', (e) => {
+  const tooltip = document.getElementById('quote-share-tooltip');
+  if (tooltip && !tooltip.contains(e.target) && !window.getSelection().toString().trim()) {
+    tooltip.classList.add('hidden');
+    selectedQuoteText = '';
+  }
+});
+
+// 1. X (Twitter)'da Paylaş
+function shareQuoteToX() {
+  if (!selectedQuoteText) return;
+  const author = currentStoryItem ? (currentStoryItem.author || 'Anonim') : 'Hayal Sahnesi';
+  const tweet = `"${selectedQuoteText}"\n— ${author}\n\nPerdede Keşfet: ${window.location.origin}`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`, '_blank');
+  document.getElementById('quote-share-tooltip')?.classList.add('hidden');
+}
+window.shareQuoteToX = shareQuoteToX;
+
+// 2. WhatsApp'ta Paylaş
+function shareQuoteToWhatsapp() {
+  if (!selectedQuoteText) return;
+  const author = currentStoryItem ? (currentStoryItem.author || 'Anonim') : 'Hayal Sahnesi';
+  const text = `"${selectedQuoteText}"\n— ${author}\n\nHayal Sahnesi: ${window.location.origin}`;
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+  document.getElementById('quote-share-tooltip')?.classList.add('hidden');
+}
+window.shareQuoteToWhatsapp = shareQuoteToWhatsapp;
+
+// 3. Canvas ile Sanatsal Instagram/Sosyal Medya Kartı Üret
+function generateQuoteCard() {
+  if (!selectedQuoteText) return;
+  document.getElementById('quote-share-tooltip')?.classList.add('hidden');
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  // Instagram Kare formatı (1080 x 1080 piksel yüksek çözünürlük)
+  canvas.width = 1080;
+  canvas.height = 1080;
+
+  // 1. Zengin Sahne Gradyan Arka Planı
+  const bgGrad = ctx.createLinearGradient(0, 0, 1080, 1080);
+  bgGrad.addColorStop(0, '#07090e');
+  bgGrad.addColorStop(0.5, '#160918');
+  bgGrad.addColorStop(1, '#0c0714');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, 1080, 1080);
+
+  // 2. Estetik Neon Sahne Çerçevesi
+  ctx.strokeStyle = 'rgba(225, 29, 72, 0.35)';
+  ctx.lineWidth = 14;
+  ctx.strokeRect(60, 60, 960, 960);
+
+  // 3. Hayal Sahnesi Logo & Başlık
+  ctx.font = 'bold 36px sans-serif';
+  ctx.fillStyle = '#e11d48';
+  ctx.textAlign = 'center';
+  ctx.fillText('HAYAL SAHNESİ', 540, 150);
+
+  ctx.font = '22px sans-serif';
+  ctx.fillStyle = '#94a3b8';
+  ctx.fillText('Kelimeler Perdenin Karanlığına Dokunur', 540, 190);
+
+  // Minik Ayırıcı Çizgi
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(440, 225);
+  ctx.lineTo(640, 225);
+  ctx.stroke();
+
+  // 4. Tırnak İkonu
+  ctx.font = 'bold 110px Georgia, serif';
+  ctx.fillStyle = 'rgba(225, 29, 72, 0.25)';
+  ctx.fillText('“', 540, 340);
+
+  // 5. Seçilen Mısra / Alıntı Metnini Otomatik Satırlara Böl
+  ctx.font = 'italic 46px Georgia, serif';
+  ctx.fillStyle = '#f8fafc';
+  
+  const words = selectedQuoteText.split(' ');
+  const lines = [];
+  let currentLine = '';
+  const maxWidth = 800;
+
+  words.forEach(word => {
+    const testLine = currentLine + word + ' ';
+    const metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && currentLine !== '') {
+      lines.push(currentLine.trim());
+      currentLine = word + ' ';
+    } else {
+      currentLine = testLine;
+    }
+  });
+  lines.push(currentLine.trim());
+
+  // Satırları ortalayarak çiz
+  const lineHeight = 68;
+  const startY = 480 - ((lines.length - 1) * lineHeight) / 2;
+
+  lines.forEach((line, index) => {
+    ctx.fillText(line, 540, startY + (index * lineHeight));
+  });
+
+  // 6. Yazar / Şair Adı
+  const authorName = currentStoryItem ? (currentStoryItem.author || 'Anonim') : 'Hayal Sahnesi';
+  ctx.font = 'bold 32px sans-serif';
+  ctx.fillStyle = '#fb7185';
+  ctx.fillText(`— ${authorName}`, 540, Math.max(760, startY + (lines.length * lineHeight) + 60));
+
+  // 7. Alt Bilgi & Web Sitesi
+  ctx.font = 'bold 24px monospace';
+  ctx.fillStyle = '#64748b';
+  ctx.fillText('hayalsahnesi.com', 540, 970);
+
+  // Oluşturulan görseli modalda göster ve indirme bağlantısını hazırla
+  const imgUrl = canvas.toDataURL('image/png');
+  document.getElementById('quote-card-preview').src = imgUrl;
+  document.getElementById('quote-card-download').href = imgUrl;
+
+  openModal('modal-quote-card');
+}
+window.generateQuoteCard = generateQuoteCard;
