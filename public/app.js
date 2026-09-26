@@ -174,7 +174,7 @@ function switchCategory(cat) {
 }
 window.switchCategory = switchCategory;
 
-// --- OYNATMA HIZI KONTROLÜ ---
+// --- OYNATMA HIZI KONTROLÜ (AUDIO + YOUTUBE DESTEKLİ) ---
 const availableSpeeds = [0.75, 1.0, 1.25, 1.5];
 let currentSpeedIndex = 1;
 
@@ -182,16 +182,102 @@ function cycleAudioSpeed() {
   currentSpeedIndex = (currentSpeedIndex + 1) % availableSpeeds.length;
   const speed = availableSpeeds[currentSpeedIndex];
 
+  // 1. Standart HTML5 Sesler
   if (globalAudio) globalAudio.playbackRate = speed;
   if (readerBgAudio) readerBgAudio.playbackRate = speed;
+
+  // 2. YouTube Oynatıcı Kontrolü
   if (ytPlayer && typeof ytPlayer.setPlaybackRate === 'function') {
     ytPlayer.setPlaybackRate(speed);
   }
+  const activeYt = document.getElementById('active-bg-yt');
+  if (activeYt && activeYt.contentWindow) {
+    activeYt.contentWindow.postMessage(JSON.stringify({
+      event: 'command',
+      func: 'setPlaybackRate',
+      args: [speed]
+    }), '*');
+  }
 
+  // Arayüz Buton Metnini Güncelle
   const speedBtn = document.getElementById('player-speed-btn');
   if (speedBtn) speedBtn.innerText = `${speed}x`;
 }
 window.cycleAudioSpeed = cycleAudioSpeed;
+
+// --- OYNATICI SES SEVİYESİ & MUTE KONTROLÜ (GÜÇLENDİRİLMİŞ) ---
+let lastVolume = 0.8;
+
+function changePlayerVolume(val) {
+  const vol = parseFloat(val);
+  lastVolume = vol > 0 ? vol : lastVolume;
+
+  // 1. HTML5 Global Audio
+  if (globalAudio) {
+    globalAudio.volume = vol;
+    globalAudio.muted = (vol === 0);
+  }
+
+  // 2. YouTube Kontrolü (ytPlayer Nesnesi)
+  if (ytPlayer && typeof ytPlayer.setVolume === 'function') {
+    if (vol === 0) {
+      ytPlayer.mute();
+    } else {
+      ytPlayer.unMute();
+      ytPlayer.setVolume(vol * 100);
+    }
+  }
+
+  // 3. YouTube iframe postMessage Kontrolü (Fallback)
+  const activeYt = document.getElementById('active-bg-yt');
+  if (activeYt && activeYt.contentWindow) {
+    if (vol === 0) {
+      activeYt.contentWindow.postMessage('{"event":"command","func":"mute","args":""}', '*');
+    } else {
+      activeYt.contentWindow.postMessage('{"event":"command","func":"unMute","args":""}', '*');
+      activeYt.contentWindow.postMessage(JSON.stringify({
+        event: 'command',
+        func: 'setVolume',
+        args: [vol * 100]
+      }), '*');
+    }
+  }
+
+  // Slider ve İkon Güncelle
+  const slider = document.getElementById('player-volume-slider');
+  if (slider && parseFloat(slider.value) !== vol) {
+    slider.value = vol;
+  }
+  updatePlayerVolumeIcon(vol);
+}
+window.changePlayerVolume = changePlayerVolume;
+
+function togglePlayerMute() {
+  const slider = document.getElementById('player-volume-slider');
+  const currentVol = globalAudio ? globalAudio.volume : (slider ? parseFloat(slider.value) : 0.8);
+  const isMuted = (globalAudio && globalAudio.muted) || currentVol === 0;
+
+  if (isMuted) {
+    const restoreVol = lastVolume > 0 ? lastVolume : 0.8;
+    changePlayerVolume(restoreVol);
+  } else {
+    changePlayerVolume(0);
+  }
+}
+window.togglePlayerMute = togglePlayerMute;
+
+function updatePlayerVolumeIcon(vol) {
+  const icon = document.getElementById('player-volume-icon');
+  if (!icon) return;
+
+  if (vol === 0 || (globalAudio && globalAudio.muted)) {
+    icon.className = 'fa-solid fa-volume-xmark text-rose-500';
+  } else if (vol < 0.4) {
+    icon.className = 'fa-solid fa-volume-low text-rose-300';
+  } else {
+    icon.className = 'fa-solid fa-volume-high text-rose-400';
+  }
+}
 
 // --- OKUYUCU METİN BOYUTU ---
 let currentFontSize = 18;
@@ -277,12 +363,11 @@ window.openInteractionsById = openInteractionsById;
 function openStoryWithInteractions(item) {
   currentStoryItem = item;
   document.getElementById('story-title').innerText = item.title;
- // YENİ HALİ (Tıklanabilir Sanatçı Profili):
-const authorEl = document.getElementById('story-author');
-if (authorEl) {
-  authorEl.innerText = 'Yazar / Şair: ' + (item.author || 'Anonim');
-  authorEl.onclick = () => openAuthorProfile(item.author || 'Anonim');
-}
+  const authorEl = document.getElementById('story-author');
+  if (authorEl) {
+    authorEl.innerText = 'Yazar / Şair: ' + (item.author || 'Anonim');
+    authorEl.onclick = () => openAuthorProfile(item.author || 'Anonim');
+  }
   document.getElementById('story-body').innerText = item.textBody || item.description || 'Eser içeriği bulunamadı.';
   
   document.getElementById('modal-like-count').innerText = item.likes || 0;
@@ -816,14 +901,14 @@ function togglePlayState() {
     if (activeSourceType === 'audio' && globalAudio) globalAudio.pause();
     if (activeSourceType === 'youtube' && ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
     const activeYt = document.getElementById('active-bg-yt');
-    if (activeYt) activeYt.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    if (activeYt && activeYt.contentWindow) activeYt.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
     isPlaying = false;
     updateShuffleBtnIcon(false);
   } else {
     if (activeSourceType === 'audio' && globalAudio && globalAudio.src) globalAudio.play();
     if (activeSourceType === 'youtube' && ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
     const activeYt = document.getElementById('active-bg-yt');
-    if (activeYt) activeYt.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    if (activeYt && activeYt.contentWindow) activeYt.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
     isPlaying = true;
     updateShuffleBtnIcon(true);
   }
@@ -1072,73 +1157,6 @@ function escapeHtml(str) {
   });
 }
 
-// --- BAŞLANGIÇ ÇALIŞTIRICISI ---
-window.addEventListener('DOMContentLoaded', () => {
-  updateFavoriteCounter();
-  loadLiveContents();
-
-  setTimeout(() => {
-    if (!window.YT) {
-      const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.body.appendChild(tag);
-    }
-  }, 2000);
-});
-// --- OYNATICI SES SEVİYESİ & MUTE KONTROLÜ (MP3 + YOUTUBE UYUMLU) ---
-function changePlayerVolume(val) {
-  const vol = parseFloat(val);
-  if (globalAudio) {
-    globalAudio.volume = vol;
-    globalAudio.muted = false;
-  }
-  if (ytPlayer && typeof ytPlayer.setVolume === 'function') {
-    ytPlayer.unMute();
-    ytPlayer.setVolume(vol * 100);
-  }
-  updatePlayerVolumeIcon(vol);
-}
-window.changePlayerVolume = changePlayerVolume;
-
-function togglePlayerMute() {
-  const slider = document.getElementById('player-volume-slider');
-  
-  if (globalAudio) {
-    globalAudio.muted = !globalAudio.muted;
-  }
-  
-  if (ytPlayer && typeof ytPlayer.isMuted === 'function') {
-    if (ytPlayer.isMuted()) {
-      ytPlayer.unMute();
-    } else {
-      ytPlayer.mute();
-    }
-  }
-
-  const isMuted = (globalAudio && globalAudio.muted) || (ytPlayer && typeof ytPlayer.isMuted === 'function' && ytPlayer.isMuted());
-
-  if (isMuted) {
-    updatePlayerVolumeIcon(0);
-  } else {
-    updatePlayerVolumeIcon(globalAudio ? globalAudio.volume : 0.8);
-    if (slider && globalAudio) slider.value = globalAudio.volume;
-  }
-}
-window.togglePlayerMute = togglePlayerMute;
-
-
-function updatePlayerVolumeIcon(vol) {
-  const icon = document.getElementById('player-volume-icon');
-  if (!icon) return;
-  if ((globalAudio && globalAudio.muted) || vol === 0) {
-    icon.className = 'fa-solid fa-volume-xmark text-rose-400';
-  } else if (vol < 0.4) {
-    icon.className = 'fa-solid fa-volume-low text-rose-300';
-  } else {
-    icon.className = 'fa-solid fa-volume-high text-rose-400';
-  }
-}
-
 // --- SANATÇI / YAZAR PROFİL SİSTEMİ ---
 function openAuthorProfile(authorName) {
   if (!authorName) return;
@@ -1186,3 +1204,37 @@ function shareAuthorProfile() {
   }
 }
 window.shareAuthorProfile = shareAuthorProfile;
+
+  // --- BAŞLANGIÇ ÇALIŞTIRICISI & ETKİLEŞİM DİNLEYİCİLERİ ---
+  window.addEventListener('DOMContentLoaded', () => {
+    updateFavoriteCounter();
+    loadLiveContents();
+
+    // Ses Slider'ı Otomatik Dinleme (Mouse & Dokunmatik)
+    const volSlider = document.getElementById('player-volume-slider');
+    if (volSlider) {
+      volSlider.addEventListener('input', (e) => {
+        changePlayerVolume(e.target.value);
+      });
+    }
+
+    // Ses İkonu Tıklama (Mute / Unmute)
+    const volBtn = document.getElementById('player-volume-btn');
+    if (volBtn) {
+      volBtn.onclick = togglePlayerMute;
+    }
+
+    // Hız Butonu Tıklama (0.75x, 1x, 1.25x, 1.5x)
+    const speedBtn = document.getElementById('player-speed-btn');
+    if (speedBtn) {
+      speedBtn.onclick = cycleAudioSpeed;
+    }
+
+    setTimeout(() => {
+      if (!window.YT) {
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.body.appendChild(tag);
+      }
+    }, 2000);
+  });
