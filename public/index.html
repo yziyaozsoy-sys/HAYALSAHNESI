@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hayal Sahnesi | Şiir, Fotoroman, Mini Dizi, Hikaye & Spotify</title>
-<meta name="description" content="Hayal Sahnesi; fotoromanlar, mini diziler, sesli şiir dinletileri, Spotify müzikleri ve edebiyatın buluştuğu dijital sahne.">
+<title>Hayal Sahnesi | Sesli Şiir Dinle, Modern Fotoroman & Mini Diziler</title>
+<meta name="description" content="Hayal Sahnesi; sesli şiir dinletileri, modern fotoroman oku, bağımsız sinematik mini diziler ve edebi hikayelerin buluştuğu dijital kültür sahnesi.">
+<meta name="keywords" content="sesli şiir dinle, modern fotoroman oku, bağımsız mini diziler, sesli edebiyat, türkçe fotoroman, bağımsız şiir dinletisi">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#e11d48">
 
@@ -13,10 +14,10 @@
 <link rel="dns-prefetch" href="https://www.youtube.com">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 
-<!-- Tailwind CSS (Erken Ayrıştırma) -->
+<!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- FontAwesome (Tamamen Asenkron, Ekranı Kilitlemeyen Yükleme) -->
+<!-- FontAwesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
@@ -53,7 +54,7 @@
   .font-serif-stage { font-family: "Georgia", "Cambria", "Times New Roman", serif; }
   .reader-theme-dark { background-color: #0a0d14 !important; color: #f1f5f9 !important; }
   
-  /* CLS & Hız Optimizasyonu */
+  /* Skeleton Pulse */
   @keyframes pulseSlow {
     0%, 100% { opacity: 0.25; }
     50% { opacity: 0.6; }
@@ -66,7 +67,7 @@
     animation: pulseSlow 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   
-  /* FOTOROMAN SAHNE STİLİ: SAĞ VE SOL SİLÜET */
+  /* Fotoroman Sahne Stili */
   .fotoroman-stage {
     display: flex;
     align-items: center;
@@ -80,14 +81,12 @@
     border-radius: 1rem;
     user-select: none;
   }
-  /* Aktif Ana Görsel */
   .fotoroman-page.current {
     opacity: 1;
     transform: scale(1);
     z-index: 10;
     filter: blur(0);
   }
-  /* Sol Silüet (Önceki Sayfa) */
   .fotoroman-page.prev-silhouette {
     position: absolute;
     left: -15%;
@@ -97,7 +96,6 @@
     z-index: 5;
     cursor: pointer;
   }
-  /* Sağ Silüet (Sonraki Sayfa) */
   .fotoroman-page.next-silhouette {
     position: absolute;
     right: -15%;
@@ -113,7 +111,7 @@
   }
 </style>
 
-<!-- Google SEO & Rich Snippets Yapılandırılmış Verisi -->
+<!-- Google SEO & Rich Snippets -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -123,7 +121,7 @@
       "@id": "https://hayalsahnesi.com/#website",
       "url": "https://hayalsahnesi.com/",
       "name": "Hayal Sahnesi",
-      "description": "Sesli şiirler, bağımsız müzikler, fotoromanlar ve mini dizilerle dijital edebiyat sahnesi.",
+      "description": "Sesli şiir dinle, modern fotoroman oku ve bağımsız mini dizilerle edebiyatı dijital sahnede yaşa.",
       "publisher": {
         "@type": "Organization",
         "name": "Hayal Sahnesi"
@@ -131,8 +129,8 @@
     },
     {
       "@type": "CreativeWorkSeries",
-      "name": "Hayal Sahnesi Dijital Sanat Koleksiyonu",
-      "genre": ["Şiir", "Fotoroman", "Müzik", "Edebi Hikaye"],
+      "name": "Hayal Sahnesi Edebiyat ve Sanat Koleksiyonu",
+      "genre": ["Sesli Şiir", "Modern Fotoroman", "Bağımsız Müzik", "Mini Dizi", "Edebi Hikaye"],
       "inLanguage": "tr"
     }
   ]
@@ -141,38 +139,44 @@
 </head>
 <body class="min-h-screen flex flex-col selection:bg-rose-600 selection:text-white relative">
 
-<!-- MASAÜSTÜ REKLAM KANATLARI (160x600) -->
-<aside class="hidden 2xl:flex fixed left-4 top-24 w-[160px] h-[600px] z-20" aria-label="Sol Reklam">
-  <div id="ad-skyscraper-left" class="w-full h-full rounded-2xl border border-white/10 bg-slate-900/80 overflow-hidden flex flex-col items-center justify-between p-4 text-center shadow-lg">
-    <a href="javascript:void(0)" onclick="openModal('modal-contact')" class="w-full h-full flex flex-col items-center justify-between py-6 group cursor-pointer">
-      <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Sponsor</span>
-      <div class="space-y-3">
-        <div class="w-12 h-12 rounded-2xl stage-gradient mx-auto flex items-center justify-center text-white text-xl shadow-lg shadow-rose-900/40 group-hover:scale-110 transition">
-          <i class="fa-solid fa-masks-theater"></i>
-        </div>
-        <p class="text-xs font-black text-white tracking-wider uppercase leading-tight">HAYAL<br>SAHNESİ</p>
-        <div class="w-8 h-0.5 bg-rose-500/50 mx-auto"></div>
-        <p class="text-[10px] text-slate-400 leading-relaxed">Özel Kule Reklam<br><span class="text-[9px] text-rose-400 font-mono">160x600</span></p>
-      </div>
-      <span class="text-[10px] text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-1 rounded-lg font-bold group-hover:bg-rose-600 group-hover:text-white transition">İlan Ver →</span>
-    </a>
+<!-- MASAÜSTÜ SANAT AFİŞLERİ (160x600 EDEBİ KANATLAR) -->
+<aside class="hidden 2xl:flex fixed left-4 top-24 w-[160px] h-[600px] z-20" aria-label="Sol Sahne Afişi">
+  <div class="w-full h-full rounded-2xl border border-rose-500/20 bg-gradient-to-b from-slate-900/95 via-rose-950/20 to-slate-950/95 overflow-hidden flex flex-col items-center justify-between p-4 text-center shadow-xl backdrop-blur-md">
+    <div class="space-y-2">
+      <span class="text-[9px] font-bold text-rose-400 uppercase tracking-widest flex items-center justify-center gap-1">
+        <i class="fa-solid fa-feather text-[10px]"></i> Günün Mısrası
+      </span>
+      <div class="w-8 h-0.5 bg-rose-500/40 mx-auto"></div>
+    </div>
+    <div class="my-auto space-y-3 px-1">
+      <p class="font-serif-stage italic text-xs text-slate-200 leading-relaxed">
+        "Bir perde aralanır gecede,<br>kelimeler düşer sahneye sessizce..."
+      </p>
+      <p class="text-[10px] text-rose-300 font-bold uppercase tracking-wider">— Sahne Şiirleri</p>
+    </div>
+    <button onclick="switchCategory('poem')" class="text-[10px] text-slate-300 hover:text-white bg-rose-600/20 hover:bg-rose-600 border border-rose-500/30 px-3 py-1.5 rounded-xl font-bold transition w-full">
+      Şiirleri Dinle →
+    </button>
   </div>
 </aside>
 
-<aside class="hidden 2xl:flex fixed right-4 top-24 w-[160px] h-[600px] z-20" aria-label="Sağ Reklam">
-  <div id="ad-skyscraper-right" class="w-full h-full rounded-2xl border border-white/10 bg-slate-900/80 overflow-hidden flex flex-col items-center justify-between p-4 text-center shadow-lg">
-    <a href="javascript:void(0)" onclick="openModal('modal-contact')" class="w-full h-full flex flex-col items-center justify-between py-6 group cursor-pointer">
-      <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Sponsor</span>
-      <div class="space-y-3">
-        <div class="w-12 h-12 rounded-2xl stage-gradient mx-auto flex items-center justify-center text-white text-xl shadow-lg shadow-rose-900/40 group-hover:scale-110 transition">
-          <i class="fa-solid fa-masks-theater"></i>
-        </div>
-        <p class="text-xs font-black text-white tracking-wider uppercase leading-tight">HAYAL<br>SAHNESİ</p>
-        <div class="w-8 h-0.5 bg-rose-500/50 mx-auto"></div>
-        <p class="text-[10px] text-slate-400 leading-relaxed">Özel Kule Reklam<br><span class="text-[9px] text-rose-400 font-mono">160x600</span></p>
-      </div>
-      <span class="text-[10px] text-rose-400 bg-rose-500/10 border border-rose-500/20 px-2 py-1 rounded-lg font-bold group-hover:bg-rose-600 group-hover:text-white transition">İlan Ver →</span>
-    </a>
+<aside class="hidden 2xl:flex fixed right-4 top-24 w-[160px] h-[600px] z-20" aria-label="Sağ Sahne Afişi">
+  <div class="w-full h-full rounded-2xl border border-amber-500/20 bg-gradient-to-b from-slate-900/95 via-amber-950/20 to-slate-950/95 overflow-hidden flex flex-col items-center justify-between p-4 text-center shadow-xl backdrop-blur-md">
+    <div class="space-y-2">
+      <span class="text-[9px] font-bold text-amber-400 uppercase tracking-widest flex items-center justify-center gap-1">
+        <i class="fa-solid fa-camera-retro text-[10px]"></i> Sinematik Kare
+      </span>
+      <div class="w-8 h-0.5 bg-amber-500/40 mx-auto"></div>
+    </div>
+    <div class="my-auto space-y-3 px-1">
+      <p class="font-serif-stage italic text-xs text-slate-200 leading-relaxed">
+        "Her kare bir sır taşır,<br>gözlerin gördüğü kelimelerden fazlasıdır."
+      </p>
+      <p class="text-[10px] text-amber-300 font-bold uppercase tracking-wider">— Fotoroman Serisi</p>
+    </div>
+    <button onclick="switchCategory('photoroman')" class="text-[10px] text-slate-300 hover:text-white bg-amber-500/20 hover:bg-amber-500 hover:text-slate-950 border border-amber-500/30 px-3 py-1.5 rounded-xl font-bold transition w-full">
+      Fotoroman Oku →
+    </button>
   </div>
 </aside>
 
@@ -192,8 +196,8 @@
 
   <!-- Sağ Düğmeler -->
   <div class="flex items-center space-x-2">
-    <!-- PWA Uygulama Yükle Butonu -->
-    <button id="pwa-install-btn" onclick="handlePwaInstallClick()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs px-2.5 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
+    <!-- PWA Uygulama Yükle Butonu (aria-label ile 100/100 Erişilebilirlik) -->
+    <button id="pwa-install-btn" aria-label="Hayal Sahnesi Uygulamasını Yükle" onclick="handlePwaInstallClick()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs px-2.5 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
       <i class="fa-solid fa-mobile-screen text-rose-400"></i> <span class="hidden sm:inline">Uygulama</span>
     </button>
 
@@ -223,13 +227,13 @@
       <i class="fa-solid fa-sparkles mr-1.5 text-rose-400"></i> Vitrin
     </button>
     <button type="button" onclick="switchCategory('photoroman')" id="tab-photoroman" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-200 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
-      <i class="fa-solid fa-camera-retro mr-1.5 text-amber-400"></i> Fotoroman
+      <i class="fa-solid fa-camera-retro mr-1.5 text-amber-400"></i> Modern Fotoroman
     </button>
     <button type="button" onclick="switchCategory('series')" id="tab-series" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-200 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
-      <i class="fa-solid fa-film mr-1.5 text-purple-400"></i> Mini Diziler
+      <i class="fa-solid fa-film mr-1.5 text-purple-400"></i> Bağımsız Mini Diziler
     </button>
     <button type="button" onclick="switchCategory('poem')" id="tab-poem" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-200 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
-      <i class="fa-solid fa-feather mr-1.5 text-rose-400"></i> Şiir & Dinleti
+      <i class="fa-solid fa-feather mr-1.5 text-rose-400"></i> Sesli Şiir Dinle
     </button>
     <button type="button" onclick="switchCategory('story')" id="tab-story" class="tab-btn px-4 py-2 rounded-full text-xs sm:text-sm font-medium text-slate-200 hover:text-white transition border border-white/10 hover:border-rose-500 whitespace-nowrap">
       <i class="fa-solid fa-book-open mr-1.5 text-emerald-400"></i> Edebi Hikayeler
@@ -248,14 +252,14 @@
     <div class="relative overflow-hidden rounded-3xl card-stage p-6 sm:p-10 my-4 border border-rose-500/20 text-center curtain-glow min-h-[220px] flex flex-col justify-center">
       <div class="max-w-2xl mx-auto space-y-3">
         <span class="inline-block px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 text-xs font-semibold tracking-wide border border-rose-500/20">
-          DİJİTAL SAHNE & EDEBİYAT
+          DİJİTAL SAHNE & BAĞIMSIZ EDEBİYAT
         </span>
         <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">"Kelimeler Perdenin Karanlığına Dokunur"</h2>
         <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
-          Sesli şiir dinletileri, sinematik fotoroman kareleri, mini diziler ve Spotify melodilerinin buluştuğu bağımsız sahne.
+          Sesli şiir dinletileri, modern fotoroman oku deneyimi ve sinematik mini diziler tek bir sahnede birleşiyor.
         </p>
         <div class="flex items-center justify-center gap-3 pt-2">
-          <button onclick="playPoemPlaylist()" class="stage-gradient px-4 py-2 rounded-xl text-xs font-bold text-white shadow-lg shadow-rose-900/40">Şiirleri Dinle</button>
+          <button onclick="playPoemPlaylist()" class="stage-gradient px-4 py-2 rounded-xl text-xs font-bold text-white shadow-lg shadow-rose-900/40">Sesli Şiirleri Dinle</button>
           <button onclick="playRandomMusicList()" class="bg-slate-900 hover:bg-slate-800 text-slate-100 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
             <i class="fa-solid fa-shuffle text-rose-400"></i> Müzikleri Karışık Çal
           </button>
@@ -263,21 +267,21 @@
       </div>
     </div>
 
-    <!-- YATAY REKLAM KUŞAĞI -->
+    <!-- YATAY SANAT PANOSU (Kuru Reklam Yerine Estetik Galeri) -->
     <div class="my-6 max-w-5xl mx-auto">
-      <div id="ad-leaderboard" class="w-full h-[90px] rounded-2xl border border-white/10 bg-slate-900/80 overflow-hidden flex items-center justify-center shadow-inner">
-        <a href="javascript:void(0)" onclick="openModal('modal-contact')" class="w-full h-full flex items-center justify-center gap-3 px-4 text-center group cursor-pointer">
-          <div class="w-10 h-10 rounded-xl stage-gradient flex items-center justify-center text-white text-lg shadow-md group-hover:scale-105 transition">
-            <i class="fa-solid fa-masks-theater"></i>
+      <div id="ad-leaderboard" class="w-full h-[90px] rounded-2xl border border-rose-500/20 bg-gradient-to-r from-slate-950 via-rose-950/30 to-slate-950 overflow-hidden flex items-center justify-between px-6 shadow-inner">
+        <div class="flex items-center gap-4">
+          <div class="w-10 h-10 rounded-xl stage-gradient flex items-center justify-center text-white text-base shadow-md">
+            <i class="fa-solid fa-quote-left"></i>
           </div>
-          <div class="text-left">
-            <p class="text-xs font-bold text-white tracking-wide group-hover:text-rose-400 transition flex items-center gap-1.5">
-              HAYAL SAHNESİ SPONSORLUK
-              <span class="text-[9px] bg-rose-600/30 text-rose-300 px-1.5 py-0.5 rounded font-mono">728x90</span>
-            </p>
-            <p class="text-[11px] text-slate-400">Markanızı veya sanat eserinizi sahnemizde sergileyin • İlan Vermek İçin Tıklayın</p>
+          <div>
+            <p class="text-xs font-serif-stage italic text-slate-200">"Söz bittiğinde sahne başlar, perde hiç kapanmaz."</p>
+            <p class="text-[11px] text-rose-400 font-bold">Hayal Sahnesi Kolektif Sanat Alanı</p>
           </div>
-        </a>
+        </div>
+        <button onclick="openModal('modal-contact')" class="hidden sm:flex text-xs px-3.5 py-1.5 rounded-xl border border-rose-500/30 hover:bg-rose-600 text-rose-200 hover:text-white font-bold transition">
+          Eserini Gönder →
+        </button>
       </div>
     </div>
 
@@ -300,8 +304,8 @@
   <!-- 2. FOTOROMANLAR -->
   <section id="panel-photoroman" class="category-panel hidden">
     <div class="flex items-center justify-between my-6 border-b border-white/10 pb-3">
-      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-camera-retro text-amber-400"></i> Fotoromanlar</h2>
-      <span class="text-xs text-slate-300">Görsel & Sesli Hikayeler</span>
+      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-camera-retro text-amber-400"></i> Modern Fotoromanlar</h2>
+      <span class="text-xs text-slate-300">Görsel & Müzikli Hikayeler</span>
     </div>
     <div id="photoroman-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]"></div>
   </section>
@@ -309,7 +313,7 @@
   <!-- 3. MİNİ DİZİLER -->
   <section id="panel-series" class="category-panel hidden">
     <div class="flex items-center justify-between my-6 border-b border-white/10 pb-3">
-      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-film text-purple-400"></i> Mini Diziler</h2>
+      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-film text-purple-400"></i> Bağımsız Mini Diziler</h2>
       <span class="text-xs text-slate-300">Sinematik Bölümler</span>
     </div>
     <div id="series-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]"></div>
@@ -318,7 +322,7 @@
   <!-- 4. ŞİİR VE DİNLETİ -->
   <section id="panel-poem" class="category-panel hidden">
     <div class="flex items-center justify-between my-6 border-b border-white/10 pb-3">
-      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-feather text-rose-400"></i> Sahne Şiirleri & Dinletiler</h2>
+      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-feather text-rose-400"></i> Sesli Şiir Dinletileri</h2>
       <button onclick="playPoemPlaylist()" type="button" class="px-3.5 py-1.5 rounded-lg bg-rose-600/20 hover:bg-rose-600 text-rose-200 hover:text-white border border-rose-500/30 text-xs font-bold transition flex items-center gap-1.5">
         <i class="fa-solid fa-headphones"></i> Şiirleri Dinle
       </button>
@@ -348,9 +352,9 @@
 
 </main>
 
-<!-- SABİT SAHNE ÇALARI -->
+<!-- SABİT SAHNE ÇALARI (SES KONTROL VE HIZ AYARLI) -->
 <aside class="sticky bottom-0 z-30 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800 px-4 sm:px-6 py-2.5 flex items-center justify-between">
-  <div class="flex items-center space-x-3 overflow-hidden max-w-[40%] sm:max-w-[45%]">
+  <div class="flex items-center space-x-3 overflow-hidden max-w-[35%] sm:max-w-[40%]">
     <div class="w-9 h-9 bg-rose-950/60 rounded-lg border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
       <i id="player-icon" class="fa-solid fa-compact-disc"></i>
     </div>
@@ -360,26 +364,34 @@
     </div>
   </div>
 
+  <!-- Oynatıcı Düğmeleri -->
   <div class="flex items-center space-x-2 sm:space-x-4 text-slate-300">
-    <button type="button" onclick="playPrevShuffleTrack()" title="Önceki" class="w-8 h-8 rounded-full flex items-center justify-center hover:text-white hover:bg-slate-800 transition">
+    <button type="button" onclick="playPrevShuffleTrack()" title="Önceki" aria-label="Önceki Eser" class="w-8 h-8 rounded-full flex items-center justify-center hover:text-white hover:bg-slate-800 transition">
       <i class="fa-solid fa-backward-step text-xs"></i>
     </button>
 
-    <button onclick="togglePlayState()" id="play-pause-btn" type="button" title="Oynat / Duraklat" class="w-9 h-9 rounded-full bg-rose-600 text-white flex items-center justify-center hover:scale-105 transition shadow-md shadow-rose-600/30 font-bold">
+    <button onclick="togglePlayState()" id="play-pause-btn" type="button" title="Oynat / Duraklat" aria-label="Oynat veya Duraklat" class="w-9 h-9 rounded-full bg-rose-600 text-white flex items-center justify-center hover:scale-105 transition shadow-md shadow-rose-600/30 font-bold">
       <i class="fa-solid fa-play text-xs"></i>
     </button>
 
-    <button type="button" onclick="playNextShuffleTrack()" title="Sonraki" class="w-8 h-8 rounded-full flex items-center justify-center hover:text-white hover:bg-slate-800 transition">
+    <button type="button" onclick="playNextShuffleTrack()" title="Sonraki" aria-label="Sonraki Eser" class="w-8 h-8 rounded-full flex items-center justify-center hover:text-white hover:bg-slate-800 transition">
       <i class="fa-solid fa-forward-step text-xs"></i>
     </button>
 
-    <button id="player-speed-btn" onclick="cycleAudioSpeed()" type="button" title="Oynatma Hızı" class="px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 hover:border-rose-500 text-[11px] font-mono font-bold text-rose-400 transition">
+    <button id="player-speed-btn" onclick="cycleAudioSpeed()" type="button" title="Oynatma Hızı" aria-label="Oynatma Hızı Değiştir" class="px-2 py-1 rounded-lg bg-slate-900 border border-slate-700 hover:border-rose-500 text-[11px] font-mono font-bold text-rose-400 transition">
       1.0x
     </button>
   </div>
 
-  <div class="hidden sm:flex items-center space-x-2 text-slate-300 text-xs">
-    <span class="text-[10px] font-mono text-emerald-400">● Sahne Canlı</span>
+  <!-- SES SEVİYESİ VE MUTE AYARI -->
+  <div class="flex items-center space-x-2 text-slate-300">
+    <div class="hidden md:flex items-center gap-2 bg-slate-900/90 px-2.5 py-1.5 rounded-xl border border-white/5">
+      <button id="player-mute-btn" onclick="togglePlayerMute()" aria-label="Sesi Kapat / Aç" class="text-rose-400 hover:text-white transition text-xs flex items-center justify-center w-4 h-4">
+        <i id="player-volume-icon" class="fa-solid fa-volume-high"></i>
+      </button>
+      <input id="player-volume-slider" oninput="changePlayerVolume(this.value)" aria-label="Ses Seviyesi" type="range" min="0" max="1" step="0.05" value="0.8" class="w-16 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rose-500">
+    </div>
+    <span class="text-[10px] font-mono text-emerald-400 hidden sm:inline">● Canlı</span>
   </div>
 </aside>
 
@@ -387,6 +399,38 @@
 <audio id="reader-bg-audio" loop class="hidden"></audio>
 <div id="hidden-yt-container" class="hidden pointer-events-none opacity-0 fixed -bottom-96 -right-96">
   <div id="yt-player"></div>
+</div>
+
+<!-- MODAL: SANATÇI / YAZAR PROFİL KARTI -->
+<div id="modal-author" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="card-stage border border-rose-500/30 rounded-3xl p-6 sm:p-8 max-w-lg w-full space-y-5 shadow-2xl relative">
+    <button onclick="closeModal('modal-author')" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+    
+    <div class="flex items-center space-x-4 border-b border-white/10 pb-4">
+      <div class="w-16 h-16 rounded-2xl stage-gradient flex items-center justify-center text-white text-2xl font-black shadow-lg">
+        <span id="author-modal-avatar">Y</span>
+      </div>
+      <div>
+        <span class="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Sahne Sanatçısı</span>
+        <h3 id="author-modal-name" class="text-lg font-black text-white">Yazar Adı</h3>
+        <p id="author-modal-count" class="text-xs text-slate-300">0 Eser Sahnelendi</p>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Sanatçının Eserleri</h4>
+      <div id="author-modal-works" class="max-h-52 overflow-y-auto space-y-2 pr-1">
+        <!-- Eserler buraya JS ile dolacak -->
+      </div>
+    </div>
+
+    <div class="pt-2 flex items-center justify-between border-t border-white/10">
+      <button onclick="shareAuthorProfile()" class="text-xs text-rose-300 hover:text-white bg-rose-600/20 hover:bg-rose-600 border border-rose-500/30 px-3.5 py-2 rounded-xl font-bold transition flex items-center gap-1.5">
+        <i class="fa-solid fa-share-nodes"></i> Profili Paylaş
+      </button>
+      <button onclick="closeModal('modal-author')" class="text-xs text-slate-400 hover:text-white">Kapat</button>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL: PWA KURULUM REHBERİ -->
@@ -450,7 +494,7 @@
     <div class="px-4 sm:px-6 py-3 border-b border-white/10 flex flex-wrap items-center justify-between gap-3 bg-white/5 shrink-0">
       <div>
         <h3 id="story-title" class="font-bold text-base sm:text-lg tracking-tight text-white">Eser Başlığı</h3>
-        <p id="story-author" class="text-xs text-rose-400 font-semibold"></p>
+        <p id="story-author" class="text-xs text-rose-400 font-semibold cursor-pointer hover:underline"></p>
       </div>
       <div class="flex items-center gap-2 sm:gap-3">
         <button id="modal-story-fav-btn" onclick="toggleActiveStoryFavorite()" title="Kütüphaneye Ekle / Kaldır" class="w-8 h-8 rounded-xl bg-slate-900 border border-slate-700 text-rose-400 hover:bg-rose-600 hover:text-white transition flex items-center justify-center text-xs">
@@ -542,7 +586,7 @@
       </div>
       <div>
         <h3 id="reader-title" class="font-bold text-sm sm:text-base text-white">Fotoroman</h3>
-        <p id="reader-info" class="text-[11px] text-amber-400 font-medium">Sahne Perdesi</p>
+        <p id="reader-info" class="text-[11px] text-amber-400 font-medium cursor-pointer hover:underline">Sahne Perdesi</p>
       </div>
     </div>
     
@@ -563,24 +607,14 @@
   </div>
 
   <div class="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto w-full py-3 space-y-4">
-    <!-- Fotoroman Sahnesi: Sağ ve Sol Silüet Alanı -->
     <div class="fotoroman-stage relative w-full h-[50vh] sm:h-[60vh] bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden shadow-2xl">
-      
-      <!-- Sol Silüet (Önceki Sayfa) -->
       <img id="reader-img-prev" onclick="prevPhotoPage()" src="" alt="Önceki Kare" class="fotoroman-page prev-silhouette max-h-[85%] max-w-[65%] object-contain hidden" />
-
-      <!-- Aktif Kare (Merkezde Net) -->
       <img id="reader-img" src="" alt="Fotoroman Karesi" decoding="async" class="fotoroman-page current max-h-full max-w-[85%] object-contain transition-all duration-300 shadow-2xl">
-
-      <!-- Sağ Silüet (Sonraki Sayfa) -->
       <img id="reader-img-next" onclick="nextPhotoPage()" src="" alt="Sonraki Kare" class="fotoroman-page next-silhouette max-h-[85%] max-w-[65%] object-contain hidden" />
       
-      <!-- Sol / Geri Butonu -->
       <button onclick="prevPhotoPage()" type="button" title="Önceki Kare" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 hover:bg-amber-500 hover:text-slate-950 text-white flex items-center justify-center transition border border-white/10 shadow-lg backdrop-blur-sm z-20">
         <i class="fa-solid fa-chevron-left text-base"></i>
       </button>
-
-      <!-- Sağ / İleri Butonu -->
       <button onclick="nextPhotoPage()" type="button" title="Sonraki Kare" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 hover:bg-amber-500 hover:text-slate-950 text-white flex items-center justify-center transition border border-white/10 shadow-lg backdrop-blur-sm z-20">
         <i class="fa-solid fa-chevron-right text-base"></i>
       </button>
@@ -641,7 +675,7 @@
   </div>
 </div>
 
-<!-- MODAL: MİKRO BAĞIŞ & DESTEK (KREOSUS ODAKLI) -->
+<!-- MODAL: MİKRO BAĞIŞ & DESTEK -->
 <div id="modal-donate" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
   <div class="card-stage border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full space-y-5 text-center shadow-2xl">
     <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl mx-auto shadow-lg shadow-amber-900/30">
@@ -663,7 +697,7 @@
       </a>
 
       <a href="javascript:void(0)" onclick="openModal('modal-contact'); closeModal('modal-donate');" class="w-full py-2.5 px-4 rounded-xl bg-slate-900/80 border border-white/5 text-slate-400 hover:text-white text-xs block transition">
-        Kurumsal Sponsorluk & İlan İçin İletişime Geçin →
+        Kolektife Katıl & Eser Gönder →
       </a>
     </div>
 
@@ -699,36 +733,36 @@
     <form onsubmit="handleContact(event)" class="space-y-3">
       <div>
         <label class="block text-[11px] font-semibold text-slate-200 mb-1">Adınız / Mahlasınız *</label>
-        <input id="contact-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
-      </div>
-      <div>
-        <label class="block text-[11px] font-semibold text-slate-200 mb-1">Eser Başlığı *</label>
-        <input id="contact-title" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserin adı...">
-      </div>
-      <div class="grid grid-cols-2 gap-2">
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-200 mb-1">Eser Türü *</label>
-          <select id="contact-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
-            <option value="poem">Şiir & Dinleti</option>
-            <option value="story">Hikaye</option>
-            <option value="music">Müzik / Spotify</option>
-            <option value="series">Mini Dizi</option>
-            <option value="photoroman">Fotoroman</option>
-          </select>
+        <input id="contact          <input id="contact-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
         </div>
         <div>
-          <label class="block text-[11px] font-semibold text-slate-200 mb-1">Medya Linki (Spotify / YouTube)</label>
-          <input id="contact-media-url" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Spotify veya YouTube bağlantısı">
+          <label class="block text-[11px] font-semibold text-slate-200 mb-1">Eser Başlığı *</label>
+          <input id="contact-title" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserin adı...">
         </div>
-      </div>
-      <div>
-        <label class="block text-[11px] font-semibold text-slate-200 mb-1">Eser Metni / Şiir Mısraları / Açıklama *</label>
-        <textarea id="contact-text-body" required rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserinizin tüm sözlerini buraya yazınız..."></textarea>
-      </div>
-      <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-200 mb-1">Eser Türü *</label>
+            <select id="contact-type" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+              <option value="poem">Şiir & Dinleti</option>
+              <option value="story">Hikaye</option>
+              <option value="music">Müzik / Spotify</option>
+              <option value="series">Mini Dizi</option>
+              <option value="photoroman">Modern Fotoroman</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-200 mb-1">Medya Linki (Spotify / YouTube)</label>
+            <input id="contact-media-url" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-2.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Spotify veya YouTube bağlantısı">
+          </div>
+        </div>
         <div>
-          <label class="block text-[11px] font-semibold text-slate-200 mb-1">E-Posta Adresiniz *</label>
-          <input id="contact-email" required type="email" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="ornek@mail.com">
+          <label class="block text-[11px] font-semibold text-slate-200 mb-1">Eser Metni / Şiir Mısraları / Açıklama *</label>
+          <textarea id="contact-text-body" required rows="4" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserinizin tüm sözlerini buraya yazınız..."></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-200 mb-1">E-Posta Adresiniz *</label>
+            <input id="contact-email" required type="email" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="ornek@mail.com">
           </div>
           <div>
             <label class="block text-[11px] font-semibold text-slate-200 mb-1">Telefon Numaranız *</label>
@@ -751,9 +785,7 @@
     </div>
   </div>
 
- <!-- Ana Uygulama Scripti (Asenkron ve Önbelleklenebilir) -->
-<script src="/app.js" defer></script>
+  <!-- Ana Uygulama Scripti (Asenkron ve Önbelleklenebilir) -->
+  <script src="/app.js" defer></script>
 </body>
 </html>
-
- 

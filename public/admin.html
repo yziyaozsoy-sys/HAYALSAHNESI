@@ -83,7 +83,7 @@
       <a href="index.html" class="hover:text-rose-400 transition flex items-center gap-1">
         <i class="fa-solid fa-arrow-left"></i> Vitrine Dön
       </a>
-      <span class="font-mono text-[10px]">v4.0 Moderasyon & Sansür Filtresi</span>
+      <span class="font-mono text-[10px]">v4.2 Şair & Yazar Masası</span>
     </div>
   </div>
 </div>
@@ -122,13 +122,19 @@
           <span>Eser Kürasyonu</span>
         </button>
 
-        <!-- Yeni: Yorumlar Masası -->
+        <!-- YENİ: ŞAİR & YAZAR YÖNETİM MASASI -->
+        <button onclick="switchAdminSection('authors')" id="nav-authors" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
+          <i class="fa-solid fa-feather-pointed text-sm text-amber-400"></i>
+          <span>Şair & Yazar Masası</span>
+        </button>
+
+        <!-- Yorumlar Masası -->
         <button onclick="switchAdminSection('comments')" id="nav-comments" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
           <i class="fa-solid fa-comments text-sm text-emerald-400"></i>
           <span>Yorumlar & Onay</span>
         </button>
 
-        <!-- Yeni: Yasaklı Kelime Filtresi -->
+        <!-- Yasaklı Kelime Filtresi -->
         <button onclick="switchAdminSection('badwords')" id="nav-badwords" class="w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-900 transition">
           <i class="fa-solid fa-ban text-sm text-rose-400"></i>
           <span>Yasaklı Kelimeler</span>
@@ -270,13 +276,13 @@
             </div>
 
             <div>
-              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yazar / Rol *</label>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Yazar / Şair Adı *</label>
               <input id="form-author" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
             </div>
 
             <div id="standard-media-fields" class="space-y-3">
               <div>
-                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Medya Bağlantısı (YouTube / MP3)</label>
+                <label class="block text-[11px] font-semibold text-slate-300 mb-1">Medya Bağlantısı (YouTube / MP3 / Spotify)</label>
                 <input id="form-media-url" type="url" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="https://youtu.be/...">
               </div>
 
@@ -386,7 +392,53 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- BÖLÜM 2: YORUMLAR & MODERASYON MASASI (YENİ) -->
+    <!-- BÖLÜM: ŞAİR & YAZAR MASASI (YENİ!)        -->
+    <!-- ========================================== -->
+    <section id="section-authors" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-feather-pointed text-amber-400"></i> Şair & Yazar Portföy Masası
+          </h2>
+          <p class="text-xs text-slate-400">Sahnede eseri bulunan yazar ve şairleri denetleyin, eserlerini topluca listeleyin veya yazar adını tek tıkla tüm eserlerde güncelleyin.</p>
+        </div>
+        <button onclick="renderAuthorsTable()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2">
+          <i class="fa-solid fa-rotate-right"></i> Yazarları Yenile
+        </button>
+      </div>
+
+      <div class="card-stage rounded-2xl border border-slate-800 overflow-hidden flex flex-col">
+        <div class="p-4 border-b border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-950/40">
+          <h4 class="font-bold text-white text-xs uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-users text-amber-400"></i> Kayıtlı Şair & Yazarlar (<span id="authors-count">0</span>)
+          </h4>
+          <div class="relative w-full sm:w-56">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+            <input id="authors-search-input" oninput="filterAuthorsTable()" type="text" placeholder="Yazar adı ara..." class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500">
+          </div>
+        </div>
+
+        <div class="overflow-x-auto flex-1">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-slate-950/80 text-slate-400 font-semibold border-b border-slate-800">
+              <tr>
+                <th class="p-3.5">Sanatçı / Yazar</th>
+                <th class="p-3.5">Toplam Eser Sayısı</th>
+                <th class="p-3.5">Eser Dağılımı</th>
+                <th class="p-3.5">Toplam Beğeni</th>
+                <th class="p-3.5 text-right">İşlemler</th>
+              </tr>
+            </thead>
+            <tbody id="authors-table-body" class="divide-y divide-slate-800/60 font-medium">
+              <tr><td colspan="5" class="p-6 text-center text-slate-500"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Şair ve yazarlar listeleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- BÖLÜM 2: YORUMLAR & MODERASYON MASASI     -->
     <!-- ========================================== -->
     <section id="section-comments" class="hidden space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
@@ -422,7 +474,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- BÖLÜM 3: YASAKLI KELİMELER / HAKARET FİLTRESİ (YENİ) -->
+    <!-- BÖLÜM 3: YASAKLI KELİMELER / HAKARET FİLTRESİ -->
     <!-- ========================================== -->
     <section id="section-badwords" class="hidden space-y-6">
       <div class="border-b border-slate-800 pb-4">
@@ -433,7 +485,6 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Sol Panel: Kelime Ekleme Formu -->
         <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-1">
           <h3 class="font-bold text-white text-sm flex items-center gap-2 border-b border-slate-800 pb-3">
             <i class="fa-solid fa-plus-circle text-rose-400"></i> Yasaklı Kelime Ekle
@@ -450,7 +501,6 @@
           </form>
         </div>
 
-        <!-- Sağ Panel: Aktif Yasaklı Kelimeler -->
         <div class="card-stage p-6 rounded-2xl border border-slate-800 space-y-4 lg:col-span-2 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -470,7 +520,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- BÖLÜM 4: REKLAM MASASI (GOOGLE, HTML & WEBP BANNER) -->
+    <!-- BÖLÜM 4: REKLAM MASASI                    -->
     <!-- ========================================== -->
     <section id="section-ads" class="hidden space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
@@ -507,7 +557,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- BÖLÜM 5: OTOMATİK WEBP GÖRSEL MASASI -->
+    <!-- BÖLÜM 5: WEBP GÖRSEL MASASI               -->
     <!-- ========================================== -->
     <section id="section-uploader" class="hidden space-y-6">
       <div class="border-b border-slate-800 pb-4">
@@ -553,7 +603,7 @@
     </section>
 
     <!-- ========================================== -->
-    <!-- BÖLÜM 6: PERSONEL VE EDİTÖR YÖNETİMİ -->
+    <!-- BÖLÜM 6: PERSONEL VE EDİTÖR YÖNETİMİ       -->
     <!-- ========================================== -->
     <section id="section-staff" class="hidden space-y-6">
       <div class="border-b border-slate-800 pb-4">
@@ -636,6 +686,78 @@
 
   </main>
 
+</div>
+
+<!-- ================= MODAL: YAZAR ESER LİSTESİ & İNCELEME ================= -->
+<div id="modal-author-inspect" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="card-stage border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-2xl w-full space-y-4 max-h-[90vh] flex flex-col shadow-2xl">
+    <div class="flex justify-between items-center border-b border-white/10 pb-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-base">
+          <i class="fa-solid fa-feather"></i>
+        </div>
+        <div>
+          <h3 id="author-inspect-name" class="font-bold text-base text-white">Yazar Adı</h3>
+          <p id="author-inspect-stats" class="text-xs text-amber-400">0 Eser Sahnelendi</p>
+        </div>
+      </div>
+      <button onclick="closeModal('modal-author-inspect')" class="text-slate-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="flex items-center justify-between gap-2 bg-slate-950/80 p-3 rounded-2xl border border-white/5">
+      <span class="text-xs text-slate-300">Bu sanatçı adına doğrudan yeni bir eser ekleyin:</span>
+      <button onclick="createNewWorkForAuthor()" class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition flex items-center gap-1.5 shadow">
+        <i class="fa-solid fa-plus"></i> Eser Ekle
+      </button>
+    </div>
+
+    <div class="space-y-2 flex-1 overflow-y-auto pr-1">
+      <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Sanatçının Eser Havuzu</h4>
+      <div id="author-inspect-works-list" class="space-y-2">
+        <!-- JS ile doldurulacak -->
+      </div>
+    </div>
+
+    <div class="pt-3 border-t border-white/10 flex justify-end">
+      <button onclick="closeModal('modal-author-inspect')" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold transition">
+        Kapat
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODAL: YAZAR ADI TOPLU DÜZENLEME ================= -->
+<div id="modal-author-rename" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div class="card-stage border border-amber-500/30 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
+    <div class="flex justify-between items-center border-b border-white/10 pb-3">
+      <h4 class="font-bold text-white text-sm flex items-center gap-2">
+        <i class="fa-solid fa-pen text-amber-400"></i> Şair / Yazar Adını Güncelle
+      </h4>
+      <button onclick="closeModal('modal-author-rename')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <p class="text-xs text-slate-300 leading-relaxed">
+      Bu yazarın adını değiştirdiğinizde, sistemdeki <strong id="rename-author-count" class="text-amber-400">0</strong> eserinde yazar adı tek seferde güncellenecektir.
+    </p>
+
+    <form onsubmit="handleAuthorRenameSubmit(event)" class="space-y-3">
+      <input type="hidden" id="rename-old-author">
+      <div>
+        <label class="block text-[11px] font-semibold text-slate-300 mb-1">Mevcut İsim</label>
+        <input id="rename-old-display" disabled type="text" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-400">
+      </div>
+      <div>
+        <label class="block text-[11px] font-semibold text-amber-300 mb-1">Yeni Şair / Yazar Adı *</label>
+        <input id="rename-new-author" required type="text" class="w-full bg-slate-900 border border-amber-500/40 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400" placeholder="Yeni ismi yazınız...">
+      </div>
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" onclick="closeModal('modal-author-rename')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">İptal</button>
+        <button type="submit" id="btn-rename-submit" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold transition">
+          Tüm Eserlerde Güncelle
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- ================= MODAL: YENİ REKLAM TANIMLAMA ================= -->
@@ -798,7 +920,7 @@
         <div>
           <span class="text-slate-400 block text-[11px] mb-0.5">İletişim Telefon:</span>
           <span id="inspect-phone" class="font-mono text-emerald-400 font-semibold select-all">-</span>
-                  </div>
+        </div>
         <div class="sm:col-span-2 pt-2 mt-1 border-t border-slate-800/80 flex items-center justify-between">
           <span class="text-slate-400 text-[11px]">Telif & Hukuki Sorumluluk:</span>
           <span id="inspect-legal" class="px-2 py-0.5 rounded text-[10px] font-bold"></span>
@@ -839,6 +961,8 @@
   let adsList = [];
   let commentsList = [];
   let badWordsList = [];
+  let authorsList = [];
+  let activeAuthorItem = null;
 
   // --- 1. GİRİŞ VE YETKİLENDİRME ---
   async function handleLogin(e) {
@@ -932,13 +1056,14 @@
   // Menü Sekmeleri Arası Geçiş
   function switchAdminSection(sec) {
     document.getElementById('section-contents').classList.toggle('hidden', sec !== 'contents');
+    document.getElementById('section-authors').classList.toggle('hidden', sec !== 'authors');
     document.getElementById('section-comments').classList.toggle('hidden', sec !== 'comments');
     document.getElementById('section-badwords').classList.toggle('hidden', sec !== 'badwords');
     document.getElementById('section-ads').classList.toggle('hidden', sec !== 'ads');
     document.getElementById('section-uploader').classList.toggle('hidden', sec !== 'uploader');
     document.getElementById('section-staff').classList.toggle('hidden', sec !== 'staff');
 
-    const navs = ['contents', 'comments', 'badwords', 'ads', 'uploader', 'staff'];
+    const navs = ['contents', 'authors', 'comments', 'badwords', 'ads', 'uploader', 'staff'];
     navs.forEach(n => {
       const el = document.getElementById(`nav-${n}`);
       if (!el) return;
@@ -949,6 +1074,7 @@
       }
     });
 
+    if (sec === 'authors') renderAuthorsTable();
     if (sec === 'comments') fetchAdminComments();
     if (sec === 'badwords') fetchBadWords();
     if (sec === 'ads') fetchAds();
@@ -1119,6 +1245,7 @@
       updateStatistics(currentContents);
       updateCategoryCounts(currentContents);
       applyFilters();
+      buildAuthorsData();
     } catch (err) {
       tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-rose-400">Sunucuya bağlanırken hata oluştu.</td></tr>`;
     }
@@ -1201,7 +1328,11 @@
             ${escapeHtml(c.type)}
           </span>
         </td>
-        <td class="p-3.5 text-slate-300">${escapeHtml(c.author || 'Yusuf Ziya')}</td>
+        <td class="p-3.5 text-slate-300">
+          <span onclick="openAuthorInspect('${escapeHtml(c.author || 'Anonim')}')" class="cursor-pointer hover:text-amber-400 hover:underline transition">
+            ${escapeHtml(c.author || 'Yusuf Ziya')}
+          </span>
+        </td>
         <td class="p-3.5">
           <button onclick="toggleContentStatus('${c._id}', '${c.status}')" class="px-2.5 py-1 rounded-full text-[10px] font-bold transition flex items-center gap-1.5 ${c.status === 'published' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'}">
             <i class="fa-solid ${c.status === 'published' ? 'fa-check' : 'fa-clock'}"></i>
@@ -1233,6 +1364,163 @@
       case 'photoroman': return 'bg-amber-900/40 text-amber-300 border border-amber-800';
       case 'story': return 'bg-emerald-900/40 text-emerald-300 border border-emerald-800';
       default: return 'bg-slate-800 text-slate-300';
+    }
+  }
+
+  // ==========================================
+  // ŞAİR & YAZAR MASASI MOTORU (YENİ!)
+  // ==========================================
+  function buildAuthorsData() {
+    const authorMap = {};
+
+    currentContents.forEach(item => {
+      const author = (item.author || 'Anonim').trim();
+      if (!authorMap[author]) {
+        authorMap[author] = {
+          name: author,
+          works: [],
+          types: {},
+          likes: 0
+        };
+      }
+      authorMap[author].works.push(item);
+      authorMap[author].likes += (item.likes || 0);
+      authorMap[author].types[item.type] = (authorMap[author].types[item.type] || 0) + 1;
+    });
+
+    authorsList = Object.values(authorMap).sort((a, b) => b.works.length - a.works.length);
+  }
+
+  function renderAuthorsTable() {
+    buildAuthorsData();
+    filterAuthorsTable();
+  }
+
+  function filterAuthorsTable() {
+    const tbody = document.getElementById('authors-table-body');
+    const searchVal = (document.getElementById('authors-search-input')?.value || '').toLowerCase().trim();
+    const countEl = document.getElementById('authors-count');
+
+    const filtered = authorsList.filter(a => !searchVal || a.name.toLowerCase().includes(searchVal));
+    if (countEl) countEl.innerText = filtered.length;
+
+    if (!tbody) return;
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">Kayıtlı yazar veya şair bulunamadı.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(a => {
+      const typesStr = Object.entries(a.types).map(([t, count]) => `${t}: ${count}`).join(', ');
+      return `
+        <tr class="hover:bg-slate-900/40 transition">
+          <td class="p-3.5">
+            <span class="font-bold text-white text-sm block">${escapeHtml(a.name)}</span>
+            <span class="text-[10px] text-amber-400 font-mono">Sahne Sanatçısı</span>
+          </td>
+          <td class="p-3.5 font-bold text-white font-mono">${a.works.length} Eser</td>
+          <td class="p-3.5 text-slate-300 text-[11px]">${escapeHtml(typesStr)}</td>
+          <td class="p-3.5 font-mono text-emerald-400">
+            <i class="fa-solid fa-thumbs-up text-xs mr-1"></i> ${a.likes}
+          </td>
+          <td class="p-3.5 text-right space-x-1.5 whitespace-nowrap">
+            <button onclick="openAuthorInspect('${escapeHtml(a.name)}')" title="Eserlerini Gör" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 transition text-xs font-bold border border-amber-500/30">
+              <i class="fa-solid fa-folder-open mr-1"></i> Eserler
+            </button>
+            <button onclick="openAuthorRenameModal('${escapeHtml(a.name)}', ${a.works.length})" title="İsmi Güncelle (Toplu)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 transition text-xs font-bold">
+              <i class="fa-solid fa-pen"></i> İsim Değiştir
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function openAuthorInspect(authorName) {
+    const authorData = authorsList.find(a => a.name.toLowerCase() === authorName.toLowerCase());
+    if (!authorData) return;
+
+    activeAuthorItem = authorData;
+    document.getElementById('author-inspect-name').innerText = authorData.name;
+    document.getElementById('author-inspect-stats').innerText = `${authorData.works.length} Eser • Toplam ${authorData.likes} Beğeni`;
+
+    const worksListEl = document.getElementById('author-inspect-works-list');
+    worksListEl.innerHTML = authorData.works.map(w => `
+      <div class="card-stage p-3 rounded-xl border border-white/5 flex items-center justify-between hover:border-amber-500/40 transition">
+        <div class="truncate pr-3">
+          <span class="text-[9px] font-bold text-amber-400 uppercase tracking-wider">${escapeHtml(w.type)}</span>
+          <h5 class="text-xs font-bold text-white truncate">${escapeHtml(w.title)}</h5>
+          <span class="text-[10px] text-slate-400">${w.status === 'published' ? '● Yayında' : '○ Taslak'} • Beğeni: ${w.likes || 0}</span>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          <button onclick="closeModal('modal-author-inspect'); inspectContent('${w._id}')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 text-xs">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+          <button onclick="closeModal('modal-author-inspect'); editContent('${w._id}')" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('modal-author-inspect').classList.remove('hidden');
+  }
+
+  function createNewWorkForAuthor() {
+    if (!activeAuthorItem) return;
+    const authorName = activeAuthorItem.name;
+    closeModal('modal-author-inspect');
+    cancelEditing();
+    document.getElementById('form-author').value = authorName;
+    switchAdminSection('contents');
+    document.getElementById('form-title').focus();
+  }
+
+  function openAuthorRenameModal(oldName, count) {
+    document.getElementById('rename-old-author').value = oldName;
+    document.getElementById('rename-old-display').value = oldName;
+    document.getElementById('rename-new-author').value = oldName;
+    document.getElementById('rename-author-count').innerText = count;
+    document.getElementById('modal-author-rename').classList.remove('hidden');
+  }
+
+  async function handleAuthorRenameSubmit(e) {
+    e.preventDefault();
+    const oldName = document.getElementById('rename-old-author').value.trim();
+    const newName = document.getElementById('rename-new-author').value.trim();
+    const submitBtn = document.getElementById('btn-rename-submit');
+
+    if (!newName || oldName === newName) {
+      alert('Lütfen farklı ve geçerli bir yeni isim yazın.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'Eserler Güncelleniyor...';
+
+    const worksToUpdate = currentContents.filter(item => (item.author || '').trim().toLowerCase() === oldName.toLowerCase());
+
+    try {
+      let successCount = 0;
+      for (const work of worksToUpdate) {
+        const res = await fetch(`${API_BASE}/contents/${work._id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ author: newName })
+        });
+        if (res.ok) successCount++;
+      }
+
+      alert(`✓ ${successCount} adet eserde yazar adı "${newName}" olarak güncellendi!`);
+      closeModal('modal-author-rename');
+      await fetchAdminContents();
+      renderAuthorsTable();
+    } catch (err) {
+      alert('Güncelleme sırasında bir hata oluştu.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'Tüm Eserlerde Güncelle';
     }
   }
 
@@ -1671,7 +1959,7 @@
     const formData = new FormData();
     formData.append('image', file);
 
-    const status = document.getElementById('ad-image-status');
+       const status = document.getElementById('ad-image-status');
     status.classList.remove('hidden');
     status.innerText = 'Görsel WebP formatına çevriliyor...';
 
@@ -1954,3 +2242,4 @@
 </script>
 </body>
 </html>
+

@@ -277,7 +277,12 @@ window.openInteractionsById = openInteractionsById;
 function openStoryWithInteractions(item) {
   currentStoryItem = item;
   document.getElementById('story-title').innerText = item.title;
-  document.getElementById('story-author').innerText = 'Yazar / Şair: ' + (item.author || 'Anonim');
+ // YENİ HALİ (Tıklanabilir Sanatçı Profili):
+const authorEl = document.getElementById('story-author');
+if (authorEl) {
+  authorEl.innerText = 'Yazar / Şair: ' + (item.author || 'Anonim');
+  authorEl.onclick = () => openAuthorProfile(item.author || 'Anonim');
+}
   document.getElementById('story-body').innerText = item.textBody || item.description || 'Eser içeriği bulunamadı.';
   
   document.getElementById('modal-like-count').innerText = item.likes || 0;
@@ -450,7 +455,7 @@ function distributeLiveContents(items) {
           <div class="space-y-2.5">
             <div class="flex items-center justify-between text-xs text-rose-400 font-semibold">
               <span><i class="fa-solid fa-feather mr-1"></i>Şiir & Dinleti</span>
-              <span class="text-slate-300">${escapeHtml(p.author || 'Hayal Sahnesi')}</span>
+              <span onclick="openAuthorProfile('${escapeHtml(p.author || 'Hayal Sahnesi')}')" class="text-slate-300 hover:text-rose-400 cursor-pointer transition">${escapeHtml(p.author || 'Hayal Sahnesi')}</span>
             </div>
             <h4 class="text-base font-bold text-white">${escapeHtml(p.title)}</h4>
             <blockquote class="text-xs font-serif-stage italic text-slate-200 border-l-2 border-rose-500/40 pl-3 line-clamp-3">
@@ -487,7 +492,7 @@ function distributeLiveContents(items) {
       <div class="card-stage p-5 rounded-2xl hover:border-emerald-500/40 transition flex flex-col justify-between gap-3">
         <div>
           <div class="flex items-center justify-between text-[11px] text-emerald-400 font-semibold mb-1">
-            <span>${escapeHtml(s.author || 'Hayal Sahnesi')}</span>
+            <span onclick="openAuthorProfile('${escapeHtml(s.author || 'Hayal Sahnesi')}')" class="cursor-pointer hover:underline hover:text-emerald-300">${escapeHtml(s.author || 'Hayal Sahnesi')}</span>
             <span>Hikaye</span>
           </div>
           <h4 class="text-base font-bold text-white mb-1.5">${escapeHtml(s.title)}</h4>
@@ -527,7 +532,7 @@ function distributeLiveContents(items) {
             </div>
             <div>
               <h4 class="font-bold text-white text-base leading-snug">${escapeHtml(ph.title)}</h4>
-              <p class="text-xs text-slate-300 mt-0.5">${escapeHtml(ph.author || 'Hayal Sahnesi')}</p>
+              <p onclick="openAuthorProfile('${escapeHtml(ph.author || 'Hayal Sahnesi')}')" class="text-xs text-slate-300 mt-0.5 cursor-pointer hover:text-amber-400 transition">${escapeHtml(ph.author || 'Hayal Sahnesi')}</p>
             </div>
             <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between">
               <span class="text-[11px] text-slate-400"><i class="fa-solid fa-thumbs-up text-amber-400"></i> ${ph.likes || 0}</span>
@@ -1080,3 +1085,104 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }, 2000);
 });
+// --- OYNATICI SES SEVİYESİ & MUTE KONTROLÜ (MP3 + YOUTUBE UYUMLU) ---
+function changePlayerVolume(val) {
+  const vol = parseFloat(val);
+  if (globalAudio) {
+    globalAudio.volume = vol;
+    globalAudio.muted = false;
+  }
+  if (ytPlayer && typeof ytPlayer.setVolume === 'function') {
+    ytPlayer.unMute();
+    ytPlayer.setVolume(vol * 100);
+  }
+  updatePlayerVolumeIcon(vol);
+}
+window.changePlayerVolume = changePlayerVolume;
+
+function togglePlayerMute() {
+  const slider = document.getElementById('player-volume-slider');
+  
+  if (globalAudio) {
+    globalAudio.muted = !globalAudio.muted;
+  }
+  
+  if (ytPlayer && typeof ytPlayer.isMuted === 'function') {
+    if (ytPlayer.isMuted()) {
+      ytPlayer.unMute();
+    } else {
+      ytPlayer.mute();
+    }
+  }
+
+  const isMuted = (globalAudio && globalAudio.muted) || (ytPlayer && typeof ytPlayer.isMuted === 'function' && ytPlayer.isMuted());
+
+  if (isMuted) {
+    updatePlayerVolumeIcon(0);
+  } else {
+    updatePlayerVolumeIcon(globalAudio ? globalAudio.volume : 0.8);
+    if (slider && globalAudio) slider.value = globalAudio.volume;
+  }
+}
+window.togglePlayerMute = togglePlayerMute;
+
+
+function updatePlayerVolumeIcon(vol) {
+  const icon = document.getElementById('player-volume-icon');
+  if (!icon) return;
+  if ((globalAudio && globalAudio.muted) || vol === 0) {
+    icon.className = 'fa-solid fa-volume-xmark text-rose-400';
+  } else if (vol < 0.4) {
+    icon.className = 'fa-solid fa-volume-low text-rose-300';
+  } else {
+    icon.className = 'fa-solid fa-volume-high text-rose-400';
+  }
+}
+
+// --- SANATÇI / YAZAR PROFİL SİSTEMİ ---
+function openAuthorProfile(authorName) {
+  if (!authorName) return;
+  const cleanName = authorName.trim();
+  const authorWorks = allContents.filter(item => (item.author || '').trim().toLowerCase() === cleanName.toLowerCase());
+
+  document.getElementById('author-modal-name').innerText = cleanName;
+  document.getElementById('author-modal-avatar').innerText = cleanName.charAt(0).toUpperCase();
+  document.getElementById('author-modal-count').innerText = `${authorWorks.length} Eser Sahnelendi`;
+
+  const listEl = document.getElementById('author-modal-works');
+  if (authorWorks.length === 0) {
+    listEl.innerHTML = `<p class="text-xs text-slate-400 italic py-2">Eser kaydı bulunamadı.</p>`;
+  } else {
+    listEl.innerHTML = authorWorks.map(w => `
+      <div class="p-2.5 rounded-xl bg-slate-900/80 border border-white/5 flex items-center justify-between hover:border-rose-500/30 transition">
+        <div class="truncate pr-2">
+          <span class="text-[9px] font-bold text-rose-400 uppercase">${escapeHtml(w.type)}</span>
+          <p class="text-xs font-bold text-white truncate">${escapeHtml(w.title)}</p>
+        </div>
+        <button onclick="closeModal('modal-author'); launchFavoriteItem('${w._id}')" class="text-xs text-rose-300 hover:text-white px-2.5 py-1 rounded-lg bg-rose-600/20 hover:bg-rose-600 transition font-bold shrink-0">
+          İncele
+        </button>
+      </div>
+    `).join('');
+  }
+
+  openModal('modal-author');
+}
+window.openAuthorProfile = openAuthorProfile;
+
+function shareAuthorProfile() {
+  const name = document.getElementById('author-modal-name').innerText;
+  const shareData = {
+    title: `${name} | Hayal Sahnesi`,
+    text: `${name} eserleriyle Hayal Sahnesi'nde!`,
+    url: window.location.href
+  };
+
+  if (navigator.share) {
+    navigator.share(shareData).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    alert('✓ Profil bağlantısı panoya kopyalandı!');
+  }
+}
+window.shareAuthorProfile = shareAuthorProfile;
