@@ -890,10 +890,22 @@ if (globalAudio) {
 
 function updateShuffleBtnIcon(playing) {
   const playPauseBtn = document.getElementById('play-pause-btn');
-  if (!playPauseBtn) return;
-  const icon = playPauseBtn.querySelector('i');
-  if (!icon) return;
-  icon.className = playing ? 'fa-solid fa-pause text-xs' : 'fa-solid fa-play text-xs';
+  if (playPauseBtn) {
+    const icon = playPauseBtn.querySelector('i');
+    if (icon) {
+      icon.className = playing ? 'fa-solid fa-pause text-xs' : 'fa-solid fa-play text-xs';
+    }
+  }
+
+  // CANLI SES DALGASI / EKOLAYZIR TETİKLEYİCİSİ
+  const eq = document.getElementById('player-equalizer');
+  if (eq) {
+    if (playing) {
+      eq.classList.add('playing');
+    } else {
+      eq.classList.remove('playing');
+    }
+  }
 }
 
 function togglePlayState() {

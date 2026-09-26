@@ -109,8 +109,25 @@
     .fotoroman-page.prev-silhouette { left: -30%; opacity: 0.2; }
     .fotoroman-page.next-silhouette { right: -30%; opacity: 0.2; }
   }
-</style>
 
+  /* Canlı Ses Dalgası / Ekolayzır Çubukları */
+  .equalizer-bar {
+    width: 3px;
+    height: 4px;
+    background: linear-gradient(to top, #e11d48, #c084fc);
+    border-radius: 9999px;
+    transition: height 0.2s ease;
+  }
+  .playing .eq-1 { animation: soundWave 0.8s ease-in-out infinite alternate; }
+  .playing .eq-2 { animation: soundWave 1.1s ease-in-out 0.2s infinite alternate; }
+  .playing .eq-3 { animation: soundWave 0.6s ease-in-out 0.4s infinite alternate; }
+  .playing .eq-4 { animation: soundWave 0.9s ease-in-out 0.1s infinite alternate; }
+
+  @keyframes soundWave {
+    0% { height: 4px; }
+    100% { height: 16px; }
+  }
+</style>
 <!-- Google SEO & Rich Snippets -->
 <script type="application/ld+json">
 {
@@ -358,6 +375,15 @@
     <div class="w-9 h-9 bg-rose-950/60 rounded-lg border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
       <i id="player-icon" class="fa-solid fa-compact-disc"></i>
     </div>
+
+    <!-- YENİ: Canlı Ses Dalgası / Ekolayzır -->
+    <div id="player-equalizer" class="flex items-end gap-1 h-5 px-1.5 py-0.5 rounded-lg bg-slate-900 border border-slate-800 shrink-0">
+      <div class="equalizer-bar eq-1"></div>
+      <div class="equalizer-bar eq-2"></div>
+      <div class="equalizer-bar eq-3"></div>
+      <div class="equalizer-bar eq-4"></div>
+    </div>
+
     <div class="truncate">
       <p id="player-title" class="text-xs font-bold text-white truncate">Bir Eser Seçin</p>
       <p id="player-subtitle" class="text-[10px] text-slate-300 truncate">Hayal Sahnesi Ses Sistemi</p>
@@ -731,10 +757,10 @@
     <p class="text-xs text-slate-300">Şiir, hikaye veya müzik eserinizi doğrudan yönetim masamıza iletin.</p>
     
     <form onsubmit="handleContact(event)" class="space-y-3">
-      <div>
+            <div>
         <label class="block text-[11px] font-semibold text-slate-200 mb-1">Adınız / Mahlasınız *</label>
-        <input id="contact          <input id="contact-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
-        </div>
+        <input id="contact-name" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Örn: Yusuf Ziya">
+      </div>
         <div>
           <label class="block text-[11px] font-semibold text-slate-200 mb-1">Eser Başlığı *</label>
           <input id="contact-title" required type="text" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="Eserin adı...">
