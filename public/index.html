@@ -52,7 +52,8 @@
   }
   .font-serif-stage { font-family: "Georgia", "Cambria", "Times New Roman", serif; }
   .reader-theme-dark { background-color: #0a0d14 !important; color: #f1f5f9 !important; }
-    /* CLS & Hız Optimizasyonu */
+  
+  /* CLS & Hız Optimizasyonu */
   @keyframes pulseSlow {
     0%, 100% { opacity: 0.25; }
     50% { opacity: 0.6; }
@@ -64,8 +65,79 @@
     min-height: 180px;
     animation: pulseSlow 1.6s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
+  
+  /* FOTOROMAN SAHNE STİLİ: SAĞ VE SOL SİLÜET */
+  .fotoroman-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    perspective: 1000px;
+  }
+  .fotoroman-page {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 1rem;
+    user-select: none;
+  }
+  /* Aktif Ana Görsel */
+  .fotoroman-page.current {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 10;
+    filter: blur(0);
+  }
+  /* Sol Silüet (Önceki Sayfa) */
+  .fotoroman-page.prev-silhouette {
+    position: absolute;
+    left: -15%;
+    transform: scale(0.8) rotateY(12deg);
+    opacity: 0.35;
+    filter: blur(2px) grayscale(30%);
+    z-index: 5;
+    cursor: pointer;
+  }
+  /* Sağ Silüet (Sonraki Sayfa) */
+  .fotoroman-page.next-silhouette {
+    position: absolute;
+    right: -15%;
+    transform: scale(0.8) rotateY(-12deg);
+    opacity: 0.35;
+    filter: blur(2px) grayscale(30%);
+    z-index: 5;
+    cursor: pointer;
+  }
+  @media (max-width: 640px) {
+    .fotoroman-page.prev-silhouette { left: -30%; opacity: 0.2; }
+    .fotoroman-page.next-silhouette { right: -30%; opacity: 0.2; }
+  }
 </style>
 
+<!-- Google SEO & Rich Snippets Yapılandırılmış Verisi -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://hayalsahnesi.com/#website",
+      "url": "https://hayalsahnesi.com/",
+      "name": "Hayal Sahnesi",
+      "description": "Sesli şiirler, bağımsız müzikler, fotoromanlar ve mini dizilerle dijital edebiyat sahnesi.",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Hayal Sahnesi"
+      }
+    },
+    {
+      "@type": "CreativeWorkSeries",
+      "name": "Hayal Sahnesi Dijital Sanat Koleksiyonu",
+      "genre": ["Şiir", "Fotoroman", "Müzik", "Edebi Hikaye"],
+      "inLanguage": "tr"
+    }
+  ]
+}
+</script>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-rose-600 selection:text-white relative">
 
@@ -120,7 +192,7 @@
 
   <!-- Sağ Düğmeler -->
   <div class="flex items-center space-x-2">
-    <!-- PWA Uygulama Yükle Butonu (Daima Görünür & Akıllı Yönlendirmeli) -->
+    <!-- PWA Uygulama Yükle Butonu -->
     <button id="pwa-install-btn" onclick="handlePwaInstallClick()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs px-2.5 py-2 rounded-lg font-bold transition flex items-center gap-1.5 shadow-sm">
       <i class="fa-solid fa-mobile-screen text-rose-400"></i> <span class="hidden sm:inline">Uygulama</span>
     </button>
@@ -131,9 +203,9 @@
     </button>
 
     <!-- Mikro Bağış Butonu -->
-   <a href="https://kreosus.com/httpshayalsahnesicom" target="_blank" rel="noopener noreferrer" class="kreosus-gradient text-slate-950 font-black px-4 py-2 rounded-xl text-xs hover:opacity-95 transition shrink-0 flex items-center gap-1.5 shadow-md">
-  <i class="fa-solid fa-coffee"></i> Kahve Ismarla
-</a>
+    <a href="https://kreosus.com/httpshayalsahnesicom" target="_blank" rel="noopener noreferrer" class="kreosus-gradient text-slate-950 font-black px-4 py-2 rounded-xl text-xs hover:opacity-95 transition shrink-0 flex items-center gap-1.5 shadow-md">
+      <i class="fa-solid fa-coffee"></i> Kahve Ismarla
+    </a>
 
     <a href="admin.html" class="hidden md:flex text-slate-200 hover:text-white text-xs px-3 py-2 rounded-lg font-bold transition items-center gap-1.5 bg-slate-900 border border-slate-700 hover:border-rose-500">
       <i class="fa-solid fa-lock text-rose-400"></i> Yönetim
@@ -183,9 +255,9 @@
           Sesli şiir dinletileri, sinematik fotoroman kareleri, mini diziler ve Spotify melodilerinin buluştuğu bağımsız sahne.
         </p>
         <div class="flex items-center justify-center gap-3 pt-2">
-          <button onclick="switchCategory('poem')" class="stage-gradient px-4 py-2 rounded-xl text-xs font-bold text-white shadow-lg shadow-rose-900/40">Şiirleri Dinle & Oku</button>
+          <button onclick="playPoemPlaylist()" class="stage-gradient px-4 py-2 rounded-xl text-xs font-bold text-white shadow-lg shadow-rose-900/40">Şiirleri Dinle</button>
           <button onclick="playRandomMusicList()" class="bg-slate-900 hover:bg-slate-800 text-slate-100 border border-slate-700 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5">
-            <i class="fa-solid fa-shuffle text-rose-400"></i> Karışık Çal
+            <i class="fa-solid fa-shuffle text-rose-400"></i> Müzikleri Karışık Çal
           </button>
         </div>
       </div>
@@ -215,7 +287,7 @@
       </h3>
       <span class="text-xs text-slate-300">Güncel Eserler</span>
     </div>
-       <div id="showcase-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]">
+    <div id="showcase-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]">
       <div class="skeleton-card"></div>
       <div class="skeleton-card"></div>
       <div class="skeleton-card"></div>
@@ -247,7 +319,9 @@
   <section id="panel-poem" class="category-panel hidden">
     <div class="flex items-center justify-between my-6 border-b border-white/10 pb-3">
       <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2 text-white"><i class="fa-solid fa-feather text-rose-400"></i> Sahne Şiirleri & Dinletiler</h2>
-      <span class="text-xs text-slate-300">Sözün ve Sesin Ahengi</span>
+      <button onclick="playPoemPlaylist()" type="button" class="px-3.5 py-1.5 rounded-lg bg-rose-600/20 hover:bg-rose-600 text-rose-200 hover:text-white border border-rose-500/30 text-xs font-bold transition flex items-center gap-1.5">
+        <i class="fa-solid fa-headphones"></i> Şiirleri Dinle
+      </button>
     </div>
     <div id="poem-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 min-h-[300px]"></div>
   </section>
@@ -314,6 +388,7 @@
 <div id="hidden-yt-container" class="hidden pointer-events-none opacity-0 fixed -bottom-96 -right-96">
   <div id="yt-player"></div>
 </div>
+
 <!-- MODAL: PWA KURULUM REHBERİ -->
 <div id="modal-pwa-guide" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4">
   <div class="card-stage border border-rose-500/30 rounded-3xl p-6 sm:p-8 max-w-sm w-full space-y-4 text-center shadow-2xl">
@@ -417,10 +492,10 @@
       <div class="pt-4 border-t border-white/10 flex items-center justify-between">
         <span class="text-xs text-slate-400 font-medium">Bu eseri nasıl buldunuz?</span>
         <div class="flex items-center gap-3">
-          <button onclick="handleReaction('like')" type="button" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 text-xs font-bold transition flex items-center gap-1.5 border border-emerald-500/20 cursor-pointer">
+          <button onclick="handleReaction('like')" type="button" class="px-3.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 text-xs font-bold transition flex items-center gap-1 border border-emerald-500/20 cursor-pointer">
             <i class="fa-solid fa-thumbs-up"></i> Beğen (<span id="modal-like-count">0</span>)
           </button>
-          <button onclick="handleReaction('dislike')" type="button" class="px-3.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white text-xs font-bold transition flex items-center gap-1.5 border border-rose-500/20 cursor-pointer">
+          <button onclick="handleReaction('dislike')" type="button" class="px-3.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white text-xs font-bold transition flex items-center gap-1 border border-rose-500/20 cursor-pointer">
             <i class="fa-solid fa-thumbs-down"></i> Beğenme (<span id="modal-dislike-count">0</span>)
           </button>
         </div>
@@ -488,14 +563,25 @@
   </div>
 
   <div class="flex-1 flex flex-col items-center justify-center max-w-4xl mx-auto w-full py-3 space-y-4">
-    <div class="relative w-full h-[48vh] sm:h-[58vh] bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden shadow-2xl">
-      <img id="reader-img" src="" alt="Fotoroman Karesi" decoding="async" class="w-full h-full object-contain transition-opacity duration-300">
+    <!-- Fotoroman Sahnesi: Sağ ve Sol Silüet Alanı -->
+    <div class="fotoroman-stage relative w-full h-[50vh] sm:h-[60vh] bg-slate-950 rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden shadow-2xl">
       
-      <button onclick="prevPhotoPage()" type="button" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-amber-500 hover:text-slate-950 text-white flex items-center justify-center transition border border-white/10 shadow-lg backdrop-blur-sm z-20">
+      <!-- Sol Silüet (Önceki Sayfa) -->
+      <img id="reader-img-prev" onclick="prevPhotoPage()" src="" alt="Önceki Kare" class="fotoroman-page prev-silhouette max-h-[85%] max-w-[65%] object-contain hidden" />
+
+      <!-- Aktif Kare (Merkezde Net) -->
+      <img id="reader-img" src="" alt="Fotoroman Karesi" decoding="async" class="fotoroman-page current max-h-full max-w-[85%] object-contain transition-all duration-300 shadow-2xl">
+
+      <!-- Sağ Silüet (Sonraki Sayfa) -->
+      <img id="reader-img-next" onclick="nextPhotoPage()" src="" alt="Sonraki Kare" class="fotoroman-page next-silhouette max-h-[85%] max-w-[65%] object-contain hidden" />
+      
+      <!-- Sol / Geri Butonu -->
+      <button onclick="prevPhotoPage()" type="button" title="Önceki Kare" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 hover:bg-amber-500 hover:text-slate-950 text-white flex items-center justify-center transition border border-white/10 shadow-lg backdrop-blur-sm z-20">
         <i class="fa-solid fa-chevron-left text-base"></i>
       </button>
 
-      <button onclick="nextPhotoPage()" type="button" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/60 hover:bg-amber-500 hover:text-slate-950 text-white flex items-center justify-center transition border border-white/10 shadow-lg backdrop-blur-sm z-20">
+      <!-- Sağ / İleri Butonu -->
+      <button onclick="nextPhotoPage()" type="button" title="Sonraki Kare" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 hover:bg-amber-500 hover:text-slate-950 text-white flex items-center justify-center transition border border-white/10 shadow-lg backdrop-blur-sm z-20">
         <i class="fa-solid fa-chevron-right text-base"></i>
       </button>
     </div>
@@ -569,7 +655,6 @@
     </div>
 
     <div class="space-y-3 pt-2">
-      <!-- Doğrudan Yusuf Ziya / Hayal Sahnesi Kreosus Profili -->
       <a href="https://kreosus.com/httpshayalsahnesicom" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-5 rounded-2xl kreosus-gradient text-slate-950 font-black text-sm flex items-center justify-between hover:scale-[1.02] transition shadow-lg shadow-amber-500/20">
         <span class="flex items-center gap-2.5">
           <i class="fa-solid fa-coffee text-base"></i> Kreosus ile Bir Kahve Ismarla
@@ -577,7 +662,6 @@
         <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
       </a>
 
-      <!-- Kurumsal İletişim / Reklam -->
       <a href="javascript:void(0)" onclick="openModal('modal-contact'); closeModal('modal-donate');" class="w-full py-2.5 px-4 rounded-xl bg-slate-900/80 border border-white/5 text-slate-400 hover:text-white text-xs block transition">
         Kurumsal Sponsorluk & İlan İçin İletişime Geçin →
       </a>
@@ -586,6 +670,7 @@
     <button onclick="closeModal('modal-donate')" class="text-xs text-slate-500 hover:text-slate-300 mt-2 block mx-auto underline">Vazgeç / Kapat</button>
   </div>
 </div>
+
 <!-- MODAL: MİNİ DİZİ & VİDEO -->
 <div id="modal-video" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-md hidden flex flex-col p-3 sm:p-6 select-none overflow-y-auto">
   <div class="flex justify-between items-center text-white pb-3 border-b border-slate-800 max-w-4xl mx-auto w-full">
@@ -644,986 +729,31 @@
         <div>
           <label class="block text-[11px] font-semibold text-slate-200 mb-1">E-Posta Adresiniz *</label>
           <input id="contact-email" required type="email" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="ornek@mail.com">
-        </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-slate-200 mb-1">Telefon Numaranız *</label>
-          <input id="contact-phone" required type="tel" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="05XX XXX XX XX">
-        </div>
-      </div>
-
-      <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800">
-        <label class="flex items-start gap-2.5 cursor-pointer select-none">
-          <input id="contact-legal" required type="checkbox" class="mt-0.5 w-4 h-4 rounded text-rose-600 border-slate-700 bg-slate-900 cursor-pointer">
-          <span class="text-[10px] text-slate-300 leading-tight">
-            Eserin şahsıma ait olduğunu ve telif hakkı ihlali içermediğini kabul ederim.
-          </span>
-        </label>
-      </div>
-      <button id="btn-contact-submit" type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg hover:opacity-95 transition">
-        Eseri Sahneye Gönder
-      </button>
-    </form>
-  </div>
-</div>
-
-<script>
-  const API_BASE = '/api';
-  const globalAudio = document.getElementById('global-audio');
-  const readerBgAudio = document.getElementById('reader-bg-audio');
-  let ytPlayer = null;
-  let activeSourceType = 'none';
-  let isPlaying = false;
-  let allContents = [];
-  let currentStoryItem = null;
-  let activePhotoromanItem = null;
-  let activeSpotifyItem = null;
-
-   // --- PWA SERVICE WORKER & AKILLI YÜKLEME ---
-  let deferredPrompt = null;
-
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW hatası:', err));
-    });
-  }
-
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-  });
-
-  function handlePwaInstallClick() {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then((choice) => {
-        deferredPrompt = null;
-      });
-    } else {
-      // Tarayıcı otomatik kurulum popup'ı açmıyorsa (iOS veya masaüstü) rehber modalını aç
-      openModal('modal-pwa-guide');
-    }
-  }
-  window.handlePwaInstallClick = handlePwaInstallClick;
-
-  // --- KİŞİSEL KÜTÜPHANE / FAVORİLER SİSTEMİ (LocalStorage) ---
-  function getFavorites() {
-    try {
-      return JSON.parse(localStorage.getItem('hayal_favorites') || '[]');
-    } catch (e) {
-      return [];
-    }
-  }
-
-  function isFavorite(id) {
-    return getFavorites().includes(String(id));
-  }
-
-  function toggleFavorite(id) {
-    let favs = getFavorites();
-    const sId = String(id);
-    if (favs.includes(sId)) {
-      favs = favs.filter(x => x !== sId);
-    } else {
-      favs.push(sId);
-    }
-    localStorage.setItem('hayal_favorites', JSON.stringify(favs));
-    updateFavoriteCounter();
-    updateFavoriteButtonStyles();
-  }
-
-  function updateFavoriteCounter() {
-    const el = document.getElementById('fav-counter');
-    if (el) el.innerText = getFavorites().length;
-  }
-
-  function updateFavoriteButtonStyles() {
-    if (currentStoryItem) {
-      const btn = document.getElementById('modal-story-fav-btn');
-      if (btn) {
-        const fav = isFavorite(currentStoryItem._id);
-        btn.innerHTML = `<i class="fa-${fav ? 'solid' : 'regular'} fa-bookmark"></i>`;
-        btn.className = fav 
-          ? "w-8 h-8 rounded-xl bg-rose-600 text-white flex items-center justify-center text-xs transition"
-          : "w-8 h-8 rounded-xl bg-slate-900 border border-slate-700 text-rose-400 hover:bg-rose-600 hover:text-white transition flex items-center justify-center text-xs";
-      }
-    }
-    if (activePhotoromanItem) {
-      const btn = document.getElementById('reader-fav-btn');
-        if (btn) {
-          const fav = isFavorite(activePhotoromanItem._id);
-          btn.innerHTML = `<i class="fa-${fav ? 'solid' : 'regular'} fa-bookmark"></i>`;
-          btn.className = fav
-            ? "w-8 h-8 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center text-xs transition"
-            : "w-8 h-8 rounded-full bg-slate-900 border border-slate-700 text-amber-400 hover:bg-amber-500 hover:text-slate-950 transition flex items-center justify-center text-xs";
-        }
-      }
-    }
-
-    function toggleActiveStoryFavorite() {
-      if (!currentStoryItem) return;
-      toggleFavorite(currentStoryItem._id);
-    }
-    window.toggleActiveStoryFavorite = toggleActiveStoryFavorite;
-
-    function toggleActivePhotoromanFavorite() {
-      if (!activePhotoromanItem) return;
-      toggleFavorite(activePhotoromanItem._id);
-    }
-    window.toggleActivePhotoromanFavorite = toggleActivePhotoromanFavorite;
-
-    function openFavoritesModal() {
-      const favIds = getFavorites();
-      const listEl = document.getElementById('favorites-list');
-      
-      if (!favIds || favIds.length === 0) {
-        listEl.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Kütüphanenizde henüz kayıtlı bir eser bulunmuyor.</p>`;
-        openModal('modal-favorites');
-        return;
-      }
-
-      const favItems = allContents.filter(item => favIds.includes(String(item._id)));
-
-      if (favItems.length === 0) {
-        listEl.innerHTML = `<p class="text-xs text-slate-400 italic text-center py-6">Kaydettiğiniz eserler bulunamadı veya yayından kaldırılmış olabilir.</p>`;
-      } else {
-        listEl.innerHTML = favItems.map(item => `
-          <div class="card-stage p-3.5 rounded-2xl flex items-center justify-between border border-white/5 hover:border-rose-500/30 transition">
-            <div class="truncate pr-3">
-              <span class="text-[10px] font-bold text-rose-400 uppercase">${escapeHtml(item.type)}</span>
-              <h4 class="font-bold text-white text-sm truncate">${escapeHtml(item.title)}</h4>
-              <p class="text-[11px] text-slate-300 truncate">${escapeHtml(item.author || 'Hayal Sahnesi')}</p>
-            </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <button onclick="launchFavoriteItem('${item._id}')" class="bg-rose-600/20 hover:bg-rose-600 text-rose-200 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1">
-                Görüntüle
-              </button>
-              <button onclick="toggleFavorite('${item._id}'); openFavoritesModal();" title="Kaldır" class="text-slate-500 hover:text-rose-400 p-1.5 transition">
-                <i class="fa-solid fa-trash-can text-xs"></i>
-              </button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      openModal('modal-favorites');
-    }
-    window.openFavoritesModal = openFavoritesModal;
-
-    function launchFavoriteItem(id) {
-      closeModal('modal-favorites');
-      const item = allContents.find(c => String(c._id) === String(id));
-      if (!item) return;
-
-      if (item.type === 'photoroman') {
-        launchPhotoromanById(item._id);
-      } else if (item.type === 'music' && item.mediaUrl && item.mediaUrl.includes('spotify.com')) {
-        openSpotifyModal(item.title, item.author, item.mediaUrl, item._id);
-      } else if (item.type === 'series') {
-        openVideoPlayer(item.title, item.author, item.mediaUrl || '');
-      } else {
-        openInteractionsById(item._id);
-      }
-    }
-    window.launchFavoriteItem = launchFavoriteItem;
-
-    // --- KATEGORİ DEĞİŞTİRME ---
-    function switchCategory(cat) {
-      const panels = document.querySelectorAll('.category-panel');
-      panels.forEach(p => p.classList.add('hidden'));
-
-      const activePanel = document.getElementById(`panel-${cat}`);
-      if (activePanel) activePanel.classList.remove('hidden');
-
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-
-      const activeBtn = document.getElementById(`tab-${cat}`);
-      if (activeBtn) activeBtn.classList.add('active');
-
-      window.scrollTo({ top: 140, behavior: 'smooth' });
-    }
-    window.switchCategory = switchCategory;
-
-    // --- SES OYNATMA HIZI KONTROLÜ ---
-    const availableSpeeds = [0.75, 1.0, 1.25, 1.5];
-    let currentSpeedIndex = 1;
-
-    function cycleAudioSpeed() {
-      currentSpeedIndex = (currentSpeedIndex + 1) % availableSpeeds.length;
-      const speed = availableSpeeds[currentSpeedIndex];
-
-      if (globalAudio) globalAudio.playbackRate = speed;
-      if (readerBgAudio) readerBgAudio.playbackRate = speed;
-      if (ytPlayer && typeof ytPlayer.setPlaybackRate === 'function') {
-        ytPlayer.setPlaybackRate(speed);
-      }
-
-      const speedBtn = document.getElementById('player-speed-btn');
-      if (speedBtn) speedBtn.innerText = `${speed}x`;
-    }
-
-    // --- YAZI BOYUTU AYARI ---
-    let currentFontSize = 18;
-    function adjustFontSize(delta) {
-      currentFontSize = Math.min(Math.max(14, currentFontSize + delta), 28);
-      const bodyEl = document.getElementById('story-body');
-      const indEl = document.getElementById('font-size-indicator');
-      if (bodyEl) bodyEl.style.fontSize = `${currentFontSize}px`;
-      if (indEl) indEl.innerText = `${currentFontSize}px`;
-    }
-
-    // --- SPOTIFY GÖMÜLÜ OYNATICI ---
-    function getSpotifyEmbedUrl(url) {
-      if (!url) return '';
-      const match = url.match(/open\.spotify\.com\/(track|album|artist|playlist|episode)\/([a-zA-Z0-9]+)/);
-      if (match) {
-        return `https://open.spotify.com/embed/${match[1]}/${match[2]}?utm_source=generator&theme=0`;
-      }
-      return '';
-    }
-
-    function openSpotifyModal(title, author, url, id) {
-      const embedUrl = getSpotifyEmbedUrl(url);
-      if (!embedUrl) return;
-
-      activeSpotifyItem = allContents.find(c => String(c._id) === String(id));
-      document.getElementById('spotify-title').innerText = title;
-      document.getElementById('spotify-author').innerText = author || 'Hayal Sahnesi';
-
-      const container = document.getElementById('spotify-iframe-container');
-      container.innerHTML = `
-        <iframe style="border-radius:16px" src="${embedUrl}" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-      `;
-      openModal('modal-spotify');
-    }
-    window.openSpotifyModal = openSpotifyModal;
-
-    function openInteractionsForActiveSpotify() {
-      if (activeSpotifyItem) {
-        closeModal('modal-spotify');
-        openStoryWithInteractions(activeSpotifyItem);
-      }
-    }
-
-    // --- LAZY LOADING ---
-    function initLazyImages() {
-      const lazyImages = document.querySelectorAll('img[data-src]');
-      if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const image = entry.target;
-              image.src = image.dataset.src;
-              image.removeAttribute('data-src');
-              image.onload = () => { image.classList.add('opacity-100'); };
-              imageObserver.unobserve(image);
-            }
-          });
-        }, { rootMargin: '100px 0px' });
-
-        lazyImages.forEach(img => imageObserver.observe(img));
-      } else {
-        lazyImages.forEach(img => {
-          img.src = img.dataset.src;
-        });
-      }
-    }
-
-    // --- BEĞENİ VE YORUM İŞLEMLERİ ---
-    function openInteractionsById(id) {
-      const item = allContents.find(c => String(c._id) === String(id));
-      if (!item) return;
-      openStoryWithInteractions(item);
-    }
-    window.openInteractionsById = openInteractionsById;
-
-    function openStoryWithInteractions(item) {
-      currentStoryItem = item;
-      document.getElementById('story-title').innerText = item.title;
-      document.getElementById('story-author').innerText = 'Yazar / Şair: ' + (item.author || 'Anonim');
-      document.getElementById('story-body').innerText = item.textBody || item.description || 'Eser içeriği bulunamadı.';
-      
-      document.getElementById('modal-like-count').innerText = item.likes || 0;
-      document.getElementById('modal-dislike-count').innerText = item.dislikes || 0;
-
-      updateFavoriteButtonStyles();
-      loadComments(item._id);
-      openModal('modal-story');
-    }
-
-    async function handleReaction(action) {
-      if (!currentStoryItem) return;
-      const id = currentStoryItem._id;
-      const key = `reacted_${id}`;
-
-      if (localStorage.getItem(key)) {
-        alert('Bu eser için zaten oy kullandınız.');
-        return;
-      }
-
-      try {
-        const res = await fetch(`${API_BASE}/contents/${id}/react`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action })
-        });
-        const data = await res.json();
-        if (data.success) {
-          localStorage.setItem(key, action);
-          currentStoryItem.likes = data.likes;
-          currentStoryItem.dislikes = data.dislikes;
-          document.getElementById('modal-like-count').innerText = data.likes;
-          document.getElementById('modal-dislike-count').innerText = data.dislikes;
-          
-          const rLikes = document.getElementById('reader-like-count');
-          const rDislikes = document.getElementById('reader-dislike-count');
-          if (rLikes) rLikes.innerText = data.likes;
-          if (rDislikes) rDislikes.innerText = data.dislikes;
-        }
-      } catch (err) {
-        alert('Oylama sunucuya iletilemedi.');
-      }
-    }
-
-    function handleReaderReaction(action) {
-      if (!activePhotoromanItem) return;
-      currentStoryItem = activePhotoromanItem;
-      handleReaction(action);
-    }
-
-    function openCommentsForCurrentPhotoroman() {
-      if (activePhotoromanItem) {
-        openStoryWithInteractions(activePhotoromanItem);
-      }
-    }
-
-    async function loadComments(contentId) {
-      const listEl = document.getElementById('comment-list');
-      const countEl = document.getElementById('comment-count');
-      listEl.innerHTML = `<p class="text-xs text-slate-500 italic">Yorumlar yükleniyor...</p>`;
-
-      try {
-        const res = await fetch(`${API_BASE}/contents/${contentId}/comments`);
-        const data = await res.json();
-        const comments = data.comments || [];
-        countEl.innerText = comments.length;
-
-        if (comments.length === 0) {
-          listEl.innerHTML = `<p class="text-xs text-slate-500 italic">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>`;
-          return;
-        }
-
-        listEl.innerHTML = comments.map(c => `
-          <div class="p-3 bg-slate-900/80 rounded-xl border border-white/5 space-y-1">
-            <div class="flex items-center justify-between text-[11px]">
-              <span class="font-bold text-rose-400">${escapeHtml(c.authorName)}</span>
-              <span class="text-slate-500">${new Date(c.createdAt).toLocaleDateString('tr-TR')}</span>
-            </div>
-            <p class="text-xs text-slate-200">${escapeHtml(c.commentText)}</p>
-          </div>
-        `).join('');
-      } catch (e) {
-        listEl.innerHTML = `<p class="text-xs text-rose-400">Yorumlar alınamadı.</p>`;
-      }
-    }
-
-    async function submitComment(e) {
-      e.preventDefault();
-      if (!currentStoryItem) return;
-
-      const author = document.getElementById('comment-author').value.trim();
-      const text = document.getElementById('comment-text').value.trim();
-      const btn = document.getElementById('btn-comment-submit');
-
-      btn.disabled = true;
-      btn.innerText = 'İnceleniyor...';
-
-      try {
-        const res = await fetch(`${API_BASE}/contents/${currentStoryItem._id}/comments`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ authorName: author, commentText: text })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          alert('✓ Yorumunuz onaylandı ve sahnede yerini aldı!');
-          document.getElementById('comment-text').value = '';
-          loadComments(currentStoryItem._id);
-        } else {
-          alert(data.message || 'Yorum kabul edilmedi.');
-        }
-      } catch (err) {
-        alert('Sunucu hatası oluştu.');
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Yorumu Sahnele';
-      }
-    }
-
-    // --- İÇERİK DAĞITIM VE LİSTELEME ---
-    async function loadLiveContents() {
-      try {
-        const res = await fetch(`${API_BASE}/contents`);
-        const json = await res.json();
-        allContents = Array.isArray(json) ? json : (json.data || []);
-        distributeLiveContents(allContents);
-        initLazyImages();
-      } catch (err) {
-        console.warn('API yükleme hatası:', err);
-      }
-    }
-
-    function distributeLiveContents(items) {
-      // 0. Vitrin
-      const showcaseGrid = document.getElementById('showcase-grid');
-      if (showcaseGrid) {
-        showcaseGrid.innerHTML = items.slice(0, 6).map(it => createShowcaseCard(it)).join('');
-      }
-
-      // 1. Şiirler
-      const poems = items.filter(x => x.type === 'poem');
-      const poemGrid = document.getElementById('poem-grid');
-      if (poemGrid) {
-        poemGrid.innerHTML = poems.map(p => {
-          const isSpotify = p.mediaUrl && p.mediaUrl.includes('spotify.com');
-          return `
-            <div class="card-stage rounded-2xl p-5 hover:border-rose-500/40 transition flex flex-col justify-between border border-rose-900/30 gap-4">
-              <div class="space-y-2.5">
-                <div class="flex items-center justify-between text-xs text-rose-400 font-semibold">
-                  <span><i class="fa-solid fa-feather mr-1"></i>Şiir & Dinleti</span>
-                  <span class="text-slate-300">${escapeHtml(p.author || 'Hayal Sahnesi')}</span>
-                </div>
-                <h4 class="text-base font-bold text-white">${escapeHtml(p.title)}</h4>
-                <blockquote class="text-xs font-serif-stage italic text-slate-200 border-l-2 border-rose-500/40 pl-3 line-clamp-3">
-                  "${escapeHtml(p.textBody || p.description || 'Kelimeler perdeye dökülüyor...')}"
-                </blockquote>
-              </div>
-              <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
-                <div class="text-[11px] text-slate-400 flex items-center gap-2">
-                  <span><i class="fa-solid fa-thumbs-up text-emerald-400"></i> ${p.likes || 0}</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <button onclick="openInteractionsById('${p._id}')" class="bg-slate-800 hover:bg-slate-700 text-slate-100 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
-                    <i class="fa-solid fa-book-open"></i> Oku & Yorum Yap
-                  </button>
-                  ${isSpotify ? `
-                  <button onclick="openSpotifyModal('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Hayal Sahnesi')}', '${escapeHtml(p.mediaUrl)}', '${p._id}')" class="bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 border border-emerald-500/30">
-                    <i class="fa-brands fa-spotify text-sm"></i> Spotify
-                  </button>` : (p.mediaUrl ? `
-                  <button onclick="handleMediaPlay('${escapeHtml(p.title)}', '${escapeHtml(p.author || 'Hayal Sahnesi')}', '${escapeHtml(p.mediaUrl)}') " class="bg-rose-600/20 hover:bg-rose-600 text-rose-200 hover:text-white px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1">
-                    <i class="fa-solid fa-headphones"></i> Dinle
-                  </button>` : '')}
-                </div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      // 2. Hikayeler
-      const stories = items.filter(x => x.type === 'story');
-      const storyGrid = document.getElementById('story-grid');
-      if (storyGrid) {
-        storyGrid.innerHTML = stories.map(s => `
-          <div class="card-stage p-5 rounded-2xl hover:border-emerald-500/40 transition flex flex-col justify-between gap-3">
-            <div>
-              <div class="flex items-center justify-between text-[11px] text-emerald-400 font-semibold mb-1">
-                <span>${escapeHtml(s.author || 'Hayal Sahnesi')}</span>
-                <span>Hikaye</span>
-              </div>
-              <h4 class="text-base font-bold text-white mb-1.5">${escapeHtml(s.title)}</h4>
-              <p class="text-xs text-slate-300 line-clamp-3">${escapeHtml(s.textBody || s.description || '...')}</p>
-            </div>
-            <div class="pt-3 border-t border-slate-800/80 flex items-center justify-between">
-              <span class="text-[11px] text-slate-400"><i class="fa-solid fa-thumbs-up text-emerald-400"></i> ${s.likes || 0}</span>
-              <button onclick="openInteractionsById('${s._id}')" class="bg-emerald-600/20 hover:bg-emerald-600 text-emerald-200 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1">
-                <i class="fa-solid fa-book-open"></i> Oku & Yorum Yap
-              </button>
-            </div>
-          </div>
-        `).join('');
-      }
-
-      // 3. Fotoromanlar
-      const photos = items.filter(x => x.type === 'photoroman');
-      const photoGrid = document.getElementById('photoroman-grid');
-      if (photoGrid) {
-        if (photos.length === 0) {
-          photoGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz fotoroman eseri eklenmemiş.</div>`;
-        } else {
-          photoGrid.innerHTML = photos.map(ph => {
-            const frames = (ph.images && Array.isArray(ph.images) && ph.images.length > 0) ? ph.images : [{ img: ph.thumbnail || '', text: ph.textBody || '', desc: '' }];
-            const frameCount = frames.length;
-            const coverImg = ph.thumbnail || (frames[0] && frames[0].img) || '';
-
-            return `
-              <div class="card-stage p-4 rounded-2xl flex flex-col justify-between hover:border-amber-500/40 transition gap-3">
-                <div class="w-full img-box-photo rounded-xl overflow-hidden relative border border-slate-800">
-                  ${coverImg 
-                    ? `<img data-src="${escapeHtml(coverImg)}" alt="${escapeHtml(ph.title)}" class="w-full h-full object-cover transition-opacity duration-300 opacity-0">` 
-                    : `<div class="w-full h-full flex items-center justify-center text-amber-400"><i class="fa-solid fa-camera-retro text-3xl"></i></div>`}
-                  <span class="absolute top-2.5 right-2.5 bg-black/75 backdrop-blur-md px-2 py-0.5 rounded-md text-[10px] font-bold text-amber-300 font-mono">
-                    ${frameCount} Kare
-                  </span>
-                </div>
-                <div>
-                  <h4 class="font-bold text-white text-base leading-snug">${escapeHtml(ph.title)}</h4>
-                  <p class="text-xs text-slate-300 mt-0.5">${escapeHtml(ph.author || 'Hayal Sahnesi')}</p>
-                </div>
-                <div class="pt-2 border-t border-slate-800/80 flex items-center justify-between">
-                  <span class="text-[11px] text-slate-400"><i class="fa-solid fa-thumbs-up text-amber-400"></i> ${ph.likes || 0}</span>
-                  <button onclick="launchPhotoromanById('${ph._id}')" class="bg-amber-500/20 text-amber-300 hover:bg-amber-500 hover:text-slate-950 px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border border-amber-500/30">
-                    <i class="fa-solid fa-book-open"></i> Oku & Dinle
-                  </button>
-                </div>
-              </div>
-            `;
-          }).join('');
-        }
-      }
-
-      // 4. Mini Diziler
-      const series = items.filter(x => x.type === 'series');
-      const seriesGrid = document.getElementById('series-grid');
-      if (seriesGrid) {
-        if (series.length === 0) {
-          seriesGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz mini dizi eklenmemiş.</div>`;
-        } else {
-          seriesGrid.innerHTML = series.map(se => `
-            <div class="card-stage rounded-2xl overflow-hidden group hover:border-purple-500/50 transition flex flex-col justify-between">
-              <div class="img-box relative flex items-center justify-center cursor-pointer" onclick="openVideoPlayer('${escapeHtml(se.title)}', '${escapeHtml(se.author || 'Hayal Sahnesi')}', '${escapeHtml(se.mediaUrl || '')}')">
-                <div class="w-12 h-12 rounded-full bg-rose-600/80 flex items-center justify-center text-white z-20 group-hover:scale-110 transition shadow-lg">
-                  <i class="fa-solid fa-play ml-0.5"></i>
-                </div>
-              </div>
-              <div class="p-4 space-y-1.5 flex-1 flex flex-col justify-between">
-                <div>
-                  <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wide">Mini Dizi</span>
-                  <h4 class="font-bold text-white text-base leading-tight">${escapeHtml(se.title)}</h4>
-                  <p class="text-xs text-slate-300 line-clamp-2 mt-1">${escapeHtml(se.textBody || se.description || '')}</p>
-                </div>
-                <div class="pt-2 border-t border-white/5 flex items-center justify-between">
-                  <button onclick="openInteractionsById('${se._id}')" class="text-[11px] text-purple-300 hover:text-white flex items-center gap-1">
-                    <i class="fa-solid fa-comments"></i> Yorum & Beğeni
-                  </button>
-                  <span class="text-[11px] text-slate-400"><i class="fa-solid fa-thumbs-up text-purple-400"></i> ${se.likes || 0}</span>
-                </div>
-              </div>
-            </div>
-          `).join('');
-        }
-      }
-
-      // 5. Müzikler
-      const musics = items.filter(x => x.type === 'music');
-      const musicGrid = document.getElementById('music-grid');
-      if (musicGrid) {
-        if (musics.length === 0) {
-          musicGrid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-400">Henüz müzik eseri eklenmemiş.</div>`;
-        } else {
-          musicGrid.innerHTML = musics.map(m => {
-            const isSpotify = m.mediaUrl && m.mediaUrl.includes('spotify.com');
-            const isYouTube = m.mediaUrl && (m.mediaUrl.includes('youtube.com') || m.mediaUrl.includes('youtu.be'));
-
-            return `
-              <div class="card-stage p-5 rounded-2xl flex flex-col justify-between hover:border-cyan-500/50 transition border border-cyan-900/40 gap-4">
-                <div class="flex items-center space-x-3.5">
-                  <div class="w-11 h-11 rounded-xl ${isSpotify ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/30' : 'bg-cyan-600/20 text-cyan-400 border border-cyan-500/30'} flex items-center justify-center text-base font-bold shrink-0">
-                    <i class="${isSpotify ? 'fa-brands fa-spotify text-lg' : 'fa-solid fa-music'}"></i>
-                  </div>
-                  <div class="truncate">
-                    <h4 class="font-bold text-white text-base truncate">${escapeHtml(m.title)}</h4>
-                    <p class="text-xs ${isSpotify ? 'text-emerald-400' : 'text-cyan-400'} font-semibold truncate">${escapeHtml(m.author || 'Hayal Sahnesi')}</p>
-                  </div>
-                </div>
-
-                <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
-                  <span class="flex items-center gap-1"><i class="fa-solid fa-thumbs-up text-cyan-400"></i> ${m.likes || 0}</span>
-                  <button onclick="openInteractionsById('${m._id}')" class="text-cyan-300 hover:text-white text-[11px] underline flex items-center gap-1">
-                    <i class="fa-solid fa-comments"></i> Yorumlar & Beğeni
-                  </button>
-                </div>
-
-                <div class="flex items-center gap-2 pt-2 border-t border-cyan-900/40">
-                  ${isSpotify ? `
-                  <button onclick="openSpotifyModal('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Hayal Sahnesi')}', '${escapeHtml(m.mediaUrl)}', '${m._id}')" class="flex-1 bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-slate-950 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition border border-emerald-500/30">
-                    <i class="fa-brands fa-spotify text-base"></i> Spotify'da Dinle
-                  </button>` : `
-                  <button onclick="handleMediaPlay('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Hayal Sahnesi')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 bg-cyan-600/25 hover:bg-cyan-600 text-cyan-100 hover:text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
-                    <i class="fa-solid fa-headphones"></i> Dinle
-                  </button>`}
-                  
-                  ${isYouTube ? `
-                  <button onclick="openVideoPlayer('${escapeHtml(m.title)}', '${escapeHtml(m.author || 'Hayal Sahnesi')}', '${escapeHtml(m.mediaUrl || '')}')" class="flex-1 stage-gradient text-white py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition">
-                    <i class="fa-solid fa-film"></i> İzle
-                  </button>` : ''}
-                </div>
-              </div>
-            `;
-          }).join('');
-        }
-      }
-    }
-
-    function createShowcaseCard(item) {
-      let icon = 'fa-sparkles';
-      let color = 'rose';
-      let badge = 'Eser';
-
-      if (item.type === 'photoroman') { icon = 'fa-camera-retro'; color = 'amber'; badge = 'Fotoroman'; }
-      else if (item.type === 'series') { icon = 'fa-film'; color = 'purple'; badge = 'Mini Dizi'; }
-      else if (item.type === 'poem') { icon = 'fa-feather'; color = 'rose'; badge = 'Şiir'; }
-      else if (item.type === 'story') { icon = 'fa-book-open'; color = 'emerald'; badge = 'Hikaye'; }
-      else if (item.type === 'music') { 
-        const isSp = item.mediaUrl && item.mediaUrl.includes('spotify.com');
-        icon = isSp ? 'fa-brands fa-spotify' : 'fa-music'; 
-        color = isSp ? 'emerald' : 'cyan'; 
-        badge = isSp ? 'Spotify' : 'Müzik'; 
-      }
-
-      return `
-        <div class="card-stage p-4 rounded-2xl hover:border-${color}-500/40 transition flex flex-col justify-between gap-3">
-          <div class="flex items-center justify-between">
-            <span class="text-[10px] font-bold text-${color}-400 uppercase tracking-wide flex items-center gap-1">
-              <i class="${icon}"></i> ${badge}
-            </span>
-            <span class="text-[11px] text-slate-300">${escapeHtml(item.author || 'Hayal Sahnesi')}</span>
           </div>
           <div>
-            <h4 class="font-bold text-white text-base leading-snug">${escapeHtml(item.title)}</h4>
-            <p class="text-xs text-slate-300 line-clamp-2 mt-1">${escapeHtml(item.textBody || item.description || 'Sahne eseri...')}</p>
+            <label class="block text-[11px] font-semibold text-slate-200 mb-1">Telefon Numaranız *</label>
+            <input id="contact-phone" required type="tel" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-rose-500" placeholder="05XX XXX XX XX">
           </div>
-          <button onclick="switchCategory('${item.type}')" class="w-full bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 hover:border-${color}-500 py-1.5 rounded-xl text-xs font-semibold transition flex items-center justify-center gap-1.5">
-            Bölüme Git →
-          </button>
         </div>
-      `;
-    }
 
-    function getYouTubeId(url) {
-      if (!url) return '';
-      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
-      const match = url.match(regExp);
-      return (match && match[2].length === 11) ? match[2] : '';
-    }
+        <div class="p-3 bg-slate-950/80 rounded-xl border border-slate-800">
+          <label class="flex items-start gap-2.5 cursor-pointer select-none">
+            <input id="contact-legal" required type="checkbox" class="mt-0.5 w-4 h-4 rounded text-rose-600 border-slate-700 bg-slate-900 cursor-pointer">
+            <span class="text-[10px] text-slate-300 leading-tight">
+              Eserin şahsıma ait olduğunu ve telif hakkı ihlali içermediğini kabul ederim.
+            </span>
+          </label>
+        </div>
+        <button id="btn-contact-submit" type="submit" class="w-full stage-gradient text-white py-2.5 rounded-xl font-bold text-xs shadow-lg hover:opacity-95 transition">
+          Eseri Sahneye Gönder
+        </button>
+      </form>
+    </div>
+  </div>
 
-    function handleMediaPlay(title, author, mediaUrl) {
-      const playerTitle = document.getElementById('player-title');
-      const playerArtist = document.getElementById('player-subtitle');
-      if (playerTitle) playerTitle.innerText = title;
-      if (playerArtist) playerArtist.innerText = (author || 'Hayal Sahnesi') + ' • Sahne Çalıyor';
+ <!-- Ana Uygulama Scripti (Asenkron ve Önbelleklenebilir) -->
+<script src="/app.js" defer></script>
+</body>
+</html>
 
-      if (globalAudio) {
-        globalAudio.pause();
-        globalAudio.src = '';
-      }
-      if (ytPlayer && typeof ytPlayer.stopVideo === 'function') {
-        try { ytPlayer.stopVideo(); } catch(e) {}
-      }
-      const oldActiveYt = document.getElementById('active-bg-yt');
-      if (oldActiveYt) oldActiveYt.remove();
-
-      if (!mediaUrl) return;
-
-      if (mediaUrl.includes('spotify.com')) {
-        openSpotifyModal(title, author, mediaUrl);
-        return;
-      }
-
-      const videoId = getYouTubeId(mediaUrl);
-
-      if (videoId) {
-        activeSourceType = 'youtube';
-        if (ytPlayer && typeof ytPlayer.loadVideoById === 'function') {
-          ytPlayer.loadVideoById(videoId);
-          ytPlayer.playVideo();
-        } else {
-          let hiddenContainer = document.getElementById('hidden-yt-container');
-          if (!hiddenContainer) {
-            hiddenContainer = document.createElement('div');
-            hiddenContainer.id = 'hidden-yt-container';
-            hiddenContainer.className = 'hidden pointer-events-none opacity-0 fixed -bottom-96 -right-96';
-            document.body.appendChild(hiddenContainer);
-          }
-          hiddenContainer.innerHTML = `<iframe id="active-bg-yt" width="200" height="200" src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1" frameborder="0" allow="autoplay"></iframe>`;
-        }
-
-        isPlaying = true;
-        updateShuffleBtnIcon(true);
-      } else {
-        activeSourceType = 'audio';
-        if (globalAudio) {
-          globalAudio.src = mediaUrl;
-          globalAudio.playbackRate = availableSpeeds[currentSpeedIndex];
-          globalAudio.play().catch(e => console.log('Ses hatası:', e));
-          isPlaying = true;
-          updateShuffleBtnIcon(true);
-          globalAudio.onended = function() {
-            isPlaying = false;
-            updateShuffleBtnIcon(false);
-          };
-        }
-      }
-    }
-
-    let musicPlaylist = [];
-    let currentShuffleIndex = 0;
-
-    function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-    }
-
-    function playRandomMusicList() {
-      let playable = allContents.filter(item => (item.type === 'music' || item.type === 'poem') && item.mediaUrl && !item.mediaUrl.includes('spotify.com'));
-      if (!playable || playable.length === 0) {
-        alert('Şu anda rastgele çalınabilecek bir ses eseri bulunamadı!');
-        return;
-      }
-      musicPlaylist = shuffleArray([...playable]);
-      currentShuffleIndex = 0;
-      playCurrentShuffleTrack();
-    }
-
-    function playCurrentShuffleTrack() {
-      if (!musicPlaylist || musicPlaylist.length === 0) return;
-      const track = musicPlaylist[currentShuffleIndex];
-      handleMediaPlay(track.title, track.author, track.mediaUrl);
-      const playerArtist = document.getElementById('player-subtitle');
-      if (playerArtist) {
-        playerArtist.innerText = (track.author || 'Sanatçı') + ' • (' + (currentShuffleIndex + 1) + '/' + musicPlaylist.length + ')';
-      }
-    }
-
-    function playNextShuffleTrack() {
-      if (!musicPlaylist || musicPlaylist.length === 0) {
-        playRandomMusicList();
-        return;
-      }
-      currentShuffleIndex = (currentShuffleIndex + 1) % musicPlaylist.length;
-      playCurrentShuffleTrack();
-    }
-
-    function playPrevShuffleTrack() {
-      if (!musicPlaylist || musicPlaylist.length === 0) return;
-      currentShuffleIndex = (currentShuffleIndex - 1 + musicPlaylist.length) % musicPlaylist.length;
-      playCurrentShuffleTrack();
-    }
-
-    function updateShuffleBtnIcon(playing) {
-      const playPauseBtn = document.getElementById('play-pause-btn');
-      if (!playPauseBtn) return;
-      const icon = playPauseBtn.querySelector('i');
-      if (!icon) return;
-      icon.className = playing ? 'fa-solid fa-pause text-xs' : 'fa-solid fa-play text-xs';
-    }
-
-    function togglePlayState() {
-      if (isPlaying) {
-        if (activeSourceType === 'audio' && globalAudio) globalAudio.pause();
-        if (activeSourceType === 'youtube' && ytPlayer && typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
-        const activeYt = document.getElementById('active-bg-yt');
-        if (activeYt) activeYt.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-        isPlaying = false;
-        updateShuffleBtnIcon(false);
-      } else {
-        if (activeSourceType === 'audio' && globalAudio && globalAudio.src) globalAudio.play();
-        if (activeSourceType === 'youtube' && ytPlayer && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
-        const activeYt = document.getElementById('active-bg-yt');
-        if (activeYt) activeYt.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-        isPlaying = true;
-        updateShuffleBtnIcon(true);
-      }
-    }
-
-    function openVideoPlayer(title, author, mediaUrl) {
-      document.getElementById('video-title').innerText = title;
-      document.getElementById('video-ep').innerText = author || 'Özel Gösterim';
-
-      const container = document.getElementById('video-container');
-      const videoId = getYouTubeId(mediaUrl);
-      if (videoId) {
-        container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" class="w-full h-full" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-      } else {
-        container.innerHTML = '<div class="p-6 text-center text-slate-300 text-xs">Bu esere ait video bulunmuyor.</div>';
-      }
-      openModal('modal-video');
-    }
-
-    // --- FOTOROMAN OKUYUCU MOTORU ---
-    let currentPhotoPages = [];
-    let currentPhotoIndex = 0;
-
-    function launchPhotoromanById(id) {
-      const item = allContents.find(c => String(c._id) === String(id));
-      if (!item) return;
-      activePhotoromanItem = item;
-
-      const frames = (item.images && Array.isArray(item.images) && item.images.length > 0) 
-        ? item.images 
-        : [{ img: item.thumbnail || '', text: item.textBody || item.description || 'Sahne başladı...', desc: '' }];
-
-      const rLikes = document.getElementById('reader-like-count');
-      const rDislikes = document.getElementById('reader-dislike-count');
-      if (rLikes) rLikes.innerText = item.likes || 0;
-      if (rDislikes) rDislikes.innerText = item.dislikes || 0;
-
-      updateFavoriteButtonStyles();
-      openReader(item.title, item.author, `${frames.length} Kare`, frames, item.musicUrl || item.mediaUrl || '');
-    }
-    window.launchPhotoromanById = launchPhotoromanById;
-
-    function openReader(title, desc, frameCount, imagesList, musicUrl) {
-      document.getElementById('reader-title').innerText = title || 'Fotoroman';
-      document.getElementById('reader-info').innerText = frameCount || 'Özel Sahne';
-
-      currentPhotoPages = imagesList;
-      currentPhotoIndex = 0;
-      renderPhotoPage();
-
-      if (readerBgAudio && musicUrl) {
-        readerBgAudio.src = musicUrl;
-        readerBgAudio.playbackRate = availableSpeeds[currentSpeedIndex];
-        readerBgAudio.currentTime = 0;
-        readerBgAudio.volume = 0.5;
-        readerBgAudio.muted = false;
-        readerBgAudio.play().catch(e => console.log('Müzik başlatılamadı:', e));
-      }
-
-      openModal('modal-reader');
-    }
-
-    function renderPhotoPage() {
-      if (!currentPhotoPages || currentPhotoPages.length === 0) return;
-      const page = currentPhotoPages[currentPhotoIndex];
-      const imgEl = document.getElementById('reader-img');
-      const dialogEl = document.getElementById('reader-dialog');
-      const sceneDescEl = document.getElementById('reader-scene-desc');
-      const counterEl = document.getElementById('reader-page-counter');
-
-      const imgSrc = typeof page === 'string' ? page : (page.img || '');
-      const dialogText = typeof page === 'string' ? `Kare ${currentPhotoIndex + 1}` : (page.text || '');
-      const sceneDesc = (typeof page === 'object' && page.desc) ? page.desc : '';
-
-      if (imgEl) {
-        imgEl.style.opacity = '0.2';
-        setTimeout(() => {
-          imgEl.src = imgSrc;
-          imgEl.style.opacity = '1';
-        }, 150);
-      }
-
-      if (dialogEl) dialogEl.innerText = dialogText || `Kare ${currentPhotoIndex + 1}`;
-      
-      if (sceneDescEl) {
-        if (sceneDesc.trim() !== '') {
-          sceneDescEl.innerText = 'Yönetmen Notu / Açıklama: ' + sceneDesc;
-          sceneDescEl.classList.remove('hidden');
-        } else {
-          sceneDescEl.classList.add('hidden');
-        }
-      }
-
-      if (counterEl) counterEl.innerText = `Kare ${currentPhotoIndex + 1} / ${currentPhotoPages.length}`;
-    }
-
-    function nextPhotoPage() {
-      if (currentPhotoIndex < currentPhotoPages.length - 1) {
-        currentPhotoIndex++;
-        renderPhotoPage();
-      }
-    }
-
-    function prevPhotoPage() {
-      if (currentPhotoIndex > 0) {
-        currentPhotoIndex--;
-        renderPhotoPage();
-      }
-    }
-
-    function changeReaderVolume(val) {
-      if (!readerBgAudio) return;
-      readerBgAudio.volume = parseFloat(val);
-      readerBgAudio.muted = false;
-      updateReaderAudioIcon(parseFloat(val));
-    }
-
-    function toggleReaderAudioMute() {
-      if (!readerBgAudio) return;
-      readerBgAudio.muted = !readerBgAudio.muted;
-      updateReaderAudioIcon(readerBgAudio.muted ? 0 : readerBgAudio.volume);
-    }
-
-    function updateReaderAudioIcon(vol) {
-      const icon = document.getElementById('reader-volume-icon');
-      if (!icon) return;
-      if ((readerBgAudio && readerBgAudio.muted) || vol === 0) {
-        icon.className = 'fa-solid fa-volume-xmark text-rose-400';
-      } else if (vol < 0.4) {
-        icon.className = 'fa-solid fa-volume-low text-purple-300';
-      } else {
-        icon.className = 'fa-solid fa-volume-high text-purple-400';
-      }
-    }
-
-    window.addEventListener('keydown', (e) => {
-      const readerModal = document.getElementById('modal-reader');
-      if (readerModal && !readerModal.classList.contains('hidden')) {
-        if (e.key === 'ArrowRight') nextPhotoPage();
-        if (e.key === 'ArrowLeft') prevPhotoPage();
-        if (e.key === 'Escape') closeModal('modal-reader');
-      }
-    });
-
-    // Modal Fonksiyonları
-    function openModal(id) { 
-      const el = document.getElementById(id);
-      if (el) el.classList.remove('hidden'); 
-    }
-
-    function closeModal(id) { 
-      const el = document.getElementById(id);
-      if (el) el.classList.add('hidden'); 
-      if (id === 'modal-video') {
-        const vidCont = document.getElementById('video-container');
-        if (vidCont) vidCont.innerHTML = '';
-      }
-      if (id === 'modal-reader') {
-        if (readerBgAudio) {
-          readerBgAudio.pause();
-          readerBgAudio.src = '';
-        }
-      }
-      if (id === 'modal-spotify') {
-        const spCont = document.getElementById('spotify-iframe-container');
-        if (spCont) spCont.innerHTML = '';
-      }
-    }
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str).replace(/[&<>"']/g, function(m) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
-      });
-    }
-
-    // Sayfa Başlangıcı & Gecikmeli Yüklemeler
-    window.addEventListener('DOMContentLoaded', () => {
-      updateFavoriteCounter();
-      loadLiveContents();
-
-      // YouTube API'yi ilk boyamayı geciktirmemesi için arka planda başlat
-      setTimeout(() => {
-        if (!window.YT) {
-          const tag = document.createElement('script');
-          tag.src = "https://www.youtube.com/iframe_api";
-          document.body.appendChild(tag);
-        }
-      }, 2000);
-    });
-  </script>
-  </body>
-  </html>
+ 
